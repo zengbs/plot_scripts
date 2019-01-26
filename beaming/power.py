@@ -4,7 +4,7 @@ import yt
 import numpy as np
 
 theta         = 90.0*np.pi/180.0 # polar angle     (degree)
-phi           = 15.0*np.pi/180.0 # azimuthal angle (degree)
+phi           = 20.0*np.pi/180.0 # azimuthal angle (degree)
 normal        = [np.sin(theta)*np.cos(phi), np.sin(theta)*np.sin(phi), np.cos(theta)]
 
 
@@ -25,17 +25,14 @@ def projected_power( field, data ):
 
    U = np.sqrt(Usqr)
 
-   # cosine theta, theta is angle between line of sight and velocity
-   cos_theta = (Ux*normal[0]+Uy*normal[1]+Uz*normal[2])/U
-
    # Lorentz factor
    gamma = np.sqrt(1*(ds.length_unit/ds.time_unit)**2 + Usqr)
 
-   # beta = 3-velocity / speed of light
-   beta = U/gamma
+   # cosine theta, theta is angle between line of sight and velocity
+   beta_cos_theta = (Ux*normal[0]+Uy*normal[1]+Uz*normal[2])/gamma
 
    # beaming effect
-   factor = (gamma*(1-beta*cos_theta))**-4
+   factor = (gamma*(1-beta_cos_theta))**-4
 
    return factor
    
@@ -87,15 +84,17 @@ for ds in ts.piter():
 
 # add new derived field
    ds.add_field( ("gamer", "emitted_power")  , function=projected_power  , sampling_type="cell", units="code_time**4*code_length**-4" )
-
-#   sz = yt.ProjectionPlot( ds, 'y', field, center=center  )
-   sz = yt.OffAxisProjectionPlot( ds, normal, field, center, width, north_vector=north_vector)
+   sz = yt.ProjectionPlot( ds, 'y', field, center=center  )
+#   sz = yt.OffAxisProjectionPlot( ds, normal, field, center, width, north_vector=north_vector)
    sz.annotate_title(r'$\theta = %.2f^\circ, \phi=%.2f^\circ$' %(theta*180.0/np.pi, phi*180.0/np.pi))
    sz.set_zlim( field, 'min', 'max')
 #   sz.set_log( field, False )
    sz.set_cmap( field, colormap )
    sz.set_unit( field, 'code_time**4*code_length**-3' )
    sz.set_axes_unit( 'code_length' )
-   sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = {time:.4f} {units}' )
+   sz.set_xlabel('x (grid)')
+   sz.set_ylabel('y (grid)')
+   sz.annotate_title('slice plot')
+   sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = {time:.2f} grid$/c$', text_args={'color':'black'})
 #   #sz.annotate_grids( periodic=False )
    sz.save( mpl_kwargs={"dpi":dpi} )
