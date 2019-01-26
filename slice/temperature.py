@@ -53,6 +53,7 @@ for ds in ts.piter():
    sz = yt.SlicePlot( ds, 'z', field, center_mode  )
 #   sz.set_width(100,20)
    sz.set_zlim( field, 'min', 'max')
+   sz.zoom(3)
 #   sz.set_log( field, False )
    sz.set_cmap( field, colormap )
    sz.set_unit( field, '' )
