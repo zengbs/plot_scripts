@@ -25,17 +25,13 @@ def projected_power( field, data ):
 
    U = np.sqrt(Usqr)
 
-   # cosine theta, theta is angle between line of sight and velocity
-   cos_theta = (Ux*normal[0]+Uy*normal[1]+Uz*normal[2])/U
-
    # Lorentz factor
    gamma = np.sqrt(1*(ds.length_unit/ds.time_unit)**2 + Usqr)
 
-   # beta = 3-velocity / speed of light
-   beta = U/gamma
+   beta_cos_theta = (Ux*normal[0]+Uy*normal[1]+Uz*normal[2])/gamma
 
    # beaming effect
-   factor = (gamma*(1-beta*cos_theta))**-4
+   factor = (gamma*(1-beta_cos_theta))**-4
 
    return factor
    
