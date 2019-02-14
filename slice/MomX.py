@@ -57,7 +57,7 @@ for ds in ts.piter():
 #   ds.add_field( ("gamer", "pressure")     , function=_pressure_sr  , sampling_type="cell", units="code_mass/(code_length*code_time**2)" )
 
    sz = yt.SlicePlot( ds, 'z', field, center_mode  )
-   sz.set_zlim( field, 'min', 'max')
+   sz.set_zlim( field, '0.0', 'max')
 #   sz.set_log( field, False )
    sz.set_cmap( field, colormap )
    sz.set_unit( field, 'code_mass/(code_time*code_length**2)' ) # for energy, pressure

@@ -55,7 +55,7 @@ for ds in ts.piter():
 #   sz.set_log( field, False )
    sz.set_cmap( field, colormap )
    sz.set_unit( field, '1/code_length**3' ) # for energy, pressure
-   sz.zoom(2)
+#   sz.zoom(2)
    sz.set_xlabel('x (grid)')
    sz.set_ylabel('y (grid)')
    sz.annotate_title('slice plot')

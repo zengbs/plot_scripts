@@ -5,16 +5,15 @@ import numpy as np
 
 ####################  ON-DISK DATA  ###############################
 
-# define 4-velocity field
-def _Ux_sr( field, data ):
+# define pressure field
+def _enthalpy( field, data ):
    if ds["EoS"] == 2:
      h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
    elif ds["EoS"] == 1:
      h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
    else:
      print ("Your EoS doesn't support yet!")
-   Ux = data["MomX"]/(data["Dens"]*h)
-   return Ux
+   return h
 
 ####################  DERIVED DATA  ############################
 
@@ -49,7 +48,7 @@ prefix      = args.prefix
 
 colormap    = 'arbre'
 
-field       = '4-velocity_x'    # to change the target field, one must modify set_unit() accordingly
+field       = 'Enthalpy'    # to change the target field, one must modify set_unit() accordingly
 center_mode = 'c'
 dpi         = 150
 
@@ -61,18 +60,19 @@ ts = yt.load( [ prefix+'/Data_%06d'%idx for idx in range(idx_start, idx_end+1, d
 for ds in ts.piter():
 
 # add new derived field
-   ds.add_field( ("gamer", "4-velocity_x")  , function=_Ux_sr  , sampling_type="cell", units="code_length/code_time" )
+   ds.add_field( ("gamer", field)  , function=_enthalpy  , sampling_type="cell", units="" )
 
    sz = yt.SlicePlot( ds, 'z', field, center_mode  )
-   sz.set_zlim( field, 'min', 'max')
+   sz.set_zlim( field, '1.0', 'max')
 #   sz.set_log( field, False )
-#   sz.zoom(2)
    sz.set_cmap( field, colormap )
-   sz.set_unit( field, 'code_length/code_time' ) # for energy, pressure
+   sz.set_unit( field, '' )
    sz.set_axes_unit( 'code_length' )
+#   sz.zoom(2)
    sz.set_xlabel('x (grid)')
    sz.set_ylabel('y (grid)')
    sz.annotate_title('slice plot')
+#   sz.annotate_velocity(factor = 16, normalize=True)
    sz.set_font({'weight':'bold', 'size':'22'})
    sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = {time:.2f} grid$/c$', text_args={'color':'black'})
 #   #sz.annotate_grids( periodic=False )

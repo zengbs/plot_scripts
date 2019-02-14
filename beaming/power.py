@@ -69,7 +69,7 @@ prefix      = args.prefix
 
 colormap    = 'arbre'
 
-field       = 'emitted_power'    # to change the target field, one must modify set_unit() accordingly
+field       = 'beaming factor'    # to change the target field, one must modify set_unit() accordingly
 center      = 'c'
 dpi         = 150
 
@@ -83,8 +83,8 @@ ts = yt.load( [ prefix+'/Data_%06d'%idx for idx in range(idx_start, idx_end+1, d
 for ds in ts.piter():
 
 # add new derived field
-   ds.add_field( ("gamer", "emitted_power")  , function=projected_power  , sampling_type="cell", units="code_time**4*code_length**-4" )
-   sz = yt.ProjectionPlot( ds, 'y', field, center=center  )
+   ds.add_field( ("gamer", field)  , function=projected_power  , sampling_type="cell", units="code_time**4*code_length**-4" )
+   sz = yt.ProjectionPlot( ds, 'z', field, center=center  )
 #   sz = yt.OffAxisProjectionPlot( ds, normal, field, center, width, north_vector=north_vector)
    sz.annotate_title(r'$\theta = %.2f^\circ, \phi=%.2f^\circ$' %(theta*180.0/np.pi, phi*180.0/np.pi))
    sz.set_zlim( field, 'min', 'max')
@@ -95,6 +95,7 @@ for ds in ts.piter():
    sz.set_xlabel('x (grid)')
    sz.set_ylabel('y (grid)')
    sz.annotate_title('slice plot')
+   sz.set_font({'weight':'bold', 'size':'22'})
    sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = {time:.2f} grid$/c$', text_args={'color':'black'})
 #   #sz.annotate_grids( periodic=False )
    sz.save( mpl_kwargs={"dpi":dpi} )

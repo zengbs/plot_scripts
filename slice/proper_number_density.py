@@ -68,11 +68,12 @@ for ds in ts.piter():
    sz = yt.SlicePlot( ds, 'z', field, center_mode  )
    sz.set_zlim( field, 'min', 'max')
 #   sz.set_log( field, False )
-   sz.zoom(2)
+#   sz.zoom(2)
    sz.set_xlabel('x (grid)')
    sz.set_ylabel('y (grid)')
    sz.annotate_title('slice plot')
    sz.set_font({'weight':'bold', 'size':'22'})
+#   sz.annotate_velocity(factor = 16, normalize=True)
    sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = {time:.2f} grid$/c$', text_args={'color':'black'})
    sz.set_cmap( field, colormap )
    sz.set_unit( field, '1/code_length**3' ) # for energy, pressure

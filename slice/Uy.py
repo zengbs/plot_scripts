@@ -66,7 +66,7 @@ for ds in ts.piter():
    sz = yt.SlicePlot( ds, 'z', field, center_mode  )
    sz.set_zlim( field, 'min', 'max')
 #   sz.set_log( field, False )
-   sz.zoom(2)
+#   sz.zoom(2)
    sz.set_cmap( field, colormap )
    sz.set_unit( field, 'code_length/code_time' ) # for energy, pressure
    sz.set_axes_unit( 'code_length' )

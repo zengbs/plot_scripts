@@ -56,7 +56,7 @@ for ds in ts.piter():
 #   sz.set_log( field, False )
    sz.set_cmap( field, colormap )
    sz.set_unit( field, '' )
-   sz.zoom(2)
+#   sz.zoom(2)
    sz.set_axes_unit( 'code_length' )
    sz.set_xlabel('x (grid)')
    sz.set_ylabel('y (grid)')
