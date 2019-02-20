@@ -1,42 +1,49 @@
 #!/bin/bash
 
-# check necessary files
-if [ ! -f "submit_hulk_openmpi-1.4.3.job" ]; then
-  exit 1
-fi
-
-if [ ! -f "input/Input__.*" ]; then
-  exit 1
-fi
-
-if [ ! -f "restart/single/RESTART" ]; then
-  exit 1
-fi
-
-
-
-declare -a device=("gpu")
-declare -a mpi=("o" "x")
-declare -a timing_solver=("o" "x")
-declare -a precision=("single")
-
-declare -a numa=("o")
-
+WorkPath="${PWD}"
 GPU_ARCH=FERMI
-thread_make=32
+thread_make=2
 SRC="/home/gamer/Work/benchmark/src"
 BIN="/home/gamer/Work/benchmark/bin"
-WorkPath="${PWD}"
 
-MaxThread=32
+MinThread=1
+MaxThread=12
+
+SubmitFile="submit_hulk_openMPI-1.4.3.job"
+
+AppliedNode=1
+AppliedThreadPerNode=6
+
+declare -a DEVICE=("gpu")
+declare -a MPI=("o" "x")
+declare -a TIMING=("o" "x")
+declare -a PRECISION=("single")
+declare -a NUMA=("o")
+declare -i PROCESS=(1 2) # number of processes per node
+declare -i THREAD=()     # number of threads per process
+
+for i in {${MinThread}..${MaxThread}}; do THREAD[$i]=$i; done
+
+# check necessary files
+if [ ! -f "${WorkPath}/${SubmitFile}" ]; then
+  exit 1
+fi
+
+if [ ! -d "${WorkPath}/input" ]; then
+  exit 1
+fi
+
+if [ ! -d "${WorkPath}/restart" ]; then
+  exit 1
+fi
 
 mkdir bin
 
-   for d in "${device[@]}"
-do for m in "${mpi[@]}"
-do for n in "${numa[@]}"
-do for p in "${precision[@]}"
-do for t in "${timing_solver[@]}"
+   for d in "${DEVICE[@]}"
+do for m in "${MPI[@]}"
+do for n in "${NUMA[@]}"
+do for p in "${PRECISION[@]}"
+do for t in "${TIMING[@]}"
 do
 
 #  make directories to store binary file
@@ -44,8 +51,8 @@ do
       mkdir bin
    fi
 
-   if [ ! -d "${WorkPath}/bin/${d}.mpi_${m}.numa_${n}.${p}.timing_solver_${t}" ];then
-     mkdir -p ${WorkPath}/bin/${d}.mpi_${m}.numa_${n}.${p}.timing_solver_${t}
+   if [ ! -d "${WorkPath}/bin/${d}.mpi_${m}.numa_${n}.${p}.timing_${t}" ];then
+     mkdir -p ${WorkPath}/bin/${d}.mpi_${m}.numa_${n}.${p}.timing_${t}
    fi
 
 #  modify Makefile
@@ -87,7 +94,7 @@ do
    make -j ${thread_make} 
 
 # move gamer to the corresponding directories
-   mv ${BIN}/gamer ${WorkPath}/bin/${d}.mpi_${m}.numa_${n}.${p}.timing_solver_${t}
+   mv ${BIN}/gamer ${WorkPath}/bin/${d}.mpi_${m}.numa_${n}.${p}.timing_${t}
    cd ${WorkPath}
 
 done
@@ -95,3 +102,94 @@ done
 done
 done
 done
+
+# run on 1 node and 1 process!
+
+if (( ${PROCESS[0]} == 1 )) && (( ${AppliedNode} == 1 ));then
+  
+     for d in "${DEVICE[@]}"
+  do for n in "${NUMA[@]}"
+  do for p in "${PRECISION[@]}"
+  do for t in "${TIMING[@]}"
+  do for i in "${THREAD[@]}"
+  do
+
+     I=$( printf %02d ${i} )
+  
+     SubWorkPath=${d}.process_01.numa_${n}.${p}.timing_${t}.thread_pp_${I}
+  
+     if [ ! -d "${WorkPath}/${SubWorkPath}" ];then
+       mkdir -p ${WorkPath}/${SubWorkPath}
+     fi
+       
+       cp  ${WorkPath}/input/Input__* ${WorkPath}/${SubWorkPath}
+  
+       sed -i "s/^OMP_NTHREAD *.*/OMP_NTHREAD                   ${i}/" Input__Parameter
+  
+       ln -s ${WorkPath}/restart/${p}/RESTART ${WorkPath}
+    
+       cd ${WorkPath}/${SubWorkPath}
+  
+       ./gamer >& log &
+  
+       PID=$!
+
+       wait ${PID}
+  
+       cd ${WorkPath}
+  done
+  done
+  done
+  done
+  done
+
+fi
+
+
+# run processes >= 2 or node >=2
+  
+     for d in "${DEVICE[@]}"
+  do for m in "${PROCESS[@]}"
+  do for n in "${NUMA[@]}"
+  do for p in "${PRECISION[@]}"
+  do for t in "${TIMING[@]}"
+  do
+
+  if (( ${m} > 1 )) || (( ${AppliedNode} > 1 ));then
+
+     M=$( printf %02d ${m} )                
+     X=$( printf %02d ${ThreadPerProcess} )
+
+     SubWorkPath=${d}.process_${M}.numa_${n}.${p}.timing_${t}.thread_pp_${X}
+  
+     if [ ! -d "${WorkPath}/${SubWorkPath}" ];then
+       mkdir -p ${WorkPath}/${SubWorkPath}
+     fi
+       
+     cp  ${WorkPath}/input/Input__* ${WorkPath}/${SubWorkPath}
+
+     sed -i "s/^OMP_NTHREAD *.*/OMP_NTHREAD                   ${ThreadPerProcess}/" Input__Parameter
+
+     ln -s ${WorkPath}/restart/${p}/RESTART ${WorkPath}
+  
+     cd ${WorkPath}/${SubWorkPath}
+
+     sed -i "s/#PBS -l nodes=.*:ppn=.*/#PBS -l nodes=${AppliedNode}:ppn=${AppliedThreadPerNode}/"  ${SubmitFile}
+     
+     TotalProcess=$(( ${ProcessPerNode} * ${AppliedNode} ))
+
+     sed -i "s/^mpirun/mpirun -np ${TotalProcess} -npernode ${ProcessPerNode} -hostfile \$PBS_NODEFILE -bind-to-socket ./gamer 1>>log 2>&1/"
+
+     PID=$!
+
+     wait ${PID}
+
+     cd ${WorkPath}
+  fi
+
+  done
+  done
+  done
+  done
+  done
+
