@@ -1,25 +1,35 @@
 #!/bin/bash
 
-NFILES=3
-START_STEP=70
-END_STEP=80
+NFILES=4
+START_STEP=61
+END_STEP=71
 
 declare -a NODE=()
+declare -a GPU=()
 
-NODE[0]=64
-NODE[1]=512
-NODE[2]=2048
+NODE[0]=1
+NODE[1]=8
+NODE[2]=64
+NODE[3]=512
+
+GPU[0]=1
+GPU[1]=8
+GPU[2]=64
+GPU[3]=512
+
+declare -a FILES=()
+
+FILES[0]='rank0001/Record__Performance'
+FILES[1]='rank0008/Record__Performance'
+FILES[2]='rank0064/Record__Performance'
+FILES[3]='rank0512/Record__Performance'
+
+################################################################
 
 # if ( START_STEP < 1 ) then...
 # if (END_STEP+1 > line) in file then ...
 # if (START_STEP > END_STEP) then ...
 # if (#NODE[] != #FILE[]) then...
-
-declare -a FILES=()
-
-FILES[0]='/home/Tseng/Works/benchmark/PizDaint/weak_scaling/FMA_O/rank0064/Record__Performance'
-FILES[1]='/home/Tseng/Works/benchmark/PizDaint/weak_scaling/FMA_O/rank0512/Record__Performance'
-FILES[2]='/home/Tseng/Works/benchmark/PizDaint/weak_scaling/FMA_O/rank2048/Record__Performance'
 
 AVG_OverallPerf=()
 AVG_PerfPerRank=()
@@ -54,14 +64,12 @@ do
 done
 
 # print results
-printf '#%19s%20s%20s%20s\n' "Number of Nodes" "Step Range" "AVG_Perf_Overall" "AVG_Perf_PerRank"
-printf '%80s\n' "#========================================================================================"
+printf '#%s%3d%s%3d\n' "Step_Range: " ${START_STEP} "-" ${END_STEP}
+printf '#%19s%20s%20s%20s\n' "Number_of_Nodes" "Number_of_GPUs" "AVG_Perf_Overall" "AVG_Perf_PerRank"
+printf '#%80s\n' "========================================================================================"
 
 for ((idx=0;idx<${NFILES};idx++))
 do
-  printf '%20d' ${NODE[$idx]}
-  printf '%16d%s%3d' ${START_STEP} "-" ${END_STEP}
+  printf '%20d%20d' ${NODE[$idx]} ${GPU[$idx]}
   printf '%20.2e%20.2e\n' ${AVG_OverallPerf[$idx]}  ${AVG_PerfPerRank[$idx]}
 done
-
->& log
