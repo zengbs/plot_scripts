@@ -17,8 +17,8 @@ Perf_Overall_srhydro = data1[:,  2]
 
 #Perf_Overall_hydro   = data2[:,  5]
 
-Ideal_SR    = Node*Perf_Overall_srhydro[0]
-#Ideal_Hydro = Node*Perf_Overall_hydro[0]
+Ideal_SR    = (Node/Node[0])*Perf_Overall_srhydro[0]
+#Ideal_Hydro = (Node/Node[0])*Perf_Overall_hydro[0]
 
 plt.plot(Node, Perf_Overall_srhydro, 'bo', label='SRHydro', linestyle='solid')
 plt.plot(Node, Ideal_SR     , label='Ideal scaling(SRHydro)', color='blue',linestyle='--')

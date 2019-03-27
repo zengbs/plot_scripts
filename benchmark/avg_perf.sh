@@ -1,11 +1,14 @@
 #!/bin/bash
 
+declare -a NODE=()
+declare -a GPU=()
+
+################ INPUT AREA ###################################
+
 NFILES=4
 START_STEP=61
 END_STEP=71
 
-declare -a NODE=()
-declare -a GPU=()
 
 NODE[0]=1
 NODE[1]=8
@@ -24,6 +27,9 @@ FILES[1]='rank0008/Record__Performance'
 FILES[2]='rank0064/Record__Performance'
 FILES[3]='rank0512/Record__Performance'
 
+START_LINE=
+END_LINE=
+
 ################################################################
 
 # if ( START_STEP < 1 ) then...
@@ -34,8 +40,6 @@ FILES[3]='rank0512/Record__Performance'
 AVG_OverallPerf=()
 AVG_PerfPerRank=()
 
-START_LINE=$((START_STEP+1))
-END_LINE=$((END_STEP+1))
 
 for ((idx=0;idx<${NFILES};idx++))
 do
@@ -64,7 +68,7 @@ do
 done
 
 # print results
-printf '#%s%3d%s%3d\n' "Step_Range: " ${START_STEP} "-" ${END_STEP}
+printf '#%19s%3d%s%3d%6s\n' "Avg_Range: " ${START_STEP} "-" ${END_STEP} "Steps"
 printf '#%19s%20s%20s%20s\n' "Number_of_Nodes" "Number_of_GPUs" "AVG_Perf_Overall" "AVG_Perf_PerRank"
 printf '#%80s\n' "========================================================================================"
 
