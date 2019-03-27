@@ -1,48 +1,67 @@
 #!/bin/bash
-FILE='/home/Tseng/Works/benchmark/PizDaint/weak_scaling/FMA_O/rank2048/Record__Performance'
-START_LINE=66
-END_LINE=70
 
-OverallPerf=()
-PerfPerRank=()
-Step=()
+NFILES=3
+START_STEP=70
+END_STEP=80
 
-# put overall performance value into array, OverallPerf[]
-while IFS= read -r line; do
-    OverallPerf+=( "$line" )
-done < <( sed "${START_LINE},${END_LINE}!d"  ${FILE} | awk '{print $7}' )
+declare -a NODE=()
 
-# put performance per rank value into array, PerfPerRank[]
-while IFS= read -r line; do
-    PerfPerRank+=( "$line" )
-done < <( sed "${START_LINE},${END_LINE}!d"  ${FILE} | awk '{print $8}' )
+NODE[0]=64
+NODE[1]=512
+NODE[2]=2048
 
-# put Step into array, Step[]
-while IFS= read -r line; do
-    Step+=( "$line" )
-done < <( sed "${START_LINE},${END_LINE}!d"  ${FILE} | awk '{print $2}' )
+# if ( START_STEP < 1 ) then...
+# if (END_STEP+1 > line) in file then ...
+# if (START_STEP > END_STEP) then ...
+# if (#NODE[] != #FILE[]) then...
 
-printf '#%19s %20s %20s\n' Step Perf_Overall Perf_PerRank
+declare -a FILES=()
 
-for ((i=0;i<=${END_LINE}-${START_LINE};i++))
+FILES[0]='/home/Tseng/Works/benchmark/PizDaint/weak_scaling/FMA_O/rank0064/Record__Performance'
+FILES[1]='/home/Tseng/Works/benchmark/PizDaint/weak_scaling/FMA_O/rank0512/Record__Performance'
+FILES[2]='/home/Tseng/Works/benchmark/PizDaint/weak_scaling/FMA_O/rank2048/Record__Performance'
+
+AVG_OverallPerf=()
+AVG_PerfPerRank=()
+
+START_LINE=$((START_STEP+1))
+END_LINE=$((END_STEP+1))
+
+for ((idx=0;idx<${NFILES};idx++))
 do
-  printf '%20d %20.2e %20.2e\n' ${Step[$i]} ${OverallPerf[$i]} ${PerfPerRank[$i]}
+   OverallPerf=()
+   PerfPerRank=()
+
+   # put overall performance into array, OverallPerf[]
+   while IFS= read -r line; do
+       OverallPerf+=( "$line" )
+   done < <( sed "${START_LINE},${END_LINE}!d"  ${FILES[$idx]} | awk '{print $7}' )
+   
+   # put performance per rank into array, PerfPerRank[]
+   while IFS= read -r line; do
+       PerfPerRank+=( "$line" )
+   done < <( sed "${START_LINE},${END_LINE}!d"  ${FILES[$idx]} | awk '{print $8}' )
+   
+   # compute average
+   for ((i=0;i<=${END_LINE}-${START_LINE};i++))
+   do
+     AVG_OverallPerf[$idx]=`python -c "print ${AVG_OverallPerf[$idx]}+${OverallPerf[$i]}"`
+     AVG_PerfPerRank[$idx]=`python -c "print ${AVG_PerfPerRank[$idx]}+${PerfPerRank[$i]}"`
+   done
+
+   AVG_OverallPerf[$idx]=`python -c "print ${AVG_OverallPerf[$idx]}/(${END_LINE}-${START_LINE}+1)"`
+   AVG_PerfPerRank[$idx]=`python -c "print ${AVG_PerfPerRank[$idx]}/(${END_LINE}-${START_LINE}+1)"`
 done
 
-printf '%60s\n' "#========================================================================="
-printf '#%40s %20s\n' Avg_Perf_Overall Avg_Perf_PerRank
+# print results
+printf '#%19s%20s%20s%20s\n' "Number of Nodes" "Step Range" "AVG_Perf_Overall" "AVG_Perf_PerRank"
+printf '%80s\n' "#========================================================================================"
 
-AVG_OverallPerf=0
-AVG_PerfPerRank=0
-
-# compute average
-for ((i=0;i<=${END_LINE}-${START_LINE};i++))
+for ((idx=0;idx<${NFILES};idx++))
 do
-  AVG_OverallPerf=`python -c "print ${AVG_OverallPerf}+${OverallPerf[$i]}"`
-  AVG_PerfPerRank=`python -c "print ${AVG_PerfPerRank}+${PerfPerRank}"`
+  printf '%20d' ${NODE[$idx]}
+  printf '%16d%s%3d' ${START_STEP} "-" ${END_STEP}
+  printf '%20.2e%20.2e\n' ${AVG_OverallPerf[$idx]}  ${AVG_PerfPerRank[$idx]}
 done
 
-AVG_OverallPerf=`python -c "print ${AVG_OverallPerf}/(${END_LINE}-${START_LINE}+1)"`
-AVG_PerfPerRank=`python -c "print ${AVG_PerfPerRank}/(${END_LINE}-${START_LINE}+1)"`
-
-printf '%40.2e %40.2e\n' $AVG_OverallPerf  $AVG_PerfPerRank
+>& log
