@@ -4,7 +4,7 @@ if [ -f "thread_vs_perf.csv" ]; then
  rm thread_vs_perf.csv
 fi
 
-for t in {32..1}
+for t in {12..1}
 do
 
   t0=$( printf %02d ${t} )

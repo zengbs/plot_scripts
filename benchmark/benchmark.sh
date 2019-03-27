@@ -6,7 +6,7 @@ declare -a timesol=("o" "x")
 declare -a precision=("single" "double")
 declare -a numa=("x")
 
-cores=16
+cores=6
 
 #process=(2 4 8 16 32)
 #threads=(32 31 30 29 28 27 26 25 24  16 10 9 8 7 6)
@@ -20,7 +20,7 @@ fi
 
    for d in "${device[@]}"
 do for s in "${timesol[@]}"
-do for t in {32..1}
+do for t in {12..1}
 do for n in "${numa[@]}"
 do
    t0=$( printf %02d ${t} )
