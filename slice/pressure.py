@@ -51,7 +51,7 @@ prefix      = args.prefix
 colormap    = 'arbre'
 
 field       = 'pressure'    # to change the target field, one must modify set_unit() accordingly
-center_mode = 'c'
+center      = 'c'
 dpi         = 150
 
 
@@ -63,10 +63,15 @@ for ds in ts.piter():
 
 # add new derived field
    ds.add_field( ("gamer", "pressure")  , function=_pressure_sr  , sampling_type="cell", units="code_mass/(code_length*code_time**2)" )
+   center = ds.domain_center
+#   origin = (20,0,'domain')
+#   center[0] = 50.0
+#   center[1] = 20.0
+#   center[2] = 20.0
 
-   sz = yt.SlicePlot( ds, 'z', field, center_mode  )
+   sz = yt.SlicePlot( ds, 'z', field, center=center )
 #   sz.set_width(100,40)
-#   sz.zoom(2)
+   sz.zoom(4)
    sz.set_zlim( field, 'min', 'max')
 #   sz.set_log( field, False )
    sz.set_cmap( field, colormap )
