@@ -3,6 +3,7 @@ SRC='/work1/Tseng/sr_hydro/gamer/src'
 SHK_INPUT='/example/test_problem/SR_Hydro/Riemann/*'
 BLAST_INPUT='/example/test_problem/SR_Hydro/BlastWave/*'
 TEST='/work1/Tseng/sr_hydro/gamer/bin'
+PLOT='/work1/Tseng/plot_scripts'
 
 SHK_NODE=3
 BLAST_NODE=3
@@ -170,37 +171,37 @@ while getopts ":s:b:h" opt; do
               ####################################################
               printf "\e[0;1;35;40mPloting...\e[0m\n\n"
               
-              sed -i "s/^do for \[i=0:.*\] {/do for \[i=0:$(($STEP))\] {/"      scripts/gnuplot/D.gpt
-              sed -i "s/${TEST}\/shk\/.*\/bin/shk\/${EOS}_${ENGY}\/bin/"        scripts/gnuplot/D.gpt
-              sed -i "s/{.*eos.*}/{\/=15${EOS}, ${ENGY}}/"                      scripts/gnuplot/D.gpt
+              sed -i "s/^do for \[i=0:.*\] {/do for \[i=0:$(($STEP))\] {/"      ${PLOT}/scripts/gnuplot/D.gpt
+              sed -i "s/${TEST}\/shk\/.*\/bin/shk\/${EOS}_${ENGY}\/bin/"        ${PLOT}/scripts/gnuplot/D.gpt
+              sed -i "s/{.*eos.*}/{\/=15${EOS}, ${ENGY}}/"                      ${PLOT}/scripts/gnuplot/D.gpt
 
-              sed -i "s/^do for \[i=0:.*\] {/do for \[i=0:$(($STEP))\] {/"      scripts/gnuplot/E.gpt
-              sed -i "s/${TEST}\/shk\/.*\/bin/shk\/${EOS}_${ENGY}\/bin/"        scripts/gnuplot/E.gpt
-              sed -i "s/{.*eos.*}/{\/=15${EOS}, ${ENGY}}/"                      scripts/gnuplot/E.gpt
+              sed -i "s/^do for \[i=0:.*\] {/do for \[i=0:$(($STEP))\] {/"     ${PLOT}/scripts/gnuplot/E.gpt
+              sed -i "s/${TEST}\/shk\/.*\/bin/shk\/${EOS}_${ENGY}\/bin/"       ${PLOT}/scripts/gnuplot/E.gpt
+              sed -i "s/{.*eos.*}/{\/=15${EOS}, ${ENGY}}/"                     ${PLOT}/scripts/gnuplot/E.gpt
 
-              sed -i "s/^do for \[i=0:.*\] {/do for \[i=0:$(($STEP))\] {/"      scripts/gnuplot/LorentzFac.gpt
-              sed -i "s/${TEST}\/shk\/.*\/bin/shk\/${EOS}_${ENGY}\/bin/"        scripts/gnuplot/LorentzFac.gpt
-              sed -i "s/{.*eos.*}/{\/=15${EOS}, ${ENGY}}/"                      scripts/gnuplot/LorentzFac.gpt
+              sed -i "s/^do for \[i=0:.*\] {/do for \[i=0:$(($STEP))\] {/"     ${PLOT}/scripts/gnuplot/LorentzFac.gpt
+              sed -i "s/${TEST}\/shk\/.*\/bin/shk\/${EOS}_${ENGY}\/bin/"       ${PLOT}/scripts/gnuplot/LorentzFac.gpt
+              sed -i "s/{.*eos.*}/{\/=15${EOS}, ${ENGY}}/"                     ${PLOT}/scripts/gnuplot/LorentzFac.gpt
 
-              sed -i "s/^do for \[i=0:.*\] {/do for \[i=0:$(($STEP))\] {/"      scripts/gnuplot/MomX.gpt
-              sed -i "s/${TEST}\/shk\/.*\/bin/shk\/${EOS}_${ENGY}\/bin/"        scripts/gnuplot/MomX.gpt
-              sed -i "s/{.*eos.*}/{\/=15${EOS}, ${ENGY}}/"                      scripts/gnuplot/MomX.gpt
+              sed -i "s/^do for \[i=0:.*\] {/do for \[i=0:$(($STEP))\] {/"     ${PLOT}/scripts/gnuplot/MomX.gpt
+              sed -i "s/${TEST}\/shk\/.*\/bin/shk\/${EOS}_${ENGY}\/bin/"       ${PLOT}/scripts/gnuplot/MomX.gpt
+              sed -i "s/{.*eos.*}/{\/=15${EOS}, ${ENGY}}/"                     ${PLOT}/scripts/gnuplot/MomX.gpt
 
-              sed -i "s/^do for \[i=0:.*\] {/do for \[i=0:$(($STEP))\] {/"      scripts/gnuplot/n.gpt
-              sed -i "s/${TEST}\/shk\/.*\/bin/shk\/${EOS}_${ENGY}\/bin/"        scripts/gnuplot/n.gpt
-              sed -i "s/{.*eos.*}/{\/=15${EOS}, ${ENGY}}/"                      scripts/gnuplot/n.gpt
+              sed -i "s/^do for \[i=0:.*\] {/do for \[i=0:$(($STEP))\] {/"     ${PLOT}/scripts/gnuplot/n.gpt
+              sed -i "s/${TEST}\/shk\/.*\/bin/shk\/${EOS}_${ENGY}\/bin/"       ${PLOT}/scripts/gnuplot/n.gpt
+              sed -i "s/{.*eos.*}/{\/=15${EOS}, ${ENGY}}/"                     ${PLOT}/scripts/gnuplot/n.gpt
 
-              sed -i "s/^do for \[i=0:.*\] {/do for \[i=0:$(($STEP))\] {/"      scripts/gnuplot/pres.gpt
-              sed -i "s/${TEST}\/shk\/.*\/bin/shk\/${EOS}_${ENGY}\/bin/"        scripts/gnuplot/pres.gpt
-              sed -i "s/{.*eos.*}/{\/=15${EOS}, ${ENGY}}/"                      scripts/gnuplot/pres.gpt
+              sed -i "s/^do for \[i=0:.*\] {/do for \[i=0:$(($STEP))\] {/"     ${PLOT}/scripts/gnuplot/pres.gpt
+              sed -i "s/${TEST}\/shk\/.*\/bin/shk\/${EOS}_${ENGY}\/bin/"       ${PLOT}/scripts/gnuplot/pres.gpt
+              sed -i "s/{.*eos.*}/{\/=15${EOS}, ${ENGY}}/"                     ${PLOT}/scripts/gnuplot/pres.gpt
 
-              sed -i "s/^do for \[i=0:.*\] {/do for \[i=0:$(($STEP))\] {/"      scripts/gnuplot/Temp.gpt
-              sed -i "s/${TEST}\/shk\/.*\/bin/shk\/${EOS}_${ENGY}\/bin/"        scripts/gnuplot/Temp.gpt
-              sed -i "s/{.*eos.*}/{\/=15${EOS}, ${ENGY}}/"                      scripts/gnuplot/Temp.gpt
+              sed -i "s/^do for \[i=0:.*\] {/do for \[i=0:$(($STEP))\] {/"     ${PLOT}/scripts/gnuplot/Temp.gpt
+              sed -i "s/${TEST}\/shk\/.*\/bin/shk\/${EOS}_${ENGY}\/bin/"       ${PLOT}/scripts/gnuplot/Temp.gpt
+              sed -i "s/{.*eos.*}/{\/=15${EOS}, ${ENGY}}/"                     ${PLOT}/scripts/gnuplot/Temp.gpt
 
-              sed -i "s/^do for \[i=0:.*\] {/do for \[i=0:$(($STEP))\] {/"      scripts/gnuplot/Ux.gpt
-              sed -i "s/${TEST}\/shk\/.*\/bin/shk\/${EOS}_${ENGY}\/bin/"        scripts/gnuplot/Ux.gpt
-              sed -i "s/{.*eos.*}/{\/=15${EOS}, ${ENGY}}/"                      scripts/gnuplot/Ux.gpt
+              sed -i "s/^do for \[i=0:.*\] {/do for \[i=0:$(($STEP))\] {/"     ${PLOT}/scripts/gnuplot/Ux.gpt
+              sed -i "s/${TEST}\/shk\/.*\/bin/shk\/${EOS}_${ENGY}\/bin/"       ${PLOT}/scripts/gnuplot/Ux.gpt
+              sed -i "s/{.*eos.*}/{\/=15${EOS}, ${ENGY}}/"                     ${PLOT}/scripts/gnuplot/Ux.gpt
              
             
               if [ ! -d "${TEST}/pic/shk" ]; then
@@ -213,49 +214,49 @@ while getopts ":s:b:h" opt; do
               if [[ ! -d "${TEST}/pic/shk/${EOS}_${ENGY}/number_density" ]]; then
                 mkdir ${TEST}/pic/shk/${EOS}_${ENGY}/number_density
               fi
-              gnuplot scripts/gnuplot/D.gpt
+              gnuplot ${PLOT}/scripts/gnuplot/D.gpt
               mv *.png ${TEST}/pic/shk/${EOS}_${ENGY}/number_density/
               
               if [[ ! -d "${TEST}/pic/shk/${EOS}_${ENGY}/temperature" ]]; then
                 mkdir ${TEST}/pic/shk/${EOS}_${ENGY}/temperature
               fi
-              gnuplot scripts/gnuplot/Temp.gpt
+              gnuplot ${PLOT}/scripts/gnuplot/Temp.gpt
               mv *.png ${TEST}/pic/shk/${EOS}_${ENGY}/temperature/
               
               if [[ ! -d "${TEST}/pic/shk/${EOS}_${ENGY}/momentum_x" ]]; then
                 mkdir ${TEST}/pic/shk/${EOS}_${ENGY}/momentum_x
               fi
-              gnuplot scripts/gnuplot/MomX.gpt
+              gnuplot ${PLOT}/scripts/gnuplot/MomX.gpt
               mv *.png ${TEST}/pic/shk/${EOS}_${ENGY}/momentum_x/
               
               if [[ ! -d "${TEST}/pic/shk/${EOS}_${ENGY}/energy_density" ]]; then
               mkdir ${TEST}/pic/shk/${EOS}_${ENGY}/energy_density
               fi
-              gnuplot scripts/gnuplot/E.gpt
+              gnuplot ${PLOT}/scripts/gnuplot/E.gpt
               mv *.png ${TEST}/pic/shk/${EOS}_${ENGY}/energy_density/
               
               if [[ ! -d "${TEST}/pic/shk/${EOS}_${ENGY}/proper_number_density" ]]; then
               mkdir ${TEST}/pic/shk/${EOS}_${ENGY}/proper_number_density
               fi
-              gnuplot scripts/gnuplot/n.gpt
+              gnuplot ${PLOT}/scripts/gnuplot/n.gpt
               mv *.png ${TEST}/pic/shk/${EOS}_${ENGY}/proper_number_density/
               
               if [[ ! -d "${TEST}/pic/shk/${EOS}_${ENGY}/Ux" ]]; then
               mkdir ${TEST}/pic/shk/${EOS}_${ENGY}/Ux
               fi
-              gnuplot scripts/gnuplot/Ux.gpt
+              gnuplot ${PLOT}/scripts/gnuplot/Ux.gpt
               mv *.png ${TEST}/pic/shk/${EOS}_${ENGY}/Ux/
               
               if [[ ! -d "${TEST}/pic/shk/${EOS}_${ENGY}/pressure" ]]; then
               mkdir ${TEST}/pic/shk/${EOS}_${ENGY}/pressure
               fi
-              gnuplot scripts/gnuplot/pres.gpt
+              gnuplot ${PLOT}/scripts/gnuplot/pres.gpt
               mv *.png ${TEST}/pic/shk/${EOS}_${ENGY}/pressure/
               
               if [[ ! -d "${TEST}/pic/shk/${EOS}_${ENGY}/Lorentz_factor" ]]; then
               mkdir ${TEST}/pic/shk/${EOS}_${ENGY}/Lorentz_factor
               fi
-              gnuplot scripts/gnuplot/LorentzFac.gpt
+              gnuplot ${PLOT}/scripts/gnuplot/LorentzFac.gpt
               mv *.png ${TEST}/pic/shk/${EOS}_${ENGY}/Lorentz_factor/
  
               printf "\e[0;1;35;40mShock Tube Test Done!\e[0m\n\n"
