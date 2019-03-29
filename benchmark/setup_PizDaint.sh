@@ -23,20 +23,18 @@ fi
 
 if [ ! -d "${WorkPath}/input" ]; then
   printf "No input file!\n"
+  exit 1
 fi
 
-mkdir bin
+if [ ! -d "${WorkPath}/bin" ];then
+   mkdir bin
+fi
 
    for d in "${DEVICE[@]}"
 do for f in "${FMA[@]}"
 do for p in "${PRECISION[@]}"
 do for t in "${TIMING[@]}"
 do
-
-#  make directories to store binary file
-   if [ ! -d "${WorkPath}/bin" ];then
-      mkdir bin
-   fi
 
    if [ ! -d "${WorkPath}/bin/${d}.timsol_${t}.${p}_.fma_${f}" ];then
      mkdir -p ${WorkPath}/bin/${d}.timsol_${t}.${p}_.fma_${f}
