@@ -51,8 +51,10 @@ do
 
    if [ "${p}" = "single" ]; then 
      sed -i "s/^#*SIMU_OPTION *+= *-DFLOAT8/#SIMU_OPTION += -DFLOAT8/"                             ${SRC}/Makefile
+     sed -i "s/^FLU_GPU_NPGROUP .*/FLU_GPU_NPGROUP              448/"                               ${WorkPath}/input/Input__Parameter
    else
      sed -i "s/^#*SIMU_OPTION *+= *-DFLOAT8/SIMU_OPTION += -DFLOAT8/"                              ${SRC}/Makefile
+     sed -i "s/^FLU_GPU_NPGROUP .*/FLU_GPU_NPGROUP              224/"                               ${WorkPath}/input/Input__Parameter
    fi
 
    if [ "${t}" = "o" ]; then 
