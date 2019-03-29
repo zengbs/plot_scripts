@@ -83,91 +83,32 @@ done
 done
 done
 
-# run on 1 node and 1 process!
+######################### Run! ##############################
 
-if (( ${PROCESS[0]} == 1 )) && (( ${AppliedNode} == 1 ));then
-  
-     for d in "${DEVICE[@]}"
-  do for n in "${FMA[@]}"
-  do for p in "${PRECISION[@]}"
-  do for t in "${TIMING[@]}"
-  do for i in "${THREAD[@]}"
-  do
+   for d in "${device[@]}"
+do for f in "${fma[@]}"
+do for p in "${precision[@]}"
+do for t in "${timesol[@]}"
+do
+        if [ -d "${d}.timsol_${t}.${p}_.fma_${f}" ]; then
+          cd     ${d}.timsol_${t}.${p}_.fma_${f}
+#          rm -rf *
+        else
+          mkdir  ${d}.timsol_${t}.${p}_.fma_${f}
+          cd     ${d}.timsol_${t}.${p}_.fma_${f}
+        fi
 
-     I=$( printf %02d ${i} )
-  
-     SubWorkPath=${d}.process_01.numa_${n}.${p}.timing_${t}.thread_pp_${I}
-  
-     if [ ! -d "${WorkPath}/${SubWorkPath}" ];then
-       mkdir -p ${WorkPath}/${SubWorkPath}
-     fi
-       
-       cp  ${WorkPath}/input/Input__* ${WorkPath}/${SubWorkPath}
-  
-       sed -i "s/^OMP_NTHREAD *.*/OMP_NTHREAD                   ${i}/" Input__Parameter
-  
-       ln -s ${WorkPath}/restart/${p}/RESTART ${WorkPath}
+        ln -s ../bin/${d}.timsol_${t}.${p}_.fma_${f}/gamer .
     
-       cd ${WorkPath}/${SubWorkPath}
-  
-       ./gamer >& log &
-  
-       PID=$!
+        ln -s ../input/Input__* .
 
-       wait ${PID}
-  
-       cd ${WorkPath}
-  done
-  done
-  done
-  done
-  done
+        sbatch submit_daint.job
 
-fi
+        cd ../ 
 
-
-
-     for d in "${DEVICE[@]}"
-  do for p in "${PRECISION[@]}"
-  do for t in "${TIMING[@]}"
-  do
-
-     I=$( printf %02d ${i} )
-  
-     SubWorkPath=${d}.node_${AppliedNode}.process_01.thread_${I}.numa_${FMA}.${p}.timing_${t}
-  
-     if [ ! -d "${SubWorkPath}" ];then
-       mkdir -p ${SubWorkPath}
-     else
-#       rm -rf ${SubWorkPath}/*
-     fi
-
-     cd ${SubWorkPath}
-     
-     cp  ../input/Input__* .
-
-
-     ln -s ../restart/${p}/RESTART . 
-     ln -s ../bin/${d}.mpi_x.${p}.timing_${t}/gamer .
-
-     sed -i "s/^OMP_NTHREAD *.*/OMP_NTHREAD                   ${i}/" Input__Parameter
-
-     if [ "$Machine" = "hulk" ]; then
-       cp ../${SubmitFile} .
-       sed -i "s/^#PBS -l nodes=.*:ppn=.*/#PBS -l nodes=${AppliedNode}:ppn=${AppliedCoresPerNode}/"  ${SubmitFile}
-       sed -i "s/^mpirun.*/#mpirun/"  ${SubmitFile}
-       sed -i "s/^gamer.*/\.\/gamer 1>>log 2>\&1/"  ${SubmitFile}
-       JobID=$( GetJobID qsub submit_hulk_openmpi-1.4.3.job )
-       printf "${SubWorkPath} is running...\n"
-       WaitForHULK $JobID
-     elif [ "$Machine" = "amd" ]; then
-       ./gamer >& log &
-       PID=$!
-       printf "${SubWorkPath} is running...\n"
-       wait $PID
-     fi
-
-     cd ${WorkPath}
-  done
-  done
-  done
+        printf "${d},timing solver_${t}, ${p}, fma_${f} is running...\n"
+        printf "Done!\n\n"
+done
+done
+done
+done
