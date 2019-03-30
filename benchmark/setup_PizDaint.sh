@@ -51,10 +51,10 @@ fi
 #
 #   if [ "${p}" = "single" ]; then 
 #     sed -i "s/^#*SIMU_OPTION *+= *-DFLOAT8/#SIMU_OPTION += -DFLOAT8/"                             ${SRC}/Makefile
-#     sed -i "s/^FLU_GPU_NPGROUP .*/FLU_GPU_NPGROUP              448/"                               ${WorkPath}/input/Input__Parameter
+#     sed -i "s/^FLU_GPU_NPGROUP *224/FLU_GPU_NPGROUP              448/"                               ${WorkPath}/input/Input__Parameter
 #   else
 #     sed -i "s/^#*SIMU_OPTION *+= *-DFLOAT8/SIMU_OPTION += -DFLOAT8/"                              ${SRC}/Makefile
-#     sed -i "s/^FLU_GPU_NPGROUP .*/FLU_GPU_NPGROUP              224/"                               ${WorkPath}/input/Input__Parameter
+#     sed -i "s/^FLU_GPU_NPGROUP *224/FLU_GPU_NPGROUP              224/"                               ${WorkPath}/input/Input__Parameter
 #   fi
 #
 #   if [ "${t}" = "x" ]; then 
@@ -99,8 +99,15 @@ do
         fi
 
         ln -s "../bin/${d}.timsol_${t}.${p}.fma_${f}/gamer" .
-    
+
+
+   if [ "${p}" = "single" ]; then 
+     sed -i "s/^FLU_GPU_NPGROUP.*/FLU_GPU_NPGROUP              448/"                               ${WorkPath}/input/Input__Parameter
+   else
+     sed -i "s/^FLU_GPU_NPGROUP.*/FLU_GPU_NPGROUP              224/"                               ${WorkPath}/input/Input__Parameter
+   fi
         cp ../input/Input__* .
+    
         cp ../submit_daint.job .
         sbatch submit_daint.job
 
