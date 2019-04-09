@@ -2,32 +2,24 @@
 
 WorkPath="${PWD}"
 GPU_ARCH=PASCAL
-thread_make=4
-SRC="/scratch/snx3000/ptseng/fma_precision/src"
-BIN="/scratch/snx3000/ptseng/fma_precision/bin"
+SRC=""
+BIN=""
 
-SubmitFile="submit_daint.job"
 
 
 declare -a DEVICE=("gpu" "cpu")
-declare -a TIMING=("o" "x")
+declare -a OVERLAP=("o" "x")
 declare -a PRECISION=("single" "double")
 declare -a FMA=("o" "x")
 
 # check necessary files
-if [ ! -f "${WorkPath}/${SubmitFile}" ]; then
-  printf "No submit file!\n"
-  exit 1
-fi
-
-
 if [ ! -d "${WorkPath}/input" ]; then
   printf "No input file!\n"
   exit 1
 fi
 
 if [ ! -d "${WorkPath}/bin" ];then
-   mkdir bin
+   mkdir $WorkPath/bin
 fi
 
    for d in "${DEVICE[@]}"
@@ -36,8 +28,10 @@ do for p in "${PRECISION[@]}"
 do for t in "${TIMING[@]}"
 do
 
-   if [ ! -d "${WorkPath}/bin/${d}.timsol_${t}.${p}.fma_${f}" ];then
-    mkdir -p "${WorkPath}/bin/${d}.timsol_${t}.${p}.fma_${f}"
+   DIR="${d}.timsol_${t}.${p}.fma_${f}"
+
+   if [ ! -d "${WorkPath}/bin/${DIR}" ];then
+    mkdir -p "${WorkPath}/bin/${DIR}"
    fi
 
 #  modify Makefile
@@ -51,10 +45,8 @@ do
 
    if [ "${p}" = "single" ]; then 
      sed -i "s/^#*SIMU_OPTION *+= *-DFLOAT8/#SIMU_OPTION += -DFLOAT8/"                             ${SRC}/Makefile
-     sed -i "s/^FLU_GPU_NPGROUP *224/FLU_GPU_NPGROUP              448/"                               ${WorkPath}/input/Input__Parameter
    else
      sed -i "s/^#*SIMU_OPTION *+= *-DFLOAT8/SIMU_OPTION += -DFLOAT8/"                              ${SRC}/Makefile
-     sed -i "s/^FLU_GPU_NPGROUP *224/FLU_GPU_NPGROUP              224/"                               ${WorkPath}/input/Input__Parameter
    fi
 
    if [ "${t}" = "x" ]; then 
@@ -74,9 +66,9 @@ do
    make clean
    make -j ${thread_make} 
 
-# move gamer to the corresponding directories
-   mv ${BIN}/gamer    "${WorkPath}/bin/${d}.timsol_${t}.${p}.fma_${f}"
-   cp ${SRC}/Makefile "${WorkPath}/bin/${d}.timsol_${t}.${p}.fma_${f}"
+# move binary and Makefile to the corresponding directories
+   mv ${BIN}/gamer    "${WorkPath}/bin/${DIR}"
+   cp ${SRC}/Makefile "${WorkPath}/bin/${DIR}"
    cd ${WorkPath}
 
 done
@@ -90,28 +82,36 @@ do for f in "${FMA[@]}"
 do for p in "${PRECISION[@]}"
 do for t in "${TIMING[@]}"
 do
-        if [ -d "${d}.timsol_${t}.${p}.fma_${f}" ]; then
-          cd    "${d}.timsol_${t}.${p}.fma_${f}"
-          rm -rf *
+        cd ${WorkPath}
+
+        DIR="${d}.timsol_${t}.${p}.fma_${f}"
+
+        if [ -d "$DIR" ]; then
+          cd    "$DIR"
+#          rm -rf *
         else
-          mkdir  "${d}.timsol_${t}.${p}.fma_${f}"
-          cd     "${d}.timsol_${t}.${p}.fma_${f}"
+          mkdir  "$DIR"
+          cd     "$DIR"
         fi
 
-        ln -s "../bin/${d}.timsol_${t}.${p}.fma_${f}/gamer" .
+        ln -s "$WorkPath/bin/$DIR/gamer" $WorkPath/$DIR
 
+        cp $DIR/input/Input__* $DIR
 
-   if [ "${p}" = "single" ]; then 
-     sed -i "s/^FLU_GPU_NPGROUP.*/FLU_GPU_NPGROUP              448/"                               ${WorkPath}/input/Input__Parameter
-   else
-     sed -i "s/^FLU_GPU_NPGROUP.*/FLU_GPU_NPGROUP              224/"                               ${WorkPath}/input/Input__Parameter
-   fi
-        cp ../input/Input__* .
-    
-        cp ../submit_daint.job .
-        sbatch submit_daint.job
+        if [ "${d}" = "gpu" ]; then 
+          sed -i "s/^OMP_NTHREAD.*/OMP_NTHREAD                    8/"            $WorkPath/${DIR}/Input__Parameter
+          sed -i "s/^FLU_GPU_NPGROUP.*/FLU_GPU_NPGROUP              448/"        $WorkPath/${DIR}/Input__Parameter
+        else
+          sed -i "s/^OMP_NTHREAD.*/OMP_NTHREAD                   16/"            $WorkPath/${DIR}/Input__Parameter
+          sed -i "s/^FLU_GPU_NPGROUP.*/FLU_GPU_NPGROUP              224/"        $WorkPath/${DIR}/Input__Parameter
+        fi
 
-        cd ../ 
+        cp $SRC/Makefile $WorkPath/$DIR     
+
+        mpirun -np 2 -map-by numa:pe=8 --report-bindings ./gamer >& log &
+        wait $!        
+
+        cd ${WorkPath}
 
         printf "${d},timing solver_${t}, ${p}, fma_${f} is running...\n"
         printf "Done!\n\n"
