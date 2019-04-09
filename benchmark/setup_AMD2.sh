@@ -4,7 +4,7 @@ WorkPath="${PWD}"
 GPU_ARCH=PASCAL
 SRC=""
 BIN=""
-
+SHA1=""
 
 
 declare -a DEVICE=("gpu" "cpu")
@@ -28,7 +28,7 @@ do for p in "${PRECISION[@]}"
 do for t in "${TIMING[@]}"
 do
 
-   DIR="${d}.timsol_${t}.${p}.fma_${f}"
+   DIR="${SHA1}_${d}.timsol_${t}.${p}.fma_${f}"
 
    if [ ! -d "${WorkPath}/bin/${DIR}" ];then
     mkdir -p "${WorkPath}/bin/${DIR}"
@@ -84,7 +84,7 @@ do for t in "${TIMING[@]}"
 do
         cd ${WorkPath}
 
-        DIR="${d}.timsol_${t}.${p}.fma_${f}"
+        DIR="${SHA1}_${d}.timsol_${t}.${p}.fma_${f}"
 
         if [ -d "$DIR" ]; then
           cd    "$DIR"
