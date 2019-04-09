@@ -20,57 +20,57 @@ fi
 if [ ! -d "${WorkPath}/bin" ];then
    mkdir $WorkPath/bin
 fi
-#   for d in "${DEVICE[@]}"
-#do for f in "${FMA[@]}"
-#do for p in "${PRECISION[@]}"
-#do for t in "${OVERLAP[@]}"
-#do
-#
-#   DIR="${SHA1}_${d}.overlap_${t}.${p}.fma_${f}"
-#
-#   if [ ! -d "${WorkPath}/bin/${DIR}" ];then
-#    mkdir -p "${WorkPath}/bin/${DIR}"
-#   fi
-#
-##  modify Makefile
-#   if [ "${d}" = "gpu" ]; then 
-#     sed -i "s/^#*SIMU_OPTION *+= *-DGPU/SIMU_OPTION += -DGPU/"                                   ${SRC}/Makefile
-#   else
-#     sed -i "s/^#*SIMU_OPTION *+= *-DGPU/#SIMU_OPTION += -DGPU/"                                   ${SRC}/Makefile
-#   fi
-#
-#   if [ "${p}" = "single" ]; then 
-#     sed -i "s/^#*SIMU_OPTION *+= *-DFLOAT8/#SIMU_OPTION += -DFLOAT8/"                             ${SRC}/Makefile
-#   else
-#     sed -i "s/^#*SIMU_OPTION *+= *-DFLOAT8/SIMU_OPTION += -DFLOAT8/"                              ${SRC}/Makefile
-#   fi
-#
-#   if [ "${t}" = "x" ]; then 
-#     sed -i "s/^#*SIMU_OPTION *+= *-DTIMING_SOLVER/#SIMU_OPTION += -DTIMING_SOLVER/"               ${SRC}/Makefile
-#   else
-#     sed -i "s/^#*SIMU_OPTION *+= *-DTIMING_SOLVER/SIMU_OPTION += -DTIMING_SOLVER/"                ${SRC}/Makefile
-#   fi
-#
-#   if [ "${f}" = "x" ]; then 
-#     sed -i "s/^#*SIMU_OPTION *+= *-DFUSED_MULTIPLY_ADD/#SIMU_OPTION += -DFUSED_MULTIPLY_ADD/"     ${SRC}/Makefile
-#   else
-#     sed -i "s/^#*SIMU_OPTION *+= *-DFUSED_MULTIPLY_ADD/SIMU_OPTION += -DFUSED_MULTIPLY_ADD/"      ${SRC}/Makefile
-#   fi
-#
-##  compile
-#   cd ${SRC}
-#   make clean
-#   make -j ${thread_make} 
-#
-## move binary and Makefile to the corresponding directories
-#   mv ${BIN}/gamer    "${WorkPath}/bin/${DIR}"
-#   cp ${SRC}/Makefile "${WorkPath}/bin/${DIR}"
-#   cd ${WorkPath}
-#
-#done
-#done
-#done
-#done
+   for d in "${DEVICE[@]}"
+do for f in "${FMA[@]}"
+do for p in "${PRECISION[@]}"
+do for t in "${OVERLAP[@]}"
+do
+
+   DIR="${SHA1}_${d}.overlap_${t}.${p}.fma_${f}"
+
+   if [ ! -d "${WorkPath}/bin/${DIR}" ];then
+    mkdir -p "${WorkPath}/bin/${DIR}"
+   fi
+
+#  modify Makefile
+   if [ "${d}" = "gpu" ]; then 
+     sed -i "s/^#*SIMU_OPTION *+= *-DGPU/SIMU_OPTION += -DGPU/"                                   ${SRC}/Makefile
+   else
+     sed -i "s/^#*SIMU_OPTION *+= *-DGPU/#SIMU_OPTION += -DGPU/"                                   ${SRC}/Makefile
+   fi
+
+   if [ "${p}" = "single" ]; then 
+     sed -i "s/^#*SIMU_OPTION *+= *-DFLOAT8/#SIMU_OPTION += -DFLOAT8/"                             ${SRC}/Makefile
+   else
+     sed -i "s/^#*SIMU_OPTION *+= *-DFLOAT8/SIMU_OPTION += -DFLOAT8/"                              ${SRC}/Makefile
+   fi
+
+   if [ "${t}" = "x" ]; then 
+     sed -i "s/^#*SIMU_OPTION *+= *-DTIMING_SOLVER/SIMU_OPTION += -DTIMING_SOLVER/"               ${SRC}/Makefile
+   else
+     sed -i "s/^#*SIMU_OPTION *+= *-DTIMING_SOLVER/#SIMU_OPTION += -DTIMING_SOLVER/"                ${SRC}/Makefile
+   fi
+
+   if [ "${f}" = "x" ]; then 
+     sed -i "s/^#*SIMU_OPTION *+= *-DFUSED_MULTIPLY_ADD/#SIMU_OPTION += -DFUSED_MULTIPLY_ADD/"     ${SRC}/Makefile
+   else
+     sed -i "s/^#*SIMU_OPTION *+= *-DFUSED_MULTIPLY_ADD/SIMU_OPTION += -DFUSED_MULTIPLY_ADD/"      ${SRC}/Makefile
+   fi
+
+#  compile
+   cd ${SRC}
+   make clean
+   make -j ${thread_make} 
+
+# move binary and Makefile to the corresponding directories
+   mv ${BIN}/gamer    "${WorkPath}/bin/${DIR}"
+   cp ${SRC}/Makefile "${WorkPath}/bin/${DIR}"
+   cd ${WorkPath}
+
+done
+done
+done
+done
 
 ######################### Run! ##############################
    for d in "${DEVICE[@]}"
