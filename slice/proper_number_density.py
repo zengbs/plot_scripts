@@ -3,11 +3,11 @@ import sys
 import yt
 import numpy as np
 
-x_shift = -10.0
+x_shift = 0.0
 y_shift = 0.0
 z_shift = 0.0
 
-cut_plane='x'
+cut_plane='z'
 
 ####################  ON-DISK DATA  ###############################
 
@@ -78,7 +78,7 @@ for ds in ts.piter():
    sz = yt.SlicePlot( ds, cut_plane, field, center=(x_center,y_center,z_center), origin='native'  )
    sz.set_zlim( field, 'min', 'max')
 #   sz.set_log( field, False )
-   sz.zoom(2)
+#   sz.zoom(2)
    if cut_plane is 'x':
      sz.set_xlabel('y (grid)')
      sz.set_ylabel('z (grid)')

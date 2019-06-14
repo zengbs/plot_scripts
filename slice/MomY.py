@@ -2,6 +2,13 @@ import argparse
 import sys
 import yt
 
+
+x_shift = 0.0
+y_shift = 0.0
+z_shift = 0.0
+
+cut_plane='z'
+
 # load the command-line parameters
 parser = argparse.ArgumentParser( description='Plot sr-hydro velocity slices for the blast wave test' )
 
@@ -42,11 +49,16 @@ yt.enable_parallelism()
 ts = yt.load( [ prefix+'/Data_%06d'%idx for idx in range(idx_start, idx_end+1, didx) ] )
 
 for ds in ts.piter():
+   center = ds.domain_center
+
+   x_center = center[0] + x_shift*ds.length_unit
+   y_center = center[1] + y_shift*ds.length_unit
+   z_center = center[2] + z_shift*ds.length_unit
 
 # add new derived field
 #   ds.add_field( ("gamer", "pressure")     , function=_pressure_sr  , sampling_type="cell", units="code_mass/(code_length*code_time**2)" )
 
-   sz = yt.SlicePlot( ds, 'z', field, center_mode  )
+   sz = yt.SlicePlot( ds, cut_plane, field, center=(x_center,y_center,z_center), origin='native'  )
    sz.set_zlim( field, 'min', 'max')
    sz.set_xlabel('x (grid)')
    sz.set_ylabel('y (grid)')

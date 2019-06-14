@@ -2,6 +2,13 @@ import argparse
 import sys
 import yt
 
+x_shift = 0.0
+y_shift = 0.0
+z_shift = 0.0
+
+cut_plane='z'
+
+
 def _temperature(field, data):
     return data["Temp"]
 
@@ -43,17 +50,22 @@ dpi         = 150
 
 yt.enable_parallelism()
 
-ts = yt.load( [ prefix+'/Data_%06d'%idx for idx in range(idx_start, idx_end+1, didx) ] )
+ts = yt.load( [ prefix+'Data_%06d'%idx for idx in range(idx_start, idx_end+1, didx) ] )
 
 for ds in ts.piter():
+   center = ds.domain_center
 
-# add new derived field
+   x_center = center[0] + x_shift*ds.length_unit
+   y_center = center[1] + y_shift*ds.length_unit
+   z_center = center[2] + z_shift*ds.length_unit
+
+#   add new derived field
    ds.add_field( ("gamer", "temperature")     , function=_temperature  , sampling_type="cell", units="" )
 
-   sz = yt.SlicePlot( ds, 'z', field, center_mode  )
+   sz = yt.SlicePlot( ds, cut_plane, field, center=(x_center,y_center,z_center), origin='native'  )
 #   sz.set_width(100,20)
    sz.set_zlim( field, 'min', 'max')
-   sz.zoom(3)
+#   sz.zoom(3)
 #   sz.set_log( field, False )
    sz.set_cmap( field, colormap )
    sz.set_unit( field, '' )
@@ -64,5 +76,5 @@ for ds in ts.piter():
    sz.annotate_title('slice plot')
    sz.set_font({'weight':'bold', 'size':'22'})
    sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = {time:.2f} grid$/c$', text_args={'color':'black'})
-#   #sz.annotate_grids( periodic=False )
+#   sz.annotate_grids( periodic=False )
    sz.save( mpl_kwargs={"dpi":dpi} )
