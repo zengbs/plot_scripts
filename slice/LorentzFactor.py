@@ -4,13 +4,6 @@ import yt
 import numpy as np
 
 
-x_shift = 0.0
-y_shift = 0.0
-z_shift = 0.0
-
-cut_plane='z'
-
-
 # define pressure field
 def _lorentz_factor( field, data ):
    if ds["EoS"] == 2:
@@ -65,6 +58,13 @@ yt.enable_parallelism()
 ts = yt.load( [ prefix+'/Data_%06d'%idx for idx in range(idx_start, idx_end+1, didx) ] )
 
 for ds in ts.piter():
+# for x_shift in np.arange(0.0, 33.0, 0.5):
+   x_shift = 0.0
+   y_shift = 0.0
+   z_shift = 0.0
+   
+   cut_plane='z'
+
    center = ds.domain_center
 
    x_center = center[0] + x_shift*ds.length_unit
@@ -76,16 +76,25 @@ for ds in ts.piter():
 
    sz = yt.SlicePlot( ds, cut_plane, field, center=(x_center,y_center,z_center), origin='native'  )
    sz.set_zlim( field, '1.0', 'max')
-#   sz.set_log( field, False )
+   sz.set_log( field, False )
    sz.set_cmap( field, colormap )
    sz.set_unit( field, '' )
    sz.set_axes_unit( 'code_length' )
-   sz.zoom(4)
-   sz.set_xlabel('x (grid)')
-   sz.set_ylabel('y (grid)')
+#   sz.zoom(8)
+
+   if cut_plane is 'x':
+     sz.set_xlabel('y (grid)')
+     sz.set_ylabel('z (grid)')
+   elif cut_plane is 'y':
+     sz.set_xlabel('z (grid)')
+     sz.set_ylabel('x (grid)')
+   elif cut_plane is 'z':
+     sz.set_xlabel('x (grid)')
+     sz.set_ylabel('y (grid)')
+
    sz.annotate_title('slice plot')
    sz.annotate_velocity(factor = 16, normalize=True)
    sz.set_font({'weight':'bold', 'size':'22'})
    sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = {time:.2f} grid$/c$', text_args={'color':'black'})
 #   #sz.annotate_grids( periodic=False )
-   sz.save( mpl_kwargs={"dpi":dpi} )
+   sz.save( name='Data_%06d_x_'%idx_start + str(x_shift), mpl_kwargs={"dpi":dpi} )
