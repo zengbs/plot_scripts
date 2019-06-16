@@ -103,7 +103,7 @@ parser.add_argument( '-st', action='store', required=True,  type=int,   dest='id
 parser.add_argument( '-et', action='store', required=True,  type=int,   dest='idx_end',   help='last data index' )
 parser.add_argument( '-dt', action='store', required=False, type=int,   dest='didx',      help='delta data index [%(default)d]', default=1 )
 parser.add_argument( '-i', action='store',  required=False, type=str,   dest='prefix',    help='data path prefix [%(default)s]', default='./' )
-parser.add_argument( '-o', action='store',  required=True,  type=int,   dest='zoom',      help='zoom in' )
+parser.add_argument( '-z', action='store',  required=True,  type=int,   dest='zoom',      help='zoom in' )
 parser.add_argument( '-l', action='store',  required=True,  type=int,  dest='log',       help='log scale' )
 parser.add_argument( '-g', action='store',  required=True,  type=int,  dest='grid',      help='grids' )
 
@@ -135,6 +135,11 @@ colormap    = 'arbre'
 dpi         = 150
 
 
+if ( field == '4-velocity_x' or field == '4-velocity_y' or field == '4-velocity_z' ) and log:
+   print('log scale should be disabled!\n')
+   sys.exit(0)
+
+
 if field == 'proper_number_density':
       unit= '1/code_length**3'
       function=_proper_number_density
@@ -145,10 +150,10 @@ if field == 'pressure':
       unit= "code_mass/(code_length*code_time**2)"
       function=_pressure_sr
 if field == '4-velocity_x':
-      unit= 'code_length/code_time'
+      unit= "code_length/code_time"
       function = _Ux_sr
 if field == '4-velocity_y':
-      unit= 'code_length/code_time'
+      unit= "code_length/code_time"
       function=_Uy_sr
 if field == '4-velocity_z':
       unit= 'code_length/code_time'
@@ -171,14 +176,10 @@ ts = yt.load( [ prefix+'/Data_%06d'%idx for idx in range(idx_start, idx_end+1, d
 
 for ds in ts.piter():
 
- center = ds.domain_center
-
- print(start_cut, end_cut, np.fabs(start_cut-end_cut)/N_cut)
-
-# for origin in np.arange(start_cut, end_cut, np.fabs(start_cut-end_cut)/N_cut):
  origin = start_cut
 
  while origin <= end_cut:
+   center = ds.domain_center
 
    if cut_axis == 'x':
      center[0] = origin
@@ -189,12 +190,15 @@ for ds in ts.piter():
    
 # add new derived field
    if  field != 'momentum_x' or  field != 'momentum_y' or  field != 'momentum_z' or  field != 'energy_per_volume':
-     ds.add_field( ("gamer", field)  , function=function  , sampling_type="cell", units=unit )
+   ds.add_field( ("gamer", field)  , function=function  , sampling_type="cell", units=unit )
 
    sz = yt.SlicePlot( ds, cut_axis, field, center=center, origin='native'  )
    sz.set_zlim( field, 'min', 'max')
+
    sz.set_log( field, log )
+
    sz.zoom(zoom)
+
 
    if cut_axis == 'x':
      sz.set_xlabel('y (grid)')
@@ -215,6 +219,7 @@ for ds in ts.piter():
    sz.annotate_title('slice plot (' + cut_plane + ')')
    sz.set_font({'weight':'bold', 'size':'22'})
 
+
    if field == 'g':
      sz.annotate_velocity(factor = 16, normalize=True)
 
@@ -230,6 +235,6 @@ for ds in ts.piter():
 #    sz.annotate_streamlines('momentum_y','momentum_z')
 #   sz.save( mpl_kwargs={"dpi":dpi} )
 #   sz.save( name='Data_%06d_' %idx_start + cut_plane, suffix='eps' )
-   sz.save( name='Data_%06d_' %idx_start + cut_plane, suffix='png' )
+   sz.save( name='Data_%06d_' %idx_start + str(cut_plane), suffix='png' )
 
    origin += np.fabs(start_cut-end_cut)/N_cut
