@@ -2,6 +2,7 @@ import argparse
 import sys
 import yt
 import numpy as np
+import yt.visualization.eps_writer as eps
 
 def _pressure_sr( field, data ):
    if ds["EoS"] == 2:
@@ -18,7 +19,7 @@ def _pressure_sr( field, data ):
    pres = density * data["Temp"]
    return pres*ds.length_unit**3/(ds.time_unit**3)
 
-def _number_density( field, data ):
+def _proper_number_density( field, data ):
    if ds["EoS"] == 2:
      h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
    elif ds["EoS"] == 1:
@@ -103,8 +104,8 @@ parser.add_argument( '-et', action='store', required=True,  type=int,   dest='id
 parser.add_argument( '-dt', action='store', required=False, type=int,   dest='didx',      help='delta data index [%(default)d]', default=1 )
 parser.add_argument( '-i', action='store',  required=False, type=str,   dest='prefix',    help='data path prefix [%(default)s]', default='./' )
 parser.add_argument( '-o', action='store',  required=True,  type=int,   dest='zoom',      help='zoom in' )
-parser.add_argument( '-l', action='store',  required=True,  type=bool,  dest='log',       help='log scale' )
-parser.add_argument( '-g', action='store',  required=True,  type=bool,  dest='grid',      help='grids' )
+parser.add_argument( '-l', action='store',  required=True,  type=int,  dest='log',       help='log scale' )
+parser.add_argument( '-g', action='store',  required=True,  type=int,  dest='grid',      help='grids' )
 
 args=parser.parse_args()
 
@@ -136,7 +137,7 @@ dpi         = 150
 
 if field == 'proper_number_density':
       unit= '1/code_length**3'
-      function=_number_density
+      function=_proper_number_density
 if field == 'Lorentz_factor':
       unit = ''
       function=_lorentz_factor
@@ -187,8 +188,8 @@ for ds in ts.piter():
      center[2] = origin
    
 # add new derived field
-#   if  field != 'momentum_x' ||  field != 'momentum_y' ||  field != 'momentum_z' ||  field != 'energy_per_volume'
-   ds.add_field( ("gamer", field)  , function=function  , sampling_type="cell", units=unit )
+   if  field != 'momentum_x' or  field != 'momentum_y' or  field != 'momentum_z' or  field != 'energy_per_volume':
+     ds.add_field( ("gamer", field)  , function=function  , sampling_type="cell", units=unit )
 
    sz = yt.SlicePlot( ds, cut_axis, field, center=center, origin='native'  )
    sz.set_zlim( field, 'min', 'max')
@@ -221,9 +222,14 @@ for ds in ts.piter():
    sz.set_cmap( field, colormap )
    sz.set_unit( field, unit )
    sz.set_axes_unit( 'code_length' )
-   sz.annotate_grids( periodic=grid )
+
+   if grid:
+    sz.annotate_grids()
+#   sz.annotate_quiver()
 #   sz.annotate_line((70,80),(70,0), coord_system='plot')
+#    sz.annotate_streamlines('momentum_y','momentum_z')
 #   sz.save( mpl_kwargs={"dpi":dpi} )
-   sz.save( name='Data_%06d_' %idx_start + str(cut_plane), mpl_kwargs={"dpi":dpi} )
+#   sz.save( name='Data_%06d_' %idx_start + cut_plane, suffix='eps' )
+   sz.save( name='Data_%06d_' %idx_start + cut_plane, suffix='png' )
 
    origin += np.fabs(start_cut-end_cut)/N_cut
