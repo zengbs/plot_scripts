@@ -4,6 +4,9 @@ import yt
 import numpy as np
 import yt.visualization.eps_writer as eps
 
+def _temperature(field, data):
+    return data["Temp"]
+
 def _pressure_sr( field, data ):
    if ds["EoS"] == 2:
      h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
@@ -143,6 +146,9 @@ if ( field == '4-velocity_x' or field == '4-velocity_y' or field == '4-velocity_
 if field == 'proper_number_density':
       unit= '1/code_length**3'
       function=_proper_number_density
+if field == 'temperature':
+      unit= ''
+      function=_temperature
 if field == 'Lorentz_factor':
       unit = ''
       function=_lorentz_factor
@@ -190,7 +196,7 @@ for ds in ts.piter():
    
 # add new derived field
    if  field != 'momentum_x' or  field != 'momentum_y' or  field != 'momentum_z' or  field != 'energy_per_volume':
-   ds.add_field( ("gamer", field)  , function=function  , sampling_type="cell", units=unit )
+     ds.add_field( ("gamer", field)  , function=function  , sampling_type="cell", units=unit )
 
    sz = yt.SlicePlot( ds, cut_axis, field, center=center, origin='native'  )
    sz.set_zlim( field, 'min', 'max')
