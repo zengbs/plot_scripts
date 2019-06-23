@@ -137,6 +137,9 @@ colormap    = 'arbre'
 
 dpi         = 150
 
+if (zoom < 1):
+   print('zoom factor should >= 1!\n')
+   sys.exit(0)
 
 if ( field == '4-velocity_x' or field == '4-velocity_y' or field == '4-velocity_z' ) and log:
    print('log scale should be disabled!\n')
@@ -243,4 +246,7 @@ for ds in ts.piter():
 #   sz.save( name='Data_%06d_' %idx_start + cut_plane, suffix='eps' )
    sz.save( name='Data_%06d_' %idx_start + str(cut_plane), suffix='png' )
 
-   origin += np.fabs(start_cut-end_cut)/N_cut
+   if N_cut > 1:
+    origin += np.fabs(start_cut-end_cut)/N_cut
+   else:
+    origin += end_cut + 1
