@@ -14,6 +14,7 @@ def _pressure_sr( field, data ):
      h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
    else:
      print ("Your EoS doesn't support yet!")
+     sys.exit(0)
    Ux = data["MomX"]/(data["Dens"]*h)
    Uy = data["MomY"]/(data["Dens"]*h)
    Uz = data["MomZ"]/(data["Dens"]*h)
@@ -29,6 +30,7 @@ def _proper_number_density( field, data ):
      h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
    else:
      print ("Your EoS is not supported yet!")
+     sys.exit(0)
    Ux = data["MomX"]/(data["Dens"]*h)
    Uy = data["MomY"]/(data["Dens"]*h)
    Uz = data["MomZ"]/(data["Dens"]*h)
@@ -43,6 +45,7 @@ def _lorentz_factor( field, data ):
      h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
    else:
      print ("Your EoS doesn't support yet!")
+     sys.exit(0)
    Ux = data["MomX"]/(data["Dens"]*h)
    Uy = data["MomY"]/(data["Dens"]*h)
    Uz = data["MomZ"]/(data["Dens"]*h)
@@ -56,6 +59,7 @@ def _Ux_sr( field, data ):
      h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
    else:
      print ("Your EoS doesn't support yet!")
+     sys.exit(0)
    Ux = data["MomX"]/(data["Dens"]*h)
    return Ux
 
@@ -67,6 +71,7 @@ def _Uy_sr( field, data ):
      h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
    else:
      print ("Your EoS doesn't support yet!")
+     sys.exit(0)
    Uy = data["MomY"]/(data["Dens"]*h)
    return Uy
 
@@ -77,6 +82,7 @@ def _Uz_sr( field, data ):
      h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
    else:
      print ("Your EoS doesn't support yet!")
+     sys.exit(0)
    Uz = data["MomZ"]/(data["Dens"]*h)
    return Uz
 
@@ -87,6 +93,7 @@ def _enthalpy( field, data ):
      h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
    else:
      print ("Your EoS doesn't support yet!")
+     sys.exit(0)
    return h
 
 def _number_density(field, data):
@@ -100,6 +107,7 @@ def _internal_energy ( field, data ):
      e = 1.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)-1.0
    else:
      print ("Your EoS doesn't support yet!")
+     sys.exit(0)
    return e
 
 
