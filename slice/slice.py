@@ -159,7 +159,7 @@ if (zoom < 1):
    sys.exit(0)
 
 if ( field == '4-velocity_x' or field == '4-velocity_y' or field == '4-velocity_z' ) and log:
-   print('log scale should be disabled!\n')
+   print('log scale should be disabled when plot velocity!\n')
    sys.exit(0)
 
 
