@@ -93,22 +93,31 @@ def _number_density(field, data):
    return data["Dens"]/ds.mass_unit
 
 
+def _internal_energy ( field, data ):
+   if ds["EoS"] == 2:
+     e = data["Temp"] / ( ds["Gamma"] - 1.0 )
+   elif ds["EoS"] == 1:
+     e = 1.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)-1.0
+   else:
+     print ("Your EoS doesn't support yet!")
+   return e
+
 
 # load the command-line parameters
 parser = argparse.ArgumentParser( description='Plot slices for sr-hydro' )
 
-parser.add_argument( '-f', action='store',  required=True,  type=str,   dest='field',     help='pressure, 4-velocity_x/y/z, Lorentz_factor' )
-parser.add_argument( '-p', action='store',  required=True,  type=str,   dest='cut_axis',  help='axis you want to cut' )
-parser.add_argument( '-sx', action='store', required=True,  type=float, dest='start_cut',  help='start cut' )
+parser.add_argument( '-f',  action='store', required=True,  type=str,   dest='field',     help='pressure, 4-velocity_x/y/z, Lorentz_factor' )
+parser.add_argument( '-p',  action='store', required=True,  type=str,   dest='cut_axis',  help='axis you want to cut' )
+parser.add_argument( '-sx', action='store', required=True,  type=float, dest='start_cut', help='start cut' )
 parser.add_argument( '-ex', action='store', required=True,  type=float, dest='end_cut',   help='end cut' )
 parser.add_argument( '-nx', action='store', required=True,  type=float, dest='N_cut',     help='number of cuts between -sx and -ex' )
 parser.add_argument( '-st', action='store', required=True,  type=int,   dest='idx_start', help='first data index' )
 parser.add_argument( '-et', action='store', required=True,  type=int,   dest='idx_end',   help='last data index' )
 parser.add_argument( '-dt', action='store', required=False, type=int,   dest='didx',      help='delta data index [%(default)d]', default=1 )
-parser.add_argument( '-i', action='store',  required=False, type=str,   dest='prefix',    help='data path prefix [%(default)s]', default='./' )
-parser.add_argument( '-z', action='store',  required=True,  type=int,   dest='zoom',      help='zoom in' )
-parser.add_argument( '-l', action='store',  required=True,  type=int,  dest='log',       help='log scale' )
-parser.add_argument( '-g', action='store',  required=True,  type=int,  dest='grid',      help='grids' )
+parser.add_argument( '-i',  action='store', required=False, type=str,   dest='prefix',    help='data path prefix [%(default)s]', default='./' )
+parser.add_argument( '-z',  action='store', required=True,  type=int,   dest='zoom',      help='zoom in' )
+parser.add_argument( '-l',  action='store', required=True,  type=int,   dest='log',       help='log scale' )
+parser.add_argument( '-g',  action='store', required=True,  type=int,   dest='grid',      help='grids' )
 
 args=parser.parse_args()
 
@@ -177,6 +186,9 @@ if field == 'number_density':
       function=_number_density
 if field in ('momentum_x', 'momentum_y', 'momentum_z'):
         unit = 'code_mass/(code_time*code_length**2)'
+if field == 'internal_energy':
+      unit= ''
+      function=_internal_energy
 
 yt.enable_parallelism()
 
@@ -184,6 +196,15 @@ ts = yt.load( [ prefix+'/Data_%06d'%idx for idx in range(idx_start, idx_end+1, d
 
 
 for ds in ts.piter():
+
+# take note
+ if ds["EoS"] == 2:
+   print ('%s %.6f %s' % ('Equation of state: constant gamma (', ds["Gamma"], ')\n'))
+ elif ds["EoS"] == 1:
+   print ('%s' % ('Equation of state: Synge\n'))
+ else:
+   print ("Your EoS doesn't support yet!")
+ 
 
  origin = start_cut
 
