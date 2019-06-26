@@ -3,112 +3,7 @@ import sys
 import yt
 import numpy as np
 import yt.visualization.eps_writer as eps
-
-def _temperature(field, data):
-    return data["Temp"]
-
-def _pressure_sr( field, data ):
-   if ds["EoS"] == 2:
-     h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
-   elif ds["EoS"] == 1:
-     h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
-   else:
-     print ("Your EoS doesn't support yet!")
-     sys.exit(0)
-   Ux = data["MomX"]/(data["Dens"]*h)
-   Uy = data["MomY"]/(data["Dens"]*h)
-   Uz = data["MomZ"]/(data["Dens"]*h)
-   factor = np.sqrt(1*(ds.length_unit/ds.time_unit)**2 + Ux**2 + Uy**2 + Uz**2)
-   density = data["Dens"]/factor # proper number density
-   pres = density * data["Temp"]
-   return pres*ds.length_unit**3/(ds.time_unit**3)
-
-def _proper_number_density( field, data ):
-   if ds["EoS"] == 2:
-     h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
-   elif ds["EoS"] == 1:
-     h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
-   else:
-     print ("Your EoS is not supported yet!")
-     sys.exit(0)
-   Ux = data["MomX"]/(data["Dens"]*h)
-   Uy = data["MomY"]/(data["Dens"]*h)
-   Uz = data["MomZ"]/(data["Dens"]*h)
-   factor = np.sqrt(1*(ds.length_unit/ds.time_unit)**2 + Ux**2 + Uy**2 + Uz**2)
-   density = data["Dens"]/factor
-   return density*ds.length_unit/(ds.mass_unit*ds.time_unit)
-
-def _lorentz_factor( field, data ):
-   if ds["EoS"] == 2:
-     h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
-   elif ds["EoS"] == 1:
-     h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
-   else:
-     print ("Your EoS doesn't support yet!")
-     sys.exit(0)
-   Ux = data["MomX"]/(data["Dens"]*h)
-   Uy = data["MomY"]/(data["Dens"]*h)
-   Uz = data["MomZ"]/(data["Dens"]*h)
-   factor = np.sqrt(1*(ds.length_unit/ds.time_unit)**2 + Ux**2 + Uy**2 + Uz**2)
-   return factor*(ds.time_unit/ds.length_unit)
-
-def _Ux_sr( field, data ):
-   if ds["EoS"] == 2:
-     h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
-   elif ds["EoS"] == 1:
-     h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
-   else:
-     print ("Your EoS doesn't support yet!")
-     sys.exit(0)
-   Ux = data["MomX"]/(data["Dens"]*h)
-   return Ux
-
-
-def _Uy_sr( field, data ):
-   if ds["EoS"] == 2:
-     h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
-   elif ds["EoS"] == 1:
-     h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
-   else:
-     print ("Your EoS doesn't support yet!")
-     sys.exit(0)
-   Uy = data["MomY"]/(data["Dens"]*h)
-   return Uy
-
-def _Uz_sr( field, data ):
-   if ds["EoS"] == 2:
-     h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
-   elif ds["EoS"] == 1:
-     h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
-   else:
-     print ("Your EoS doesn't support yet!")
-     sys.exit(0)
-   Uz = data["MomZ"]/(data["Dens"]*h)
-   return Uz
-
-def _enthalpy( field, data ):
-   if ds["EoS"] == 2:
-     h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
-   elif ds["EoS"] == 1:
-     h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
-   else:
-     print ("Your EoS doesn't support yet!")
-     sys.exit(0)
-   return h
-
-def _number_density(field, data):
-   return data["Dens"]/ds.mass_unit
-
-
-def _internal_energy ( field, data ):
-   if ds["EoS"] == 2:
-     e = data["Temp"] / ( ds["Gamma"] - 1.0 )
-   elif ds["EoS"] == 1:
-     e = 1.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)-1.0
-   else:
-     print ("Your EoS doesn't support yet!")
-     sys.exit(0)
-   return e
+import derived_field as df
 
 
 # load the command-line parameters
@@ -162,53 +57,60 @@ if ( field == '4-velocity_x' or field == '4-velocity_y' or field == '4-velocity_
    print('log scale should be disabled when plot velocity!\n')
    sys.exit(0)
 
+if ( log > 1 or log < 0 ):
+   print('-l should be 0 or 1!') 
+   sys.exit(0)
+
+if ( grid > 1 or grid < 0 ):
+   print('-g should be 0 or 1!') 
+   sys.exit(0)
 
 if field == 'proper_number_density':
       unit= '1/code_length**3'
-      function=_proper_number_density
+      function=df._proper_number_density
 if field == 'temperature':
       unit= ''
-      function=_temperature
+      function=df._temperature
 if field == 'Lorentz_factor':
       unit = ''
-      function=_lorentz_factor
+      function=df._lorentz_factor
 if field == 'pressure':
       unit= "code_mass/(code_length*code_time**2)"
-      function=_pressure_sr
+      function=df._pressure_sr
 if field == '4-velocity_x':
       unit= "code_length/code_time"
-      function = _Ux_sr
+      function =df. _Ux_sr
 if field == '4-velocity_y':
       unit= "code_length/code_time"
-      function=_Uy_sr
+      function=df._Uy_sr
 if field == '4-velocity_z':
       unit= 'code_length/code_time'
-      function=_Uz_sr
+      function=df._Uz_sr
 if field == 'enthalpy':
       unit= ''
-      function=_enthalpy
+      function=df._enthalpy
 if field == 'energy_per_volume':
       unit = 'code_mass/(code_length*code_time**2)'
 if field == 'number_density':
       unit = '1/code_length**3'
-      function=_number_density
+      function=df._number_density
 if field in ('momentum_x', 'momentum_y', 'momentum_z'):
         unit = 'code_mass/(code_time*code_length**2)'
 if field == 'internal_energy':
       unit= ''
-      function=_internal_energy
+      function=df._internal_energy
 
 yt.enable_parallelism()
 
 ts = yt.load( [ prefix+'/Data_%06d'%idx for idx in range(idx_start, idx_end+1, didx) ] )
 
 
-for ds in ts.piter():
+for df.ds in ts.piter():
 
 # take note
- if ds["EoS"] == 2:
-   print ('%s %.6f %s' % ('Equation of state: constant gamma (', ds["Gamma"], ')\n'))
- elif ds["EoS"] == 1:
+ if df.ds["EoS"] == 2:
+   print ('%s %.6f %s' % ('Equation of state: constant gamma (', df.ds["Gamma"], ')\n'))
+ elif df.ds["EoS"] == 1:
    print ('%s' % ('Equation of state: Synge\n'))
  else:
    print ("Your EoS doesn't support yet!")
@@ -217,7 +119,7 @@ for ds in ts.piter():
  origin = start_cut
 
  while origin <= end_cut:
-   center = ds.domain_center
+   center = df.ds.domain_center
 
    if cut_axis == 'x':
      center[0] = origin
@@ -228,9 +130,9 @@ for ds in ts.piter():
    
 # add new derived field
    if  field != 'momentum_x' or  field != 'momentum_y' or  field != 'momentum_z' or  field != 'energy_per_volume':
-     ds.add_field( ("gamer", field)  , function=function  , sampling_type="cell", units=unit )
+     df.ds.add_field( ("gamer", field)  , function=function  , sampling_type="cell", units=unit )
 
-   sz = yt.SlicePlot( ds, cut_axis, field, center=center, origin='native'  )
+   sz = yt.SlicePlot( df.ds, cut_axis, field, center=center, origin='native'  )
    sz.set_zlim( field, 'min', 'max')
 
    sz.set_log( field, log )
@@ -258,7 +160,7 @@ for ds in ts.piter():
    sz.set_font({'weight':'bold', 'size':'22'})
 
 
-   if field == 'g':
+   if field == 'Lorentz_factor':
      sz.annotate_velocity(factor = 16, normalize=True)
 
    sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = {time:.2f} grid$/c$', text_args={'color':'black'})
@@ -273,7 +175,7 @@ for ds in ts.piter():
 #    sz.annotate_streamlines('momentum_y','momentum_z')
 #   sz.save( mpl_kwargs={"dpi":dpi} )
 #   sz.save( name='Data_%06d_' %idx_start + cut_plane, suffix='eps' )
-   sz.save( name='Data_%06d_' %ds.current_time + str(cut_plane), suffix='png' )
+   sz.save( name='Data_%06d_' %df.ds.current_time + str(cut_plane), suffix='png' )
 
    if N_cut > 1:
     origin += np.fabs(start_cut-end_cut)/N_cut

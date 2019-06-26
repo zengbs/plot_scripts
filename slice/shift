@@ -1,3 +1,0 @@
-center = ds.domain_center
-center[0] = 30.0
-sz = yt.SlicePlot( ds, 'x', field, center=center)
