@@ -97,7 +97,6 @@ def _enthalpy( field, data ):
 def _number_density(field, data):
    return data["Dens"]/ds.mass_unit
 
-global ds
 
 def _internal_energy ( field, data ):
    if ds["EoS"] == 2:
@@ -108,4 +107,3 @@ def _internal_energy ( field, data ):
      print ("Your EoS doesn't support yet!")
      sys.exit(0)
    return e
-

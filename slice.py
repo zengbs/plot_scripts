@@ -53,7 +53,7 @@ if (zoom < 1):
    print('zoom factor should >= 1!\n')
    sys.exit(0)
 
-if ( field == '4-velocity_x' or field == '4-velocity_y' or field == '4-velocity_z' ) and log:
+if ( field in ( '4-velocity_x' ,'4-velocity_y' ,'4-velocity_z', 'momentum_x', 'momentum_y', 'momentum_z' )) and log:
    print('log scale should be disabled when plot velocity!\n')
    sys.exit(0)
 
@@ -129,7 +129,7 @@ for df.ds in ts.piter():
      center[2] = origin
    
 # add new derived field
-   if  field != 'momentum_x' or  field != 'momentum_y' or  field != 'momentum_z' or  field != 'energy_per_volume':
+   if  field not in ( 'energy_per_volume', 'momentum_x', 'momentum_y', 'momentum_z' ):
      df.ds.add_field( ("gamer", field)  , function=function  , sampling_type="cell", units=unit )
 
    sz = yt.SlicePlot( df.ds, cut_axis, field, center=center, origin='native'  )
