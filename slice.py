@@ -89,7 +89,7 @@ if field == '4-velocity_z':
 if field == 'enthalpy':
       unit= ''
       function=df._enthalpy
-if field == 'energy_per_volume':
+if field == 'total_energy_per_volume':
       unit = 'code_mass/(code_length*code_time**2)'
 if field == 'number_density':
       unit = '1/code_length**3'
@@ -129,7 +129,7 @@ for df.ds in ts.piter():
      center[2] = origin
    
 # add new derived field
-   if  field not in ( 'energy_per_volume', 'momentum_x', 'momentum_y', 'momentum_z' ):
+   if  field not in ( 'total_energy_per_volume', 'momentum_x', 'momentum_y', 'momentum_z' ):
      df.ds.add_field( ("gamer", field)  , function=function  , sampling_type="cell", units=unit )
 
    sz = yt.SlicePlot( df.ds, cut_axis, field, center=center, origin='native'  )
