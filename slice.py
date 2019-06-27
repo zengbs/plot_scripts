@@ -77,20 +77,20 @@ if field == 'Lorentz_factor':
       unit = ''
       function=df._lorentz_factor
 if field == 'pressure':
-      unit= "code_mass/(code_length*code_time**2)"
+      unit= 'code_mass/(code_length*code_time**2)'
       function=df._pressure_sr
 if field in ('4-velocity_x'):
-      unit= "code_length/code_time"
+      unit= 'code_length/code_time'
       function =df. _Ux_sr
 if field == '4-velocity_y':
-      unit= "code_length/code_time"
+      unit= 'code_length/code_time'
       function=df._Uy_sr
 if field == '4-velocity_z':
       unit= 'code_length/code_time'
       function=df._Uz_sr
-if field == 'enthalpy':
+if field == 'specific_enthalpy':
       unit= ''
-      function=df._enthalpy
+      function=df._specific_enthalpy
 if field == 'total_energy_per_volume':
       unit = 'code_mass/(code_length*code_time**2)'
 if field == 'number_density':
@@ -98,9 +98,12 @@ if field == 'number_density':
       function=df._number_density
 if field in ('momentum_x', 'momentum_y', 'momentum_z'):
         unit = 'code_mass/(code_time*code_length**2)'
-if field == 'internal_energy':
-      unit= ''
-      function=df._internal_energy
+if field == 'thermal_energy_density':
+      unit= 'code_mass/(code_length*code_time**2)'
+      function=df._thermal_energy_density
+if field == 'kinetic_energy_density':
+      unit= 'code_mass/(code_length*code_time**2)'
+      function=df._kinetic_energy_density
 
 yt.enable_parallelism()
 
