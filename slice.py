@@ -49,6 +49,8 @@ colormap    = 'arbre'
 
 dpi         = 150
 
+# check parameter
+########################################
 if (zoom < 1):
    print('zoom factor should >= 1!\n')
    sys.exit(0)
@@ -77,7 +79,7 @@ if field == 'Lorentz_factor':
 if field == 'pressure':
       unit= "code_mass/(code_length*code_time**2)"
       function=df._pressure_sr
-if field == '4-velocity_x':
+if field in ('4-velocity_x'):
       unit= "code_length/code_time"
       function =df. _Ux_sr
 if field == '4-velocity_y':
@@ -113,7 +115,8 @@ for df.ds in ts.piter():
  elif df.ds["EoS"] == 1:
    print ('%s' % ('Equation of state: Synge\n'))
  else:
-   print ("Your EoS doesn't support yet!")
+   print ("Your EoS doesn't support yet!\n")
+   sys.exit(0)
  
 
  origin = start_cut
@@ -127,6 +130,10 @@ for df.ds in ts.piter():
      center[1] = origin
    elif cut_axis == 'z':
      center[2] = origin
+   else:
+     print ("cut_axis should be x, y or z!\n")
+     sys.exit(0)
+     
    
 # add new derived field
    if  field not in ( 'total_energy_per_volume', 'momentum_x', 'momentum_y', 'momentum_z' ):
