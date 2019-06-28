@@ -112,8 +112,8 @@ def _thermal_energy_density( field, data ):
    factor = np.sqrt(1*(ds.length_unit/ds.time_unit)**2 + Ux**2 + Uy**2 + Uz**2)
    n = data["Dens"]/factor
    P = n * data["Temp"]
-   thermal_density = h * n - P - n
-   return thermal_density*ds.length_unit**3/(ds.time_unit**3)
+   thermal_density = h * data["Dens"] - data["Dens"] - factor * P
+   return thermal_density * ( ds.length_unit**2 / ds.time_unit**2 )
 
 def _kinetic_energy_density(field, data):
    if ds["EoS"] == 2:
@@ -128,5 +128,6 @@ def _kinetic_energy_density(field, data):
    Uz = data["MomZ"]/(data["Dens"]*h)
    factor = np.sqrt(1*(ds.length_unit/ds.time_unit)**2 + Ux**2 + Uy**2 + Uz**2)
    n = data["Dens"]/factor
-   kinetic_energy_density = n * factor * ( ds.time_unit / ds.length_unit ) - n
-   return kinetic_energy_density*ds.length_unit**3/(ds.time_unit**3)
+   P = n * data["Temp"]
+   kinetic_energy_density = ( data["Dens"] * ( ds.length_unit / ds.time_unit )**2 * h + P * ( ds.length_unit / ds.time_unit )**3 ) * ( factor * ( ds.time_unit / ds.length_unit ) - 1 )
+   return kinetic_energy_density
