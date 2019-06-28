@@ -121,6 +121,11 @@ for df.ds in ts.piter():
    print ("Your EoS doesn't support yet!\n")
    sys.exit(0)
  
+# add new derived field
+ if  field not in ( 'total_energy_per_volume', 'momentum_x', 'momentum_y', 'momentum_z' ):
+   df.ds.add_field( ("gamer", field)  , function=function  , sampling_type="cell", units=unit )
+
+ ad = df.ds.all_data()
 
  origin = start_cut
 
@@ -138,12 +143,15 @@ for df.ds in ts.piter():
      sys.exit(0)
      
    
-# add new derived field
-   if  field not in ( 'total_energy_per_volume', 'momentum_x', 'momentum_y', 'momentum_z' ):
-     df.ds.add_field( ("gamer", field)  , function=function  , sampling_type="cell", units=unit )
 
-   sz = yt.SlicePlot( df.ds, cut_axis, field, center=center, origin='native'  )
-   sz.set_zlim( field, 'min', 'max')
+#   if ( field in ( '4-velocity_x' ,'4-velocity_y' ,'4-velocity_z', 'momentum_x', 'momentum_y', 'momentum_z', 'kinetic_energy_density' )):
+#     cr=ad.cut_region(["obj['kinetic_energy_density'] > 0.0"])
+#   else:
+#     cr=ad.clone()
+
+
+   sz = yt.SlicePlot( df.ds, cut_axis, field, center=center, origin='native', data_source=ad  )
+   sz.set_zlim( field, 0.01, 'max')
 
    sz.set_log( field, log )
 
