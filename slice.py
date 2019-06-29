@@ -67,6 +67,10 @@ if ( grid > 1 or grid < 0 ):
    print('-g should be 0 or 1!') 
    sys.exit(0)
 
+if ( start_cut > end_cut ):
+   print('-ex should be greater than -sx!')
+   sys.exit(0)
+
 if field == 'proper_number_density':
       unit= '1/code_length**3'
       function=df._proper_number_density
