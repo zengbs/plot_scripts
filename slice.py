@@ -55,9 +55,6 @@ if (zoom < 1):
    print('zoom factor should >= 1!\n')
    sys.exit(0)
 
-if ( field in ( '4-velocity_x' ,'4-velocity_y' ,'4-velocity_z', 'momentum_x', 'momentum_y', 'momentum_z' )) and log:
-   print('log scale should be disabled when plot velocity!\n')
-   sys.exit(0)
 
 if ( log > 1 or log < 0 ):
    print('-l should be 0 or 1!') 
