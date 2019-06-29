@@ -155,9 +155,9 @@ for df.ds in ts.piter():
 
 
    sz = yt.SlicePlot( df.ds, cut_axis, field, center=center, origin='native', data_source=ad  )
-   sz.set_zlim( field, 0.01, 'max')
+   sz.set_zlim( field, 'min', 'max')
 
-   sz.set_log( field, log )
+   sz.set_log( field, log, linthresh=1e-3 )
 
    sz.zoom(zoom)
 
