@@ -49,6 +49,8 @@ colormap    = 'arbre'
 
 dpi         = 150
 
+yt.enable_parallelism()
+
 # check parameter
 ########################################
 if (zoom < 1):
@@ -106,7 +108,6 @@ if field == 'kinetic_energy_density':
       unit= 'code_mass/(code_length*code_time**2)'
       function=df._kinetic_energy_density
 
-yt.enable_parallelism()
 
 ts = yt.load( [ prefix+'/Data_%06d'%idx for idx in range(idx_start, idx_end+1, didx) ] )
 
@@ -154,7 +155,8 @@ for df.ds in ts.piter():
    sz = yt.SlicePlot( df.ds, cut_axis, field, center=center, origin='native', data_source=ad  )
    sz.set_zlim( field, 'min', 'max')
 
-   sz.set_log( field, log, linthresh=1e-3 )
+#   sz.set_log( field, log, linthresh=1e-3 )
+   sz.set_log( field, log )
 
    sz.zoom(zoom)
 
