@@ -4,6 +4,7 @@ import yt
 import numpy as np
 import yt.visualization.eps_writer as eps
 import derived_field as df
+import time
 
 
 # load the command-line parameters
@@ -49,7 +50,6 @@ colormap    = 'arbre'
 
 dpi         = 150
 
-yt.enable_parallelism()
 
 # check parameter
 ########################################
@@ -108,6 +108,9 @@ if field == 'kinetic_energy_density':
       unit= 'code_mass/(code_length*code_time**2)'
       function=df._kinetic_energy_density
 
+t0 = time.time()
+
+yt.enable_parallelism()
 
 ts = yt.load( [ prefix+'/Data_%06d'%idx for idx in range(idx_start, idx_end+1, didx) ] )
 
@@ -202,3 +205,7 @@ for df.ds in ts.piter():
     origin += np.fabs(start_cut-end_cut)/N_cut
    else:
     origin += end_cut + 1
+
+t1 = time.time()
+
+print("BigStuff took %.5e sec" % (t1 - t0))
