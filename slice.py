@@ -199,7 +199,7 @@ for df.ds in ts.piter():
 #    sz.annotate_streamlines('momentum_y','momentum_z')
 #   sz.save( mpl_kwargs={"dpi":dpi} )
 #   sz.save( name='Data_%06d_' %idx_start + cut_plane, suffix='eps' )
-   sz.save( name='Data_%06d_' %df.ds.current_time + str(cut_plane), suffix='png' )
+   sz.save( name='Data_%06d_' %df.ds["DumpID"] + str(cut_plane), suffix='png' )
 
    if N_cut > 1:
     origin += np.fabs(start_cut-end_cut)/N_cut
