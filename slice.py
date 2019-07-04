@@ -73,13 +73,13 @@ if ( start_cut > end_cut ):
 if field == 'proper_number_density':
       unit= '1/code_length**3'
       function=df._proper_number_density
-if field == 'temperature':
+if field == 'temperature_sr':
       unit= ''
-      function=df._temperature
+      function=df._temperature_sr
 if field == 'Lorentz_factor':
       unit = ''
       function=df._lorentz_factor
-if field == 'pressure':
+if field == 'pressure_sr':
       unit= 'code_mass/(code_length*code_time**2)'
       function=df._pressure_sr
 if field in ('4-velocity_x'):
@@ -91,25 +91,28 @@ if field == '4-velocity_y':
 if field == '4-velocity_z':
       unit= 'code_length/code_time'
       function=df._Uz_sr
-if field == 'specific_enthalpy':
+if field == 'specific_enthalpy_sr':
       unit= ''
-      function=df._specific_enthalpy
+      function=df._specific_enthalpy_sr
 if field == 'total_energy_per_volume':
       unit = 'code_mass/(code_length*code_time**2)'
-if field == 'number_density':
+if field == 'number_density_sr':
       unit = '1/code_length**3'
-      function=df._number_density
+      function=df._number_density_sr
 if field in ('momentum_x', 'momentum_y', 'momentum_z'):
         unit = 'code_mass/(code_time*code_length**2)'
-if field == 'thermal_energy_density':
+if field == 'thermal_energy_density_sr':
       unit= 'code_mass/(code_length*code_time**2)'
-      function=df._thermal_energy_density
-if field == 'kinetic_energy_density':
+      function=df._thermal_energy_density_sr
+if field == 'kinetic_energy_density_sr':
       unit= 'code_mass/(code_length*code_time**2)'
-      function=df._kinetic_energy_density
+      function=df._kinetic_energy_density_sr
 if field == 'Bernoulli_constant':
       unit= ''
       function=df._Bernoulli_const
+if field == '_radial_velocity_sr':
+      unit= ''
+      function=df._my_radial_velocity
 
 t0 = time.time()
 
@@ -161,8 +164,8 @@ for df.ds in ts.piter():
    sz = yt.SlicePlot( df.ds, cut_axis, field, center=center, origin='native', data_source=ad  )
    sz.set_zlim( field, 'min', 'max')
 
-#   sz.set_log( field, log, linthresh=1e-3 )
-   sz.set_log( field, log )
+   sz.set_log( field, log, linthresh=1e-4 )
+#   sz.set_log( field, log )
 
    sz.zoom(zoom)
 

@@ -2,7 +2,7 @@ import numpy as np
 
 global ds
 
-def _temperature(field, data):
+def _temperature_sr(field, data):
     return data["Temp"]
 
 def _pressure_sr( field, data ):
@@ -84,7 +84,7 @@ def _Uz_sr( field, data ):
    Uz = data["MomZ"]/(data["Dens"]*h)
    return Uz
 
-def _specific_enthalpy( field, data ):
+def _specific_enthalpy_sr( field, data ):
    if ds["EoS"] == 2:
      h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
    elif ds["EoS"] == 1:
@@ -94,11 +94,11 @@ def _specific_enthalpy( field, data ):
      sys.exit(0)
    return h
 
-def _number_density(field, data):
+def _number_density_sr(field, data):
    return data["Dens"]/ds.mass_unit
 
 
-def _thermal_energy_density( field, data ):
+def _thermal_energy_density_sr( field, data ):
    if ds["EoS"] == 2:
      h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
    elif ds["EoS"] == 1:
@@ -115,7 +115,7 @@ def _thermal_energy_density( field, data ):
    thermal_density = h * data["Dens"] - data["Dens"] - factor * P
    return thermal_density * ( ds.length_unit**2 / ds.time_unit**2 )
 
-def _kinetic_energy_density(field, data):
+def _kinetic_energy_density_sr(field, data):
    if ds["EoS"] == 2:
      h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
    elif ds["EoS"] == 1:
@@ -144,7 +144,30 @@ def _Bernoulli_const( field, data ):
    Uy = data["MomY"]/(data["Dens"]*h)
    Uz = data["MomZ"]/(data["Dens"]*h)
    factor = np.sqrt(1*(ds.length_unit/ds.time_unit)**2 + Ux**2 + Uy**2 + Uz**2)
-#   BernpulliConst = factor**2 * h / data["Dens"]
    BernpulliConst = factor * h
-#   return BernpulliConst * ds.mass_unit * ds.time_unit **2 * ds.length_unit **-5
    return BernpulliConst * ds.time_unit / ds.length_unit
+
+def _radial_velocity_sr(field, data):
+   if ds["EoS"] == 2:
+     h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
+   elif ds["EoS"] == 1:
+     h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
+   else:
+     print ("Your EoS doesn't support yet!")
+     sys.exit(0)
+   Ux = data["MomX"]/(data["Dens"]*h)
+   Uy = data["MomY"]/(data["Dens"]*h)
+   Uz = data["MomZ"]/(data["Dens"]*h)
+   factor = np.sqrt(1*(ds.length_unit/ds.time_unit)**2 + Ux**2 + Uy**2 + Uz**2)
+   Vx = Ux / factor
+   Vy = Uy / factor
+   Vz = Uz / factor
+   center = data.get_field_parameter('center')
+   x_hat = data["x"] - center[0]
+   y_hat = data["y"] - center[1]
+   z_hat = data["z"] - center[2]
+   r = np.sqrt(x_hat*x_hat+y_hat*y_hat+z_hat*z_hat)
+   x_hat /= r
+   y_hat /= r
+   z_hat /= r
+   return Vx*x_hat + Vy*y_hat + Vz*z_hat
