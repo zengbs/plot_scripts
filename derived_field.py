@@ -131,3 +131,20 @@ def _kinetic_energy_density(field, data):
    P = n * data["Temp"]
    kinetic_energy_density = ( data["Dens"] * ( ds.length_unit / ds.time_unit )**2 * h + P * ( ds.length_unit / ds.time_unit )**3 ) * ( factor * ( ds.time_unit / ds.length_unit ) - 1 )
    return kinetic_energy_density
+
+def _Bernoulli_const( field, data ):
+   if ds["EoS"] == 2:
+     h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
+   elif ds["EoS"] == 1:
+     h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
+   else:
+     print ("Your EoS is not supported yet!")
+     sys.exit(0)
+   Ux = data["MomX"]/(data["Dens"]*h)
+   Uy = data["MomY"]/(data["Dens"]*h)
+   Uz = data["MomZ"]/(data["Dens"]*h)
+   factor = np.sqrt(1*(ds.length_unit/ds.time_unit)**2 + Ux**2 + Uy**2 + Uz**2)
+#   BernpulliConst = factor**2 * h / data["Dens"]
+   BernpulliConst = factor * h
+#   return BernpulliConst * ds.mass_unit * ds.time_unit **2 * ds.length_unit **-5
+   return BernpulliConst * ds.time_unit / ds.length_unit

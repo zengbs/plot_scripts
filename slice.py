@@ -107,6 +107,9 @@ if field == 'thermal_energy_density':
 if field == 'kinetic_energy_density':
       unit= 'code_mass/(code_length*code_time**2)'
       function=df._kinetic_energy_density
+if field == 'Bernoulli_constant':
+      unit= ''
+      function=df._Bernoulli_const
 
 t0 = time.time()
 
