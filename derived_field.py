@@ -147,7 +147,7 @@ def _Bernoulli_const( field, data ):
    BernpulliConst = factor * h
    return BernpulliConst * ds.time_unit / ds.length_unit
 
-def _radial_velocity_sr(field, data):
+def _spherical_radial_4velocity(field, data):
    if ds["EoS"] == 2:
      h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
    elif ds["EoS"] == 1:
@@ -158,16 +158,32 @@ def _radial_velocity_sr(field, data):
    Ux = data["MomX"]/(data["Dens"]*h)
    Uy = data["MomY"]/(data["Dens"]*h)
    Uz = data["MomZ"]/(data["Dens"]*h)
-   factor = np.sqrt(1*(ds.length_unit/ds.time_unit)**2 + Ux**2 + Uy**2 + Uz**2)
-   Vx = Ux / factor
-   Vy = Uy / factor
-   Vz = Uz / factor
    center = data.get_field_parameter('center')
    x_hat = data["x"] - center[0]
    y_hat = data["y"] - center[1]
    z_hat = data["z"] - center[2]
-   r = np.sqrt(x_hat*x_hat+y_hat*y_hat+z_hat*z_hat)
+   r = np.sqrt(x_hat**2+y_hat**2+z_hat**2)
    x_hat /= r
    y_hat /= r
    z_hat /= r
-   return Vx*x_hat + Vy*y_hat + Vz*z_hat
+   return Ux*x_hat + Uy*y_hat + Uz*z_hat
+
+# symmetry axis: x
+def _cylindrical_radial_4velocity(field, data):
+   if ds["EoS"] == 2:
+     h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
+   elif ds["EoS"] == 1:
+     h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
+   else:
+     print ("Your EoS doesn't support yet!")
+     sys.exit(0)
+   Ux = data["MomX"]/(data["Dens"]*h)
+   Uy = data["MomY"]/(data["Dens"]*h)
+   Uz = data["MomZ"]/(data["Dens"]*h)
+   center = data.get_field_parameter('center')
+   y_hat = data["y"] - center[1]
+   z_hat = data["z"] - center[2]
+   rho = np.sqrt( y_hat**2 + z_hat**2 )
+   y_hat /= rho
+   z_hat /= rho
+   return Uy*y_hat + Uz*z_hat

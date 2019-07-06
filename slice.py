@@ -110,9 +110,12 @@ if field == 'kinetic_energy_density_sr':
 if field == 'Bernoulli_constant':
       unit= ''
       function=df._Bernoulli_const
-if field == '_radial_velocity_sr':
-      unit= ''
-      function=df._my_radial_velocity
+if field == 'spherical_radial_4velocity':
+      unit= 'code_length/code_time'
+      function=df._spherical_radial_4velocity
+if field == 'cylindrical_radial_4velocity':
+      unit= 'code_length/code_time'
+      function=df._cylindrical_radial_4velocity
 
 t0 = time.time()
 
@@ -162,10 +165,11 @@ for df.ds in ts.piter():
 
 
    sz = yt.SlicePlot( df.ds, cut_axis, field, center=center, origin='native', data_source=ad  )
+#   sz.set_zlim( field, 81.97, 82)
    sz.set_zlim( field, 'min', 'max')
 
-   sz.set_log( field, log, linthresh=1e-4 )
-#   sz.set_log( field, log )
+#   sz.set_log( field, log, linthresh=1e-4 )
+   sz.set_log( field, log )
 
    sz.zoom(zoom)
 
@@ -192,6 +196,7 @@ for df.ds in ts.piter():
 
    if field == 'Lorentz_factor':
      sz.annotate_velocity(factor = 16, normalize=True)
+     sz.annotate_streamlines('velocity_x', 'velocity_y')
 
    sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = {time:.2f} grid$/c$', text_args={'color':'black'})
    sz.set_cmap( field, colormap )
