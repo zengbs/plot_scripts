@@ -82,15 +82,15 @@ if field == 'Lorentz_factor':
 if field == 'pressure_sr':
       unit= 'code_mass/(code_length*code_time**2)'
       function=df._pressure_sr
-if field in ('4-velocity_x'):
+if field == '4-velocity_x':
       unit= 'code_length/code_time'
-      function =df. _Ux_sr
+      function=df._4-velocity_x
 if field == '4-velocity_y':
       unit= 'code_length/code_time'
-      function=df._Uy_sr
+      function=df._4-velocity_y
 if field == '4-velocity_z':
       unit= 'code_length/code_time'
-      function=df._Uz_sr
+      function=df._4-velocity_z
 if field == 'specific_enthalpy_sr':
       unit= ''
       function=df._specific_enthalpy_sr
@@ -116,6 +116,15 @@ if field == 'spherical_radial_4velocity':
 if field == 'cylindrical_radial_4velocity':
       unit= 'code_length/code_time'
       function=df._cylindrical_radial_4velocity
+if field == '3-velocity_x':
+      unit= 'code_length/code_time'
+      function=df._3-velocity_x
+if field == '3-velocity_y':
+      unit= 'code_length/code_time'
+      function=df._3-velocity_y
+if field == '3-velocity_z':
+      unit= 'code_length/code_time'
+      function=df._3-velocity_z
 
 t0 = time.time()
 
@@ -136,8 +145,12 @@ for df.ds in ts.piter():
    sys.exit(0)
  
 # add new derived field
- if  field not in ( 'total_energy_per_volume', 'momentum_x', 'momentum_y', 'momentum_z' ):
+ if field not in ( 'total_energy_per_volume', 'momentum_x', 'momentum_y', 'momentum_z' ):
    df.ds.add_field( ("gamer", field)  , function=function  , sampling_type="cell", units=unit )
+ if field == 'Lorentz_factor':
+   df.ds.add_field( ("gamer", '3-velocity_x')  , function=df._3_velocity_x  , sampling_type="cell", units='code_length/code_time' )
+   df.ds.add_field( ("gamer", '3-velocity_y' ) , function=df._3_velocity_y  , sampling_type="cell", units='code_length/code_time' )
+   df.ds.add_field( ("gamer", '3-velocity_z' ) , function=df._3_velocity_z  , sampling_type="cell", units='code_length/code_time' )
 
  ad = df.ds.all_data()
 
@@ -195,7 +208,7 @@ for df.ds in ts.piter():
 
 
    if field == 'Lorentz_factor':
-     sz.annotate_velocity(factor = 16, normalize=True)
+#     sz.annotate_velocity(factor = 16, normalize=False)
      sz.annotate_streamlines('velocity_x', 'velocity_y')
 
    sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = {time:.2f} grid$/c$', text_args={'color':'black'})
