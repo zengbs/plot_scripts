@@ -233,3 +233,19 @@ def _3_velocity_z( field, data ):
    Vz = Uz / factor
    return Vz*(ds.length_unit/ds.time_unit)
 
+def _isentropic_constant( field, data ):
+   if ds["EoS"] == 2:
+     h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
+   elif ds["EoS"] == 1:
+     h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
+   else:
+     print ("Your EoS doesn't support yet!")
+     sys.exit(0)
+   Ux = data["MomX"]/(data["Dens"]*h)
+   Uy = data["MomY"]/(data["Dens"]*h)
+   Uz = data["MomZ"]/(data["Dens"]*h)
+   factor = np.sqrt(1*(ds.length_unit/ds.time_unit)**2 + Ux**2 + Uy**2 + Uz**2)
+   n = ( data["Dens"]/factor ) * ( ds.length_unit **4 / (ds.mass_unit * ds.time_unit) )
+   GAMMA = 4.0/3.0
+   const = n**(1.0-GAMMA) * data["Temp"]
+   return const

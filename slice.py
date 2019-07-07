@@ -125,6 +125,9 @@ if field == '3-velocity_y':
 if field == '3-velocity_z':
       unit= 'code_length/code_time'
       function=df._3-velocity_z
+if field == 'isentropic_constant':
+      unit = ''
+      function=df._isentropic_constant
 
 t0 = time.time()
 
