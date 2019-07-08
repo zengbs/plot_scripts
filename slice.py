@@ -5,7 +5,10 @@ import numpy as np
 import yt.visualization.eps_writer as eps
 import derived_field as df
 import time
+import os
 
+pwd = os.getcwd()
+pwd = pwd.split('/')
 
 # load the command-line parameters
 parser = argparse.ArgumentParser( description='Plot slices for sr-hydro' )
@@ -128,6 +131,9 @@ if field == '3-velocity_z':
 if field == 'isentropic_constant':
       unit = ''
       function=df._isentropic_constant
+if field == 'sound_speed':
+      unit = 'code_length/code_time'
+      function=df._sound_speed
 
 t0 = time.time()
 
@@ -182,10 +188,10 @@ for df.ds in ts.piter():
 
    sz = yt.SlicePlot( df.ds, cut_axis, field, center=center, origin='native', data_source=ad  )
 #   sz.set_zlim( field, 81.97, 82)
-   sz.set_zlim( field, 'min', 'max')
+#   sz.set_zlim( field, 'min', 'max')
 
-#   sz.set_log( field, log, linthresh=1e-4 )
-   sz.set_log( field, log )
+   sz.set_log( field, log, linthresh=1e-4 )
+#   sz.set_log( field, log )
 
    sz.zoom(zoom)
 
@@ -206,7 +212,7 @@ for df.ds in ts.piter():
      z='%0.3f'% center[2]
      cut_plane ='z_'+z.zfill(8)
 
-   sz.annotate_title('slice plot (' + cut_plane + ')')
+   sz.annotate_title('slice (' + cut_plane + ') ' + pwd[-1])
    sz.set_font({'weight':'bold', 'size':'22'})
 
 

@@ -246,6 +246,19 @@ def _isentropic_constant( field, data ):
    Uz = data["MomZ"]/(data["Dens"]*h)
    factor = np.sqrt(1*(ds.length_unit/ds.time_unit)**2 + Ux**2 + Uy**2 + Uz**2)
    n = ( data["Dens"]/factor ) * ( ds.length_unit **4 / (ds.mass_unit * ds.time_unit) )
-   GAMMA = 4.0/3.0
-   const = n**(1.0-GAMMA) * data["Temp"]
+   const = n**(1.0-ds["Gamma"]) * data["Temp"]
    return const
+
+def _sound_speed (field, data):
+   ratio = ds["Temp"] / h
+
+   if ds["EoS"] == 2:
+     h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
+     Cs_sq = ds["Gamma"] * ratio
+   elif ds["EoS"] == 1:
+     h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
+     Cs_sq = ( ratio / 3.0 ) * ( ( 5.0 - 8.0 * ratio ) / ( 1.0 - ratio ) )
+   else:
+     print ("Your EoS doesn't support yet!")
+     sys.exit(0)
+   return np.sqrt(Cs_sq) * (ds.length_unit/ds.time_unit)
