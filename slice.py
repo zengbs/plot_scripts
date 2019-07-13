@@ -156,10 +156,10 @@ for df.ds in ts.piter():
 # add new derived field
  if field not in ( 'total_energy_per_volume', 'momentum_x', 'momentum_y', 'momentum_z' ):
    df.ds.add_field( ("gamer", field)  , function=function  , sampling_type="cell", units=unit )
- if field == 'Lorentz_factor':
-   df.ds.add_field( ("gamer", '3-velocity_x')  , function=df._3_velocity_x  , sampling_type="cell", units='code_length/code_time' )
-   df.ds.add_field( ("gamer", '3-velocity_y' ) , function=df._3_velocity_y  , sampling_type="cell", units='code_length/code_time' )
-   df.ds.add_field( ("gamer", '3-velocity_z' ) , function=df._3_velocity_z  , sampling_type="cell", units='code_length/code_time' )
+# if field == 'Lorentz_factor':
+#   df.ds.add_field( ("gamer", '3-velocity_x')  , function=df._3_velocity_x  , sampling_type="cell", units='code_length/code_time' )
+#   df.ds.add_field( ("gamer", '3-velocity_y' ) , function=df._3_velocity_y  , sampling_type="cell", units='code_length/code_time' )
+#   df.ds.add_field( ("gamer", '3-velocity_z' ) , function=df._3_velocity_z  , sampling_type="cell", units='code_length/code_time' )
 
  ad = df.ds.all_data()
 
@@ -190,8 +190,8 @@ for df.ds in ts.piter():
 #   sz.set_zlim( field, 81.97, 82)
 #   sz.set_zlim( field, 'min', 'max')
 
-   sz.set_log( field, log, linthresh=1e-4 )
-#   sz.set_log( field, log )
+#   sz.set_log( field, log, linthresh=1e-4 )
+   sz.set_log( field, log )
 
    sz.zoom(zoom)
 
@@ -216,9 +216,9 @@ for df.ds in ts.piter():
    sz.set_font({'weight':'bold', 'size':'22'})
 
 
-   if field == 'Lorentz_factor':
+#   if field == 'Lorentz_factor':
 #     sz.annotate_velocity(factor = 16, normalize=False)
-     sz.annotate_streamlines('velocity_x', 'velocity_y')
+#     sz.annotate_streamlines('velocity_x', 'velocity_y')
 
    sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = {time:.2f} grid$/c$', text_args={'color':'black'})
    sz.set_cmap( field, colormap )
