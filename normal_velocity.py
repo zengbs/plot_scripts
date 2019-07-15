@@ -5,6 +5,7 @@ import numpy as np
 import yt.visualization.eps_writer as eps
 import derived_field as df
 import time
+from numpy import linalg as LA
 
 df.ds = yt.load('Data_000001')
 
@@ -32,50 +33,51 @@ normal = np.cross(vector1,vector2)
 
 U = np.vstack((Ux, Uy, Uz))
 U = np.transpose(U)
+U = U.to_ndarray()
 
-for i in len() 
-    np.dot( U[i:i+1:1,:], normal[i:i+1:1,:] )
+NormalDotU = np.sum(U * normal, axis=1)
 
-print ("normal")
+
+NormSquare = LA.norm( normal, axis=1 )**2
+
+
+NormalVelocity = np.transpose( [NormalDotU / NormSquare] ) * normal
+
+
+
+print ("vector1--------------------")
+print ( vector1 )
+print("ndim:{0}".format(vector1.ndim))
+print("shape:{0}".format(vector1.shape))
+print ("vector2--------------------")
+print ( vector2 )
+print("ndim:{0}".format(vector2.ndim))
+print("shape:{0}".format(vector2.shape))
+print ("normal--------------------")
 print ( normal )
 print("ndim:{0}".format(normal.ndim))
-# ndarry.shape
 print("shape:{0}".format(normal.shape))
-# ndarry.size
-print ("U")
-print ( U )
-print("ndim:{0}".format(U.ndim))
-# ndarry.shape
-print("shape:{0}".format(U.shape))
-# ndarry.size
-print ("vector1")
-print (vector1)
-print ( "vertices1" )
-print ( vertice1 )
-
-print("ndim:{0}".format(vertice1.ndim))
-# ndarry.shape
-print("shape:{0}".format(vertice1.shape))
-# ndarry.size
-print("size:{0}".format(vertice1.size))
-# ndarry.dtype
-print("dtype:{0}".format(vertice1.dtype))
-# ndarray.itemsize
-print("itemsize:{0}".format(vertice1.itemsize))
-print ( "Ux" )
+print ( "Ux--------------------" )
 print ( Ux )
-print ( "Uy" )
+print ( "Uy--------------------" )
 print ( Uy )
-print ( "Uz" )
+print ( "Uz--------------------" )
 print ( Uz )
 print("ndim:{0}".format(Uz.ndim))
-# ndarry.shape
 print("shape:{0}".format(Uz.shape))
-# ndarry.size
-print("size:{0}".format(Uz.size))
-# ndarry.dtype
-print("dtype:{0}".format(Uz.dtype))
-# ndarray.itemsize
-print("itemsize:{0}".format(Uz.itemsize))
-
-
+print ("U--------------------")
+print ( U )
+print("ndim:{0}".format(U.ndim))
+print("shape:{0}".format(U.shape))
+print ("NormalDotU--------------------")
+print ( NormalDotU )
+print("ndim:{0}".format(NormalDotU.ndim))
+print("shape:{0}".format(NormalDotU.shape))
+print ("NormSquare--------------------")
+print ( NormSquare )
+print("ndim:{0}".format(NormSquare.ndim))
+print("shape:{0}".format(NormSquare.shape))
+print ("NormalVelocity--------------------")
+print ( NormalVelocity )
+print("ndim:{0}".format(NormalVelocity.ndim))
+print("shape:{0}".format(NormalVelocity.shape))
