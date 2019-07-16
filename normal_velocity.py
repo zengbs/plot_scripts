@@ -41,16 +41,16 @@ NormalLorentzFactor = np.sqrt( 1.0 + np.sum ( NormalVelocity**2, axis=1 ) )
 
 #########################################################
 
+
 UniqueVertice = np.unique(vertice1, axis=0)
 
-IdxVertice = np.zeros(vertice1.shape[0])
+IdxVertice = np.zeros(vertice1.shape[0],dtype=np.int16)
 
 for idx in range(vertice1.shape[0]):
     IdxVertice[idx:idx+1] = UniqueVertice.tolist().index(vertice1[idx:idx+1,:].tolist()[0])
 
 IdxVertice.shape = (int(IdxVertice.shape[0]/3), 3)
 
-IdxVertice.astype(int)
 
 #########################################################
 
@@ -64,8 +64,33 @@ RGB = RGB.astype(int)
 
 RGB = np.delete(RGB, 3, 1)
 
+
+#########################################################
+UniqueVerticeTuple = np.empty(UniqueVertice.shape[0], dtype=[('x', '<f4'), ('y', '<f4'), ('z', '<f4')])
+
+UniqueVerticeTuple[:]=[tuple(i) for i in UniqueVertice]
+
+
 #########################################################
 
+RGBTuple = np.zeros((RGB.shape[0], RGB.shape[1]+1), object)
+
+RGBTuple[:,0] = IdxVertice.tolist()
+
+RGBTuple[:,1:] = RGB
+
+RGB = np.array(RGB, dtype=[('vertex_indices', 'i4', (3,)),('red', 'u1'), ('green', 'u1'),('blue', 'u1')])
+#########################################################
+
+
+print ("RGBTuple--------------------")
+print ( RGBTuple )
+print("ndim:{0}".format(RGBTuple.ndim))
+print("shape:{0}".format(RGBTuple.shape))
+print ("UniqueVerticeTuple--------------------")
+print ( UniqueVerticeTuple )
+print("ndim:{0}".format(UniqueVerticeTuple.ndim))
+print("shape:{0}".format(UniqueVerticeTuple.shape))
 print ("RGB--------------------")
 print ( RGB )
 print("ndim:{0}".format(RGB.ndim))
