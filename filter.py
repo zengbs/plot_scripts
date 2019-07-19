@@ -4,11 +4,8 @@ import yt
 import numpy as np
 import yt.visualization.eps_writer as eps
 import derived_field as df
-import time
-import os
+import mpi4py
 
-pwd = os.getcwd()
-pwd = pwd.split('/')
 
 # load the command-line parameters
 parser = argparse.ArgumentParser( description='Plot slices for sr-hydro' )
@@ -53,6 +50,7 @@ colormap    = 'arbre'
 
 dpi         = 150
 
+yt.enable_parallelism()
 
 # check parameter
 ########################################
@@ -76,72 +74,41 @@ if ( start_cut > end_cut ):
 if field == 'proper_number_density':
       unit= '1/code_length**3'
       function=df._proper_number_density
-if field == 'temperature_sr':
+if field == 'temperature':
       unit= ''
-      function=df._temperature_sr
+      function=df._temperature
 if field == 'Lorentz_factor':
       unit = ''
       function=df._lorentz_factor
-if field == 'pressure_sr':
+if field == 'pressure':
       unit= 'code_mass/(code_length*code_time**2)'
       function=df._pressure_sr
-if field == '4-velocity_x':
+if field in ('4-velocity_x'):
       unit= 'code_length/code_time'
-      function=df._4-velocity_x
+      function =df. _Ux_sr
 if field == '4-velocity_y':
       unit= 'code_length/code_time'
-      function=df._4-velocity_y
+      function=df._Uy_sr
 if field == '4-velocity_z':
       unit= 'code_length/code_time'
-      function=df._4-velocity_z
-if field == 'specific_enthalpy_sr':
+      function=df._Uz_sr
+if field == 'specific_enthalpy':
       unit= ''
-      function=df._specific_enthalpy_sr
+      function=df._specific_enthalpy
 if field == 'total_energy_per_volume':
       unit = 'code_mass/(code_length*code_time**2)'
-if field == 'number_density_sr':
+if field == 'number_density':
       unit = '1/code_length**3'
-      function=df._number_density_sr
+      function=df._number_density
 if field in ('momentum_x', 'momentum_y', 'momentum_z'):
         unit = 'code_mass/(code_time*code_length**2)'
-if field == 'thermal_energy_density_sr':
+if field == 'thermal_energy_density':
       unit= 'code_mass/(code_length*code_time**2)'
-      function=df._thermal_energy_density_sr
-if field == 'kinetic_energy_density_sr':
+      function=df._thermal_energy_density
+if field == 'kinetic_energy_density':
       unit= 'code_mass/(code_length*code_time**2)'
-      function=df._kinetic_energy_density_sr
-if field == 'Bernoulli_constant':
-      unit= ''
-      function=df._Bernoulli_const
-if field == 'spherical_radial_4velocity':
-      unit= 'code_length/code_time'
-      function=df._spherical_radial_4velocity
-if field == 'cylindrical_radial_4velocity':
-      unit= 'code_length/code_time'
-      function=df._cylindrical_radial_4velocity
-if field == '3-velocity_x':
-      unit= 'code_length/code_time'
-      function=df._3-velocity_x
-if field == '3-velocity_y':
-      unit= 'code_length/code_time'
-      function=df._3-velocity_y
-if field == '3-velocity_z':
-      unit= 'code_length/code_time'
-      function=df._3-velocity_z
-if field == 'isentropic_constant':
-      unit = ''
-      function=df._isentropic_constant
-if field == 'sound_speed':
-      unit = 'code_length/code_time'
-      function=df._sound_speed
-if field == 'threshold':
-      unit = ''
-      function=df._threshold
+      function=df._kinetic_energy_density
 
-
-t0 = time.time()
-
-yt.enable_parallelism()
 
 ts = yt.load( [ prefix+'/Data_%06d'%idx for idx in range(idx_start, idx_end+1, didx) ] )
 
@@ -158,12 +125,8 @@ for df.ds in ts.piter():
    sys.exit(0)
  
 # add new derived field
- if field not in ( 'total_energy_per_volume', 'momentum_x', 'momentum_y', 'momentum_z' ):
+ if  field not in ( 'total_energy_per_volume', 'momentum_x', 'momentum_y', 'momentum_z' ):
    df.ds.add_field( ("gamer", field)  , function=function  , sampling_type="cell", units=unit )
-# if field == 'Lorentz_factor':
-#   df.ds.add_field( ("gamer", '3-velocity_x')  , function=df._3_velocity_x  , sampling_type="cell", units='code_length/code_time' )
-#   df.ds.add_field( ("gamer", '3-velocity_y' ) , function=df._3_velocity_y  , sampling_type="cell", units='code_length/code_time' )
-#   df.ds.add_field( ("gamer", '3-velocity_z' ) , function=df._3_velocity_z  , sampling_type="cell", units='code_length/code_time' )
 
  ad = df.ds.all_data()
 
@@ -182,20 +145,15 @@ for df.ds in ts.piter():
      print ("cut_axis should be x, y or z!\n")
      sys.exit(0)
      
-   
 
-#   if ( field in ( '4-velocity_x' ,'4-velocity_y' ,'4-velocity_z', 'momentum_x', 'momentum_y', 'momentum_z', 'kinetic_energy_density' )):
-#     cr=ad.cut_region(["obj['kinetic_energy_density'] > 0.0"])
-#   else:
-#     cr=ad.clone()
+   cr=ad.cut_region(["obj['Lorentz_factor'] >= 10.0"])
+   #cr=ad.cut_region(["obj['number_density'] > 0.1"])
 
+   sz = yt.SlicePlot( df.ds, cut_axis, field, center=center, origin='native', data_source=cr  )
 
-   sz = yt.SlicePlot( df.ds, cut_axis, field, center=center, origin='native', data_source=ad  )
-#   sz.set_zlim( field, 81.97, 82)
-#   sz.set_zlim( field, 'min', 'max')
+   sz.set_zlim( field, 'min', 'max')
 
-#   sz.set_log( field, log, linthresh=1e-4 )
-   sz.set_log( field, log )
+   sz.set_log( field, log, linthresh=1e-3 )
 
    sz.zoom(zoom)
 
@@ -216,13 +174,12 @@ for df.ds in ts.piter():
      z='%0.3f'% center[2]
      cut_plane ='z_'+z.zfill(8)
 
-   sz.annotate_title('slice (' + cut_plane + ') ' + pwd[-1])
-   sz.set_font({'weight':'bold', 'size':'22'})
+   sz.annotate_title('slice plot (' + cut_plane + ')')
+   #sz.set_font({'weight':'bold', 'size':'22'})
 
 
-#   if field == 'Lorentz_factor':
-#     sz.annotate_velocity(factor = 16, normalize=False)
-#     sz.annotate_streamlines('velocity_x', 'velocity_y')
+   if field == 'Lorentz_factor':
+     sz.annotate_velocity(factor = 16, normalize=True)
 
    sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = {time:.2f} grid$/c$', text_args={'color':'black'})
    sz.set_cmap( field, colormap )
@@ -236,13 +193,9 @@ for df.ds in ts.piter():
 #    sz.annotate_streamlines('momentum_y','momentum_z')
 #   sz.save( mpl_kwargs={"dpi":dpi} )
 #   sz.save( name='Data_%06d_' %idx_start + cut_plane, suffix='eps' )
-   sz.save( name='Data_%06d_' %df.ds["DumpID"] + str(cut_plane), suffix='png' )
+   sz.save( name='Data_%06d_' %df.ds.current_time + str(cut_plane), suffix='png' )
 
    if N_cut > 1:
     origin += np.fabs(start_cut-end_cut)/N_cut
    else:
     origin += end_cut + 1
-
-t1 = time.time()
-
-print("BigStuff took %.5e sec" % (t1 - t0))

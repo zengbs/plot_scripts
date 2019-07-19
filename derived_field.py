@@ -2,91 +2,45 @@ import numpy as np
 
 global ds
 
+
 def _temperature_sr(field, data):
     return data["Temp"]
 
 def _pressure_sr( field, data ):
-   if ds["EoS"] == 2:
-     h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
-   elif ds["EoS"] == 1:
-     h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
-   else:
-     print ("Your EoS doesn't support yet!")
-     sys.exit(0)
-   Ux = data["MomX"]/(data["Dens"]*h)
-   Uy = data["MomY"]/(data["Dens"]*h)
-   Uz = data["MomZ"]/(data["Dens"]*h)
-   factor = np.sqrt(1*(ds.length_unit/ds.time_unit)**2 + Ux**2 + Uy**2 + Uz**2)
-   n = data["Dens"]/factor # proper number density
-   pres = n * data["Temp"]
+   pres = data["proper_number_density"] * data["Temp"]
    return pres*ds.length_unit**3/(ds.time_unit**3)
 
 def _proper_number_density( field, data ):
-   if ds["EoS"] == 2:
-     h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
-   elif ds["EoS"] == 1:
-     h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
-   else:
-     print ("Your EoS is not supported yet!")
-     sys.exit(0)
-   Ux = data["MomX"]/(data["Dens"]*h)
-   Uy = data["MomY"]/(data["Dens"]*h)
-   Uz = data["MomZ"]/(data["Dens"]*h)
-   factor = np.sqrt(1*(ds.length_unit/ds.time_unit)**2 + Ux**2 + Uy**2 + Uz**2)
-   n = data["Dens"]/factor
+   n = data["Dens"]/data["Lorentz_factor"]
    return n * ds.length_unit/(ds.mass_unit*ds.time_unit)
 
 def _lorentz_factor( field, data ):
-   if ds["EoS"] == 2:
-     h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
-   elif ds["EoS"] == 1:
-     h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
-   else:
-     print ("Your EoS doesn't support yet!")
-     sys.exit(0)
-   Ux = data["MomX"]/(data["Dens"]*h)
-   Uy = data["MomY"]/(data["Dens"]*h)
-   Uz = data["MomZ"]/(data["Dens"]*h)
+   h=data["specific_enthalpy_sr"]
+   Ux = data["4_velocity_x"]
+   Uy = data["4_velocity_y"]
+   Uz = data["4_velocity_z"]
    factor = np.sqrt(1*(ds.length_unit/ds.time_unit)**2 + Ux**2 + Uy**2 + Uz**2)
    return factor*(ds.time_unit/ds.length_unit)
 
 def _4_velocity_x( field, data ):
-   if ds["EoS"] == 2:
-     h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
-   elif ds["EoS"] == 1:
-     h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
-   else:
-     print ("Your EoS doesn't support yet!")
-     sys.exit(0)
+   h=data["specific_enthalpy_sr"]
    Ux = data["MomX"]/(data["Dens"]*h)
    return Ux
 
 
 def _4_velocity_y( field, data ):
-   if ds["EoS"] == 2:
-     h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
-   elif ds["EoS"] == 1:
-     h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
-   else:
-     print ("Your EoS doesn't support yet!")
-     sys.exit(0)
+   h=data["specific_enthalpy_sr"]
    Uy = data["MomY"]/(data["Dens"]*h)
    return Uy
 
 def _4_velocity_z( field, data ):
-   if ds["EoS"] == 2:
-     h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
-   elif ds["EoS"] == 1:
-     h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
-   else:
-     print ("Your EoS doesn't support yet!")
-     sys.exit(0)
+   h=data["specific_enthalpy_sr"]
    Uz = data["MomZ"]/(data["Dens"]*h)
    return Uz
 
 def _specific_enthalpy_sr( field, data ):
    if ds["EoS"] == 2:
-     h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
+     h = 1.0 + data["Gamma"] * data["Temp"] / ( data["Gamma"] - 1.0 )
    elif ds["EoS"] == 1:
      h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
    else:
@@ -99,65 +53,27 @@ def _number_density_sr(field, data):
 
 
 def _thermal_energy_density_sr( field, data ):
-   if ds["EoS"] == 2:
-     h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
-   elif ds["EoS"] == 1:
-     h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
-   else:
-     print ("Your EoS doesn't support yet!")
-     sys.exit(0)
-   Ux = data["MomX"]/(data["Dens"]*h)
-   Uy = data["MomY"]/(data["Dens"]*h)
-   Uz = data["MomZ"]/(data["Dens"]*h)
-   factor = np.sqrt(1*(ds.length_unit/ds.time_unit)**2 + Ux**2 + Uy**2 + Uz**2)
-   n = data["Dens"]/factor
-   P = n * data["Temp"]
-   thermal_density = h * data["Dens"] - data["Dens"] - factor * P
+   h=data["specific_enthalpy_sr"]
+   thermal_density = h * data["Dens"] - data["Dens"] - data["Lorentz_factor"] * data["pressure_sr"]
    return thermal_density * ( ds.length_unit**2 / ds.time_unit**2 )
 
 def _kinetic_energy_density_sr(field, data):
-   if ds["EoS"] == 2:
-     h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
-   elif ds["EoS"] == 1:
-     h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
-   else:
-     print ("Your EoS doesn't support yet!")
-     sys.exit(0)
-   Ux = data["MomX"]/(data["Dens"]*h)
-   Uy = data["MomY"]/(data["Dens"]*h)
-   Uz = data["MomZ"]/(data["Dens"]*h)
-   factor = np.sqrt(1*(ds.length_unit/ds.time_unit)**2 + Ux**2 + Uy**2 + Uz**2)
-   n = data["Dens"]/factor
-   P = n * data["Temp"]
+   h=data["specific_enthalpy_sr"]
+   P = data["pressure_sr"]
+   factor = data["Lorentz_factor"] 
    kinetic_energy_density = ( data["Dens"] * ( ds.length_unit / ds.time_unit )**2 * h + P * ( ds.length_unit / ds.time_unit )**3 ) * ( factor * ( ds.time_unit / ds.length_unit ) - 1 )
    return kinetic_energy_density
 
 def _Bernoulli_const( field, data ):
-   if ds["EoS"] == 2:
-     h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
-   elif ds["EoS"] == 1:
-     h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
-   else:
-     print ("Your EoS is not supported yet!")
-     sys.exit(0)
-   Ux = data["MomX"]/(data["Dens"]*h)
-   Uy = data["MomY"]/(data["Dens"]*h)
-   Uz = data["MomZ"]/(data["Dens"]*h)
-   factor = np.sqrt(1*(ds.length_unit/ds.time_unit)**2 + Ux**2 + Uy**2 + Uz**2)
+   h=data["specific_enthalpy_sr"]
+   factor = data["Lorentz_factor"]
    BernpulliConst = factor * h
    return BernpulliConst * ds.time_unit / ds.length_unit
 
 def _spherical_radial_4velocity(field, data):
-   if ds["EoS"] == 2:
-     h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
-   elif ds["EoS"] == 1:
-     h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
-   else:
-     print ("Your EoS doesn't support yet!")
-     sys.exit(0)
-   Ux = data["MomX"]/(data["Dens"]*h)
-   Uy = data["MomY"]/(data["Dens"]*h)
-   Uz = data["MomZ"]/(data["Dens"]*h)
+   Ux = data["4-velocity_x"] 
+   Uy = data["4-velocity_y"]
+   Uz = data["4-velocity_z"]
    center = data.get_field_parameter('center')
    x_hat = data["x"] - center[0]
    y_hat = data["y"] - center[1]
@@ -170,16 +86,9 @@ def _spherical_radial_4velocity(field, data):
 
 # symmetry axis: x
 def _cylindrical_radial_4velocity(field, data):
-   if ds["EoS"] == 2:
-     h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
-   elif ds["EoS"] == 1:
-     h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
-   else:
-     print ("Your EoS doesn't support yet!")
-     sys.exit(0)
-   Ux = data["MomX"]/(data["Dens"]*h)
-   Uy = data["MomY"]/(data["Dens"]*h)
-   Uz = data["MomZ"]/(data["Dens"]*h)
+   Ux = data["4-velocity_x"] 
+   Uy = data["4-velocity_y"]
+   Uz = data["4-velocity_z"]
    center = data.get_field_parameter('center')
    y_hat = data["y"] - center[1]
    z_hat = data["z"] - center[2]
@@ -189,76 +98,81 @@ def _cylindrical_radial_4velocity(field, data):
    return Uy*y_hat + Uz*z_hat
 
 def _3_velocity_x( field, data ):
-   if ds["EoS"] == 2:
-     h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
-   elif ds["EoS"] == 1:
-     h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
-   else:
-     print ("Your EoS doesn't support yet!")
-     sys.exit(0)
-   Ux = data["MomX"]/(data["Dens"]*h)
-   Uy = data["MomY"]/(data["Dens"]*h)
-   Uz = data["MomZ"]/(data["Dens"]*h)
-   factor = np.sqrt(1*(ds.length_unit/ds.time_unit)**2 + Ux**2 + Uy**2 + Uz**2)
+   Ux = data["4-velocity_x"] 
+   factor = data["Lorentz_factor"]
    Vx = Ux / factor
    return Vx*(ds.length_unit/ds.time_unit)
 
 def _3_velocity_y( field, data ):
-   if ds["EoS"] == 2:
-     h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
-   elif ds["EoS"] == 1:
-     h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
-   else:
-     print ("Your EoS doesn't support yet!")
-     sys.exit(0)
-   Ux = data["MomX"]/(data["Dens"]*h)
-   Uy = data["MomY"]/(data["Dens"]*h)
-   Uz = data["MomZ"]/(data["Dens"]*h)
-   factor = np.sqrt(1*(ds.length_unit/ds.time_unit)**2 + Ux**2 + Uy**2 + Uz**2)
+   Uy = data["4-velocity_y"] 
+   factor = data["Lorentz_factor"]
    Vy = Uy / factor
    return Vy*(ds.length_unit/ds.time_unit)
 
 def _3_velocity_z( field, data ):
-   if ds["EoS"] == 2:
-     h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
-   elif ds["EoS"] == 1:
-     h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
-   else:
-     print ("Your EoS doesn't support yet!")
-     sys.exit(0)
-   Ux = data["MomX"]/(data["Dens"]*h)
-   Uy = data["MomY"]/(data["Dens"]*h)
-   Uz = data["MomZ"]/(data["Dens"]*h)
-   factor = np.sqrt(1*(ds.length_unit/ds.time_unit)**2 + Ux**2 + Uy**2 + Uz**2)
+   Uz = data["4-velocity_z"] 
+   factor = data["Lorentz_factor"]
    Vz = Uz / factor
    return Vz*(ds.length_unit/ds.time_unit)
 
 def _isentropic_constant( field, data ):
-   if ds["EoS"] == 2:
-     h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
-   elif ds["EoS"] == 1:
-     h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
-   else:
-     print ("Your EoS doesn't support yet!")
-     sys.exit(0)
-   Ux = data["MomX"]/(data["Dens"]*h)
-   Uy = data["MomY"]/(data["Dens"]*h)
-   Uz = data["MomZ"]/(data["Dens"]*h)
-   factor = np.sqrt(1*(ds.length_unit/ds.time_unit)**2 + Ux**2 + Uy**2 + Uz**2)
-   n = ( data["Dens"]/factor ) * ( ds.length_unit **4 / (ds.mass_unit * ds.time_unit) )
-   const = n**(1.0-ds["Gamma"]) * data["Temp"]
-   return const
+   n = data["proper_number_density"]
+   return n**(1.0-data["Gamma"]) * data["Temp"]
 
 def _sound_speed (field, data):
-   ratio = ds["Temp"] / h
-
+   h=data["specific_enthalpy_sr"]
+   ratio = data["Temp"] / h
    if ds["EoS"] == 2:
-     h = 1.0 + ds["Gamma"] * data["Temp"] / ( ds["Gamma"] - 1.0 )
-     Cs_sq = ds["Gamma"] * ratio
+     Cs_sq = data["Gamma"] * ratio
    elif ds["EoS"] == 1:
-     h = 2.5*data["Temp"]+np.sqrt(2.25*data["Temp"]**2+1.0)
      Cs_sq = ( ratio / 3.0 ) * ( ( 5.0 - 8.0 * ratio ) / ( 1.0 - ratio ) )
    else:
      print ("Your EoS doesn't support yet!")
      sys.exit(0)
    return np.sqrt(Cs_sq) * (ds.length_unit/ds.time_unit)
+
+def _4_sound_speed (field, data):
+   h=data["specific_enthalpy_sr"]
+   ratio = data["Temp"] / h
+   if ds["EoS"] == 2:
+     Cs_sq = data["Gamma"] * ratio
+   elif ds["EoS"] == 1:
+     Cs_sq = ( ratio / 3.0 ) * ( ( 5.0 - 8.0 * ratio ) / ( 1.0 - ratio ) )
+   else:
+     print ("Your EoS doesn't support yet!")
+     sys.exit(0)
+   return np.sqrt(Cs_sq / (1.0-Cs_sq) )
+
+
+def _Mach_number_x_sr (field, data):
+   h=data["specific_enthalpy_sr"]
+   Ux = data["MomX"]/(data["Dens"]*h)
+   four_Cs = data["4_sound_speed"]
+   return ( Ux / four_Cs ) * (ds.time_unit/ds.length_unit)
+
+def _Mach_number_y_sr (field, data):
+   h=data["specific_enthalpy_sr"]
+   Uy = data["MomY"]/(data["Dens"]*h)
+   four_Cs = data["4_sound_speed"]
+   return ( Uy / four_Cs ) * (ds.time_unit/ds.length_unit) 
+
+def _Mach_number_z_sr (field, data):
+   h=data["specific_enthalpy_sr"]
+   Uz = data["MomZ"]/(data["Dens"]*h)
+   four_Cs = data["4_sound_speed"]
+   return ( Uz / four_Cs ) * (ds.time_unit/ds.length_unit) 
+
+def _threshold (field, data):
+   h=data["specific_enthalpy_sr"]
+   Ux = data["MomX"]/(data["Dens"]*h)
+   Uy = data["MomY"]/(data["Dens"]*h)
+   Uz = data["MomZ"]/(data["Dens"]*h)
+   factor = np.sqrt(1*(ds.length_unit/ds.time_unit)**2 + Ux**2 + Uy**2 + Uz**2)*(ds.time_unit/ds.length_unit)
+   center = data.get_field_parameter('center')
+   y_hat = data["y"] - center[1]
+   z_hat = data["z"] - center[2]
+   rho = np.sqrt( y_hat**2 + z_hat**2 )
+   y_hat /= rho
+   z_hat /= rho
+   Ur = Uy*y_hat + Uz*z_hat
+   return np.where( (factor>10.0) & (Ur > 1.50),1.0, 0.0 )
