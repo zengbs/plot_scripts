@@ -19,12 +19,14 @@ fd = h5py.File("Data_000000_single","w")
 #fs.copy('/Tree'    ,fd['/Tree']    )
 
 
+#print(fs['Tree/Corner'].attrs['Cvt2Phy'])
+
 Dens=fs['/GridData/Dens']
 MomX=fs['/GridData/MomX']
 MomY=fs['/GridData/MomY']
 MomZ=fs['/GridData/MomZ']
 Engy=fs['/GridData/Engy']
-Temp=fs['/GridData/Engy']
+Temp=fs['/GridData/Temp']
 
 
 Dens_single=np.empty(Dens.shape,dtype=np.float32)
@@ -63,6 +65,7 @@ fd.create_dataset('Info/SymConst', data=array)
 
 array=fs['Tree/Corner']
 fd.create_dataset('Tree/Corner', data=array)
+fd['Tree/Corner'].attrs['Cvt2Phy'] = fs['Tree/Corner'].attrs['Cvt2Phy']
 
 array=fs['Tree/Father']
 fd.create_dataset('Tree/Father', data=array)
@@ -75,6 +78,8 @@ fd.create_dataset('Tree/Sibling', data=array)
 
 array=fs['Tree/Son']
 fd.create_dataset('Tree/Son', data=array)
+
+print(fd['Tree/Corner'][()])
 
 fd.flush()
 
