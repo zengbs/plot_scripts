@@ -159,11 +159,11 @@ for df.ds in ts.piter():
  
 # add new derived field
  if field not in ( 'total_energy_per_volume', 'momentum_x', 'momentum_y', 'momentum_z' ):
+   df.ds.add_field( ("gamer", 'specific_enthalpy_sr')  , function=df._specific_enthalpy_sr  , sampling_type="cell", units='' )
+   df.ds.add_field( ("gamer", '4_velocity_x')  , function=df._4_velocity_x  , sampling_type="cell", units='code_length/code_time' )
+   df.ds.add_field( ("gamer", '4_velocity_y' ) , function=df._4_velocity_y  , sampling_type="cell", units='code_length/code_time' )
+   df.ds.add_field( ("gamer", '4_velocity_z' ) , function=df._4_velocity_z  , sampling_type="cell", units='code_length/code_time' )
    df.ds.add_field( ("gamer", field)  , function=function  , sampling_type="cell", units=unit )
-# if field == 'Lorentz_factor':
-#   df.ds.add_field( ("gamer", '3-velocity_x')  , function=df._3_velocity_x  , sampling_type="cell", units='code_length/code_time' )
-#   df.ds.add_field( ("gamer", '3-velocity_y' ) , function=df._3_velocity_y  , sampling_type="cell", units='code_length/code_time' )
-#   df.ds.add_field( ("gamer", '3-velocity_z' ) , function=df._3_velocity_z  , sampling_type="cell", units='code_length/code_time' )
 
  ad = df.ds.all_data()
 
