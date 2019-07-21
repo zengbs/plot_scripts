@@ -1,34 +1,83 @@
 import h5py
 import numpy as np
+import yt
 
 
-f = h5py.File("Data_000000","r")
-
-for key in f.keys():
-    print(key) #Names of the groups in HDF5 file.
-
-#Get the HDF5 group
-group = f['Info']
-
-#Checkout what keys are inside that group.
-for key in group.keys():
-    print(key)
-
-print( f['Info']['InputPara']['BoxSize'])
-print( 'NPatch: ', sum(f['Info']['KeyInfo']['NPatch']))
-print( f["Info"]["InputPara"]["Flu_GPU_NPGroup"])
+def my_create_grps(name):
+    fd.create_group(name)
 
 
-data = f['GridData']['Dens'][()]
+fs = h5py.File("Data_000000","r")
+fd = h5py.File("Data_000000_single","w")
 
-data_single = data.astype('float32')
+# recursively copy groups
+#fs['/'].visit(my_create_grps)
 
 
-print(data.shape)
-print(data.ndim)
-print(data.dtype)
-print(data_single.dtype)
-#print(data[0][0])
+#fs.copy('/GridData',fd['/GridData'])
+#fs.copy('/Info'    ,fd['/Info']    )
+#fs.copy('/Tree'    ,fd['/Tree']    )
+
+
+Dens=fs['/GridData/Dens']
+MomX=fs['/GridData/MomX']
+MomY=fs['/GridData/MomY']
+MomZ=fs['/GridData/MomZ']
+Engy=fs['/GridData/Engy']
+Temp=fs['/GridData/Engy']
+
+
+Dens_single=np.empty(Dens.shape,dtype=np.float32)
+MomX_single=np.empty(Dens.shape,dtype=np.float32)
+MomY_single=np.empty(Dens.shape,dtype=np.float32)
+MomZ_single=np.empty(Dens.shape,dtype=np.float32)
+Engy_single=np.empty(Dens.shape,dtype=np.float32)
+Temp_single=np.empty(Dens.shape,dtype=np.float32)
+
+
+Dens.read_direct(Dens_single)
+MomX.read_direct(MomX_single)
+MomY.read_direct(MomY_single)
+MomZ.read_direct(MomZ_single)
+Engy.read_direct(Engy_single)
+Temp.read_direct(Temp_single)
+
+fd.create_dataset('GridData/Dens', data=Dens_single)
+fd.create_dataset('GridData/MomX', data=MomX_single)
+fd.create_dataset('GridData/MomY', data=MomY_single)
+fd.create_dataset('GridData/MomZ', data=MomZ_single)
+fd.create_dataset('GridData/Engy', data=Engy_single)
+fd.create_dataset('GridData/Temp', data=Temp_single)
+
+array=fs['Info/InputPara']
+fd.create_dataset('Info/InputPara', data=array)
+
+array=fs['Info/KeyInfo']
+fd.create_dataset('Info/KeyInfo', data=array)
+
+array=fs['Info/Makefile']
+fd.create_dataset('Info/Makefile', data=array)
+
+array=fs['Info/SymConst']
+fd.create_dataset('Info/SymConst', data=array)
+
+array=fs['Tree/Corner']
+fd.create_dataset('Tree/Corner', data=array)
+
+array=fs['Tree/Father']
+fd.create_dataset('Tree/Father', data=array)
+
+array=fs['Tree/LBIdx']
+fd.create_dataset('Tree/LBIdx', data=array)
+
+array=fs['Tree/Sibling']
+fd.create_dataset('Tree/Sibling', data=array)
+
+array=fs['Tree/Son']
+fd.create_dataset('Tree/Son', data=array)
+
+fd.flush()
 
 #After you are done
-f.close()
+fs.close()
+fd.close()
