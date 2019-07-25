@@ -163,6 +163,8 @@ for df.ds in ts.piter():
    df.ds.add_field( ("gamer", '4_velocity_x')  , function=df._4_velocity_x  , sampling_type="cell", units='code_length/code_time' )
    df.ds.add_field( ("gamer", '4_velocity_y' ) , function=df._4_velocity_y  , sampling_type="cell", units='code_length/code_time' )
    df.ds.add_field( ("gamer", '4_velocity_z' ) , function=df._4_velocity_z  , sampling_type="cell", units='code_length/code_time' )
+   df.ds.add_field( ("gamer", 'Lorentz_factor' ), function=df._lorentz_factor  , sampling_type="cell", units='' )
+   df.ds.add_field( ("gamer", 'proper_number_density' ), function=df._proper_number_density  , sampling_type="cell", units='1/code_length**3' )
    df.ds.add_field( ("gamer", field)  , function=function  , sampling_type="cell", units=unit )
 
  ad = df.ds.all_data()

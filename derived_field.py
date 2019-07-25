@@ -8,11 +8,11 @@ def _temperature_sr(field, data):
 
 def _pressure_sr( field, data ):
    pres = data["proper_number_density"] * data["Temp"]
-   return pres*ds.length_unit**3/(ds.time_unit**3)
+   return pres*ds.mass_unit*ds.length_unit**2/(ds.time_unit**2)
 
 def _proper_number_density( field, data ):
    n = data["Dens"]/data["Lorentz_factor"]
-   return n * ds.length_unit/(ds.mass_unit*ds.time_unit)
+   return n / ds.mass_unit
 
 def _lorentz_factor( field, data ):
    h=data["specific_enthalpy_sr"]
