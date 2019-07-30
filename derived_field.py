@@ -48,6 +48,11 @@ def _specific_enthalpy_sr( field, data ):
      sys.exit(0)
    return h
 
+def _enthalpy_density_sr( field, data ):
+   h=data["specific_enthalpy_sr"]
+   n = data["Dens"]/data["Lorentz_factor"]
+   return h*n
+
 def _number_density_sr(field, data):
    return data["Dens"]/ds.mass_unit
 
@@ -115,9 +120,76 @@ def _3_velocity_z( field, data ):
    Vz = Uz / factor
    return Vz*(ds.length_unit/ds.time_unit)
 
+def _Cp_per_particle( field, data ): 
+   if   ds["EoS"] == 2:
+     Cp = data["Gamma"] / ( data["Gamma"] - 1.0 )
+   elif ds["EoS"] == 1:
+     temp = data["Temp"]
+     Cp = 2.50 + 2.25 * data["Temp"] / np.sqrt( 2.25 * data["Temp"]**2 + 1.0 )
+   else:
+     print ("Your EoS doesn't support yet!")
+     sys.exit(0)
+   return Cp
+
+
+def _Cv_per_particle( field, data ): 
+   if   ds["EoS"] == 2:
+     Cv = 1.0 / ( data["Gamma"] - 1.0 )
+   elif ds["EoS"] == 1:
+     temp = data["Temp"]
+     Cv = 1.50 + 2.25 * data["Temp"] / np.sqrt( 2.25 * data["Temp"]**2 + 1.0 )
+   else:
+     print ("Your EoS doesn't support yet!")
+     sys.exit(0)
+   return Cv
+
+def _Cp_per_volume( field, data ): 
+   if   ds["EoS"] == 2:
+     Cp = data["Gamma"] / ( data["Gamma"] - 1.0 )
+   elif ds["EoS"] == 1:
+     temp = data["Temp"]
+     Cp = 2.50 + 2.25 * data["Temp"] / np.sqrt( 2.25 * data["Temp"]**2 + 1.0 )
+   else:
+     print ("Your EoS doesn't support yet!")
+     sys.exit(0)
+   return Cp / data["proper_number_density"]
+
+
+def _Cv_per_volume( field, data ): 
+   if   ds["EoS"] == 2:
+     Cv = 1.0 / ( data["Gamma"] - 1.0 )
+   elif ds["EoS"] == 1:
+     temp = data["Temp"]
+     Cv = 1.50 + 2.25 * data["Temp"] / np.sqrt( 2.25 * data["Temp"]**2 + 1.0 )
+   else:
+     print ("Your EoS doesn't support yet!")
+     sys.exit(0)
+   return Cv / data["proper_number_density"]
+
+def _Adiabatic_Index( field, data ):
+   if ds["EoS"] == 2:
+     Cp = data["Gamma"] / ( data["Gamma"] - 1.0 )
+   elif ds["EoS"] == 1:
+     temp = data["Temp"]
+     Cp = 2.50 + 2.25 * data["Temp"] / np.sqrt( 2.25 * data["Temp"]**2 + 1.0 )
+   else:
+     print ("Your EoS doesn't support yet!")
+     sys.exit(0)
+   return Cp / ( Cp - 1.0 )
+   
+
 def _isentropic_constant( field, data ):
+   if   ds["EoS"] == 2:
+     Gamma = data["Gamma"]
+   elif ds["EoS"] == 1:
+     temp = data["Temp"]
+     Cp = 2.50 + 2.25 * data["Temp"] / np.sqrt( 2.25 * data["Temp"]**2 + 1.0 )
+     Gamma = Cp / ( Cp - 1.0 )
+   else:
+     print ("Your EoS doesn't support yet!")
+     sys.exit(0)
    n = data["proper_number_density"]
-   return n**(1.0-data["Gamma"]) * data["Temp"]
+   return n**( 1.0 - Gamma ) * data["Temp"]
 
 def _sound_speed (field, data):
    h=data["specific_enthalpy_sr"]
