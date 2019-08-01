@@ -73,7 +73,8 @@ def _Bernoulli_const( field, data ):
    h=data["specific_enthalpy_sr"]
    factor = data["Lorentz_factor"]
    BernpulliConst = factor * h
-   return BernpulliConst * ds.time_unit / ds.length_unit
+#   return BernpulliConst * ds.time_unit / ds.length_unit
+   return BernpulliConst
 
 def _spherical_radial_4velocity(field, data):
    Ux = data["4-velocity_x"] 
@@ -176,20 +177,22 @@ def _Adiabatic_Index( field, data ):
      print ("Your EoS doesn't support yet!")
      sys.exit(0)
    return Cp / ( Cp - 1.0 )
-   
-
-def _isentropic_constant( field, data ):
+  
+def _entropy_per_particle(field, data):
    if   ds["EoS"] == 2:
-     Gamma = data["Gamma"]
+     print ("Your EoS doesn't support yet!")
    elif ds["EoS"] == 1:
-     temp = data["Temp"]
-     Cp = 2.50 + 2.25 * data["Temp"] / np.sqrt( 2.25 * data["Temp"]**2 + 1.0 )
-     Gamma = Cp / ( Cp - 1.0 )
+     T=data["Temp"]
+     G = kn(3, 1.0/T) / kn(2, 1.0/T)
+     n = data["proper_number_density"] * ds.length_unit**3
+     entropy=G / T - np.log( n / (T * kn(2,1.0/T) ) )
    else:
      print ("Your EoS doesn't support yet!")
      sys.exit(0)
-   n = data["proper_number_density"]
-   return n**( 1.0 - Gamma ) * data["Temp"]
+   return entropy
+   
+ 
+
 
 def _sound_speed (field, data):
    h=data["specific_enthalpy_sr"]
