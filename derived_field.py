@@ -77,9 +77,9 @@ def _Bernoulli_const( field, data ):
    return BernpulliConst
 
 def _spherical_radial_4velocity(field, data):
-   Ux = data["4-velocity_x"] 
-   Uy = data["4-velocity_y"]
-   Uz = data["4-velocity_z"]
+   Ux = data["4_velocity_x"] 
+   Uy = data["4_velocity_y"]
+   Uz = data["4_velocity_z"]
    center = data.get_field_parameter('center')
    x_hat = data["x"] - center[0]
    y_hat = data["y"] - center[1]
@@ -92,9 +92,9 @@ def _spherical_radial_4velocity(field, data):
 
 # symmetry axis: x
 def _cylindrical_radial_4velocity(field, data):
-   Ux = data["4-velocity_x"] 
-   Uy = data["4-velocity_y"]
-   Uz = data["4-velocity_z"]
+   Ux = data["4_velocity_x"] 
+   Uy = data["4_velocity_y"]
+   Uz = data["4_velocity_z"]
    center = data.get_field_parameter('center')
    y_hat = data["y"] - center[1]
    z_hat = data["z"] - center[2]
@@ -104,19 +104,19 @@ def _cylindrical_radial_4velocity(field, data):
    return Uy*y_hat + Uz*z_hat
 
 def _3_velocity_x( field, data ):
-   Ux = data["4-velocity_x"] 
+   Ux = data["4_velocity_x"] 
    factor = data["Lorentz_factor"]
    Vx = Ux / factor
    return Vx*(ds.length_unit/ds.time_unit)
 
 def _3_velocity_y( field, data ):
-   Uy = data["4-velocity_y"] 
+   Uy = data["4_velocity_y"] 
    factor = data["Lorentz_factor"]
    Vy = Uy / factor
    return Vy*(ds.length_unit/ds.time_unit)
 
 def _3_velocity_z( field, data ):
-   Uz = data["4-velocity_z"] 
+   Uz = data["4_velocity_z"] 
    factor = data["Lorentz_factor"]
    Vz = Uz / factor
    return Vz*(ds.length_unit/ds.time_unit)
@@ -182,18 +182,19 @@ def _entropy_per_particle(field, data):
    if   ds["EoS"] == 2:
      print ("Your EoS doesn't support yet!")
    elif ds["EoS"] == 1:
-     T=data["Temp"]
-     G = kn(3, 1.0/T) / kn(2, 1.0/T)
-     n = data["proper_number_density"] * ds.length_unit**3
-     entropy=G / T - np.log( n / (T * kn(2,1.0/T) ) )
+     T1=1.0
+     n1=2.0
+     A1=1.5*T1+np.sqrt(2.25*T1**2+1.0)
+     T2=data["Temp"]
+     n2=data["proper_number_density"] * ds.length_unit**3
+     A2=1.5*T2+np.sqrt(2.25*T2**2+1.0)
+     delta_s=1.5*np.log(T2/T1) + 1.5*np.log(A2/A1) - np.log(n2/n1)
    else:
      print ("Your EoS doesn't support yet!")
      sys.exit(0)
-   return entropy
+   return delta_s
    
  
-
-
 def _sound_speed (field, data):
    h=data["specific_enthalpy_sr"]
    ratio = data["Temp"] / h
