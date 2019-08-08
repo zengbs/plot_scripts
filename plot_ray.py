@@ -6,6 +6,8 @@ import matplotlib
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 
+def _temperature_sr(field, data):
+    return data["Temp"]
 
 
 # load the command-line parameters
@@ -49,30 +51,14 @@ ts = yt.load( [ prefix+'/Data_%06d'%idx for idx in range(idx_start, idx_end+1, d
 for ds in ts.piter():
 
 # add new derived field
-   ds.add_field( ("gamer", "Lorentz_factor") , function=_density_pri  , sampling_type="cell", units="" )
-   ds.add_field( ("gamer", "density")      , function=_density_pri  , sampling_type="cell", units="code_mass/code_length**3" )
-   ds.add_field( ("gamer", "4-velocity_x") , function=_4velocity_x  , sampling_type="cell", units="code_length/code_time" )
-   ds.add_field( ("gamer", "4-velocity_y") , function=_4velocity_y  , sampling_type="cell", units="code_length/code_time" )
-   ds.add_field( ("gamer", "4-velocity_z") , function=_4velocity_z  , sampling_type="cell", units="code_length/code_time" )
-   ds.add_field( ("gamer", "pressure")     , function=_pressure_sr  , sampling_type="cell", units="code_mass/(code_length*code_time**2)" )
-   ds.add_field( ("gamer", "4-velocity_z") , function=_4velocity_z  , sampling_type="cell", units="code_length/code_time" )
-   ds.add_field( ("gamer", "magnitude of 4-velocity"), function=_4velocity_mag, sampling_type="cell", units="code_length/code_time" )
-   ds.add_field( ("gamer", "3-velocity_x")  , function=_3velocity_x  , sampling_type="cell", units="code_length/code_time" )
-   ds.add_field( ("gamer", "3-velocity_y")  , function=_3velocity_y  , sampling_type="cell", units="code_length/code_time" )
-   ds.add_field( ("gamer", "3-velocity_z")  , function=_3velocity_z  , sampling_type="cell", units="code_length/code_time" )
-   ds.add_field( ("gamer", "magnitude of 3-velocity"), function=_3velocity_mag, sampling_type="cell", units="code_length/code_time" )
-   ds.add_field( ("gamer", "conservative density") , function=_density_cons , sampling_type="cell", units="code_mass/code_length**3" )
-#   ds.add_field( ("gamer", "momentum_x_sr"), function=_momentum_x_sr, sampling_type="cell", units="code_mass/(code_time*code_length**2)" )
-#   ds.add_field( ("gamer", "momentum_y_sr"), function=_momentum_y_sr, sampling_type="cell", units="code_mass/(code_time*code_length**2)" )
-#   ds.add_field( ("gamer", "momentum_z_sr"), function=_momentum_z_sr, sampling_type="cell", units="code_mass/(code_time*code_length**2)" )
-#   ds.add_field( ("gamer", "energy_cons")  , function=_energy_cons  , sampling_type="cell", units="code_mass/(code_length*code_time**2)" )
-
-   my_ray = ds.ray((0, 0.5, 0.5), (1.0, 0.5, 0.5))
-   srt = np.argsort(my_ray['x'])
+   ds.add_field( ("gamer", "temp") , function=_temperature_sr  , sampling_type="cell", units="" )
+   field='temp'
+   my_ray=ds.ray((375, 94.75, 93.75), (375, 92.75, 93.75))
+   srt = np.argsort(my_ray['y'])
    density = my_ray[field][srt]
    
 #   plt.semilogy(np.array(my_ray['x'][srt]), np.array(my_ray[field][srt]), 'bo')
-   plt.plot(np.array(my_ray['x'][srt]), np.array(my_ray[field][srt]), 'bo', markersize=2)
-   plt.xlabel('x')
+   plt.plot(np.array(my_ray['y'][srt]), np.array(my_ray[field][srt]), 'bo', markersize=2)
+   plt.xlabel('y')
    plt.ylabel(field)
    plt.savefig("density_xsweep.png")

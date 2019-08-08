@@ -5,25 +5,28 @@ from numpy import linalg as LA
 import matplotlib.pyplot as plt
 import plyfile
 from plyfile import PlyData, PlyElement
+import time
 
 yt.enable_parallelism()
 
-df.ds = yt.load('Data_000057')
+df.ds = yt.load('Data_000002')
 
 # add new derived field
 df.ds.add_field( ("gamer", 'specific_enthalpy_sr')  , function=df._specific_enthalpy_sr  , sampling_type="cell", units='' )
+df.ds.add_field( ("gamer", '4_velocity_x')    , function=df._4_velocity_x    , sampling_type="cell", units='code_length/code_time' )
+df.ds.add_field( ("gamer", '4_velocity_y')    , function=df._4_velocity_y    , sampling_type="cell", units='code_length/code_time' )
+df.ds.add_field( ("gamer", '4_velocity_z')    , function=df._4_velocity_z    , sampling_type="cell", units='code_length/code_time' )
 df.ds.add_field( ("gamer", 'Lorentz_factor')  , function=df._lorentz_factor  , sampling_type="cell", units='' )
-df.ds.add_field( ("gamer", '4-velocity_x')    , function=df._4_velocity_x    , sampling_type="cell", units='code_length/code_time' )
-df.ds.add_field( ("gamer", '4-velocity_y')    , function=df._4_velocity_y    , sampling_type="cell", units='code_length/code_time' )
-df.ds.add_field( ("gamer", '4-velocity_z')    , function=df._4_velocity_z    , sampling_type="cell", units='code_length/code_time' )
    
 df.ds.periodicity = (True, True, True)
 
 ad = df.ds.all_data()
 
-vertice1, Ux = ad.extract_isocontours('Lorentz_factor', 25.0, sample_values='4-velocity_x')
-vertice2, Uy = ad.extract_isocontours('Lorentz_factor', 25.0, sample_values='4-velocity_y')
-vertice3, Uz = ad.extract_isocontours('Lorentz_factor', 25.0, sample_values='4-velocity_z')
+t0 = time.time()
+
+vertice1, Ux = ad.extract_isocontours('Lorentz_factor', 10.0, sample_values='4_velocity_x')
+vertice2, Uy = ad.extract_isocontours('Lorentz_factor', 10.0, sample_values='4_velocity_y')
+vertice3, Uz = ad.extract_isocontours('Lorentz_factor', 10.0, sample_values='4_velocity_z')
 
 vector1 = vertice1[1::3,:] - vertice1[::3,:]
 vector2 = vertice1[2::3,:] - vertice1[::3,:]
@@ -101,6 +104,8 @@ el2 = PlyElement.describe(Face, "face")
 PlyData([el, el2], text=True).write('ascii.ply')
 PlyData([el, el2]).write('binary.ply')
 
+t1 = time.time()
+print("BigStuff took %.5e sec" % (t1 - t0))
 
 #print ("Face--------------------")
 #print ( Face )

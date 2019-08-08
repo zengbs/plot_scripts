@@ -13,7 +13,7 @@ pwd = pwd.split('/')
 # load the command-line parameters
 parser = argparse.ArgumentParser( description='Plot slices for sr-hydro' )
 
-parser.add_argument( '-f',  action='store', required=True,  type=str,   dest='field',     help='pressure, 4-velocity_x/y/z, Lorentz_factor' )
+parser.add_argument( '-f',  action='store', required=True,  type=str,   dest='field',     help='pressure, 4_velocity_x/y/z, Lorentz_factor' )
 parser.add_argument( '-p',  action='store', required=True,  type=str,   dest='cut_axis',  help='axis you want to cut' )
 parser.add_argument( '-sx', action='store', required=True,  type=float, dest='start_cut', help='start cut' )
 parser.add_argument( '-ex', action='store', required=True,  type=float, dest='end_cut',   help='end cut' )
@@ -85,15 +85,15 @@ if field == 'Lorentz_factor':
 if field == 'pressure_sr':
       unit= 'code_mass/(code_length*code_time**2)'
       function=df._pressure_sr
-if field == '4-velocity_x':
+if field == '4_velocity_x':
       unit= 'code_length/code_time'
-      function=df._4-velocity_x
-if field == '4-velocity_y':
+      function=df._4_velocity_x
+if field == '4_velocity_y':
       unit= 'code_length/code_time'
-      function=df._4-velocity_y
-if field == '4-velocity_z':
+      function=df._4_velocity_y
+if field == '4_velocity_z':
       unit= 'code_length/code_time'
-      function=df._4-velocity_z
+      function=df._4_velocity_z
 if field == 'specific_enthalpy_sr':
       unit= ''
       function=df._specific_enthalpy_sr
@@ -119,18 +119,21 @@ if field == 'spherical_radial_4velocity':
 if field == 'cylindrical_radial_4velocity':
       unit= 'code_length/code_time'
       function=df._cylindrical_radial_4velocity
-if field == '3-velocity_x':
+if field == '3_velocity_x':
       unit= 'code_length/code_time'
-      function=df._3-velocity_x
-if field == '3-velocity_y':
+      function=df._3_velocity_x
+if field == '3_velocity_y':
       unit= 'code_length/code_time'
-      function=df._3-velocity_y
-if field == '3-velocity_z':
+      function=df._3_velocity_y
+if field == '3_velocity_z':
       unit= 'code_length/code_time'
-      function=df._3-velocity_z
+      function=df._3_velocity_z
 if field == 'isentropic_constant':
       unit = ''
       function=df._isentropic_constant
+if field == 'entropy_per_particle':
+      unit = ''
+      function=df._entropy_per_particle
 if field == 'sound_speed':
       unit = 'code_length/code_time'
       function=df._sound_speed
@@ -184,19 +187,23 @@ for df.ds in ts.piter():
      print ("cut_axis should be x, y or z!\n")
      sys.exit(0)
      
-   
 
-#   if ( field in ( '4-velocity_x' ,'4-velocity_y' ,'4-velocity_z', 'momentum_x', 'momentum_y', 'momentum_z', 'kinetic_energy_density' )):
+
+#   if ( field in ( '4_velocity_x' ,'4_velocity_y' ,'4_velocity_z', 'momentum_x', 'momentum_y', 'momentum_z', 'kinetic_energy_density' )):
 #     cr=ad.cut_region(["obj['kinetic_energy_density'] > 0.0"])
 #   else:
 #     cr=ad.clone()
 
+#   center[0] = 270.0
+#   sz = yt.SlicePlot( df.ds, cut_axis, field, center=center, origin='native', data_source=ad, width=(50,20)  )
+   sz = yt.SlicePlot( df.ds, cut_axis, field, center=center, origin='native', data_source=ad )
+#   sz.set_zlim( field, 0.08, 1.02)
+#   sz.set_figure_size(100)
+   sz.set_zlim( field, 'min', 'max')
 
-   sz = yt.SlicePlot( df.ds, cut_axis, field, center=center, origin='native', data_source=ad  )
-#   sz.set_zlim( field, 81.97, 82)
-#   sz.set_zlim( field, 'min', 'max')
 
-#   sz.set_log( field, log, linthresh=1e-4 )
+
+#   sz.set_log( field, log, linthresh=1e-10 )
    sz.set_log( field, log )
 
    sz.zoom(zoom)

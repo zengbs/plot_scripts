@@ -73,7 +73,6 @@ def _Bernoulli_const( field, data ):
    h=data["specific_enthalpy_sr"]
    factor = data["Lorentz_factor"]
    BernpulliConst = factor * h
-#   return BernpulliConst * ds.time_unit / ds.length_unit
    return BernpulliConst
 
 def _spherical_radial_4velocity(field, data):
