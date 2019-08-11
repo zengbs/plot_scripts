@@ -167,6 +167,7 @@ for df.ds in ts.piter():
    df.ds.add_field( ("gamer", '4_velocity_y' ) , function=df._4_velocity_y  , sampling_type="cell", units='code_length/code_time' )
    df.ds.add_field( ("gamer", '4_velocity_z' ) , function=df._4_velocity_z  , sampling_type="cell", units='code_length/code_time' )
    df.ds.add_field( ("gamer", 'Lorentz_factor' ), function=df._lorentz_factor  , sampling_type="cell", units='' )
+   df.ds.add_field( ("gamer", 'cylindrical_radial_4velocity')      , function=df._cylindrical_radial_4velocity      , sampling_type="cell", units='code_length/code_time' )
    df.ds.add_field( ("gamer", 'proper_number_density' ), function=df._proper_number_density  , sampling_type="cell", units='1/code_length**3' )
    df.ds.add_field( ("gamer", field)  , function=function  , sampling_type="cell", units=unit )
 
@@ -194,15 +195,35 @@ for df.ds in ts.piter():
 #   else:
 #     cr=ad.clone()
 
-#   center[0] = 270.0
-#   sz = yt.SlicePlot( df.ds, cut_axis, field, center=center, origin='native', data_source=ad, width=(50,20)  )
    sz = yt.SlicePlot( df.ds, cut_axis, field, center=center, origin='native', data_source=ad )
-#   sz.set_zlim( field, 0.08, 1.02)
-#   sz.set_figure_size(100)
+
+######## set the width of plot window
+#   center[0] = 300.0
+#   sz = yt.SlicePlot( df.ds, cut_axis, field, center=center, origin='native', data_source=ad, width=(50,20)  )
+
+######## cut cylinder shape region
+#   center: coordinate at center of cylinder shape region
+
+#   normal_vector = [-1.0, 0.0, 0.0]  
+#   radius = 0.7
+#   height = 1.0 
+#   center[0] = center[0] - 1.5 * df.ds.length_unit
+#  
+#   cylinder=df.ds.disk(center, normal_vector, radius, height)
+#   center = df.ds.domain_center
+#   center[2] = origin
+#   sz = yt.SlicePlot( df.ds, cut_axis, field, center=center, origin='native', data_source=cylinder )
+
+
+
+######## set range of color bar
+#   sz.set_zlim( field, 42.0, 'max')
    sz.set_zlim( field, 'min', 'max')
 
+######## set figure size
+#   sz.set_figure_size(100)
 
-
+######## set range of linear
 #   sz.set_log( field, log, linthresh=1e-10 )
    sz.set_log( field, log )
 

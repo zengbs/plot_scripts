@@ -1,3 +1,4 @@
+from mpi4py import MPI
 import yt
 import numpy as np
 import derived_field as df
@@ -7,171 +8,160 @@ import plyfile
 from plyfile import PlyData, PlyElement
 import time
 
-yt.enable_parallelism()
 
-df.ds = yt.load('Data_000002')
+df.ds = yt.load('Data_000027')
+
+t0 = time.time()
 
 # add new derived field
-df.ds.add_field( ("gamer", 'specific_enthalpy_sr')  , function=df._specific_enthalpy_sr  , sampling_type="cell", units='' )
-df.ds.add_field( ("gamer", '4_velocity_x')    , function=df._4_velocity_x    , sampling_type="cell", units='code_length/code_time' )
-df.ds.add_field( ("gamer", '4_velocity_y')    , function=df._4_velocity_y    , sampling_type="cell", units='code_length/code_time' )
-df.ds.add_field( ("gamer", '4_velocity_z')    , function=df._4_velocity_z    , sampling_type="cell", units='code_length/code_time' )
-df.ds.add_field( ("gamer", 'Lorentz_factor')  , function=df._lorentz_factor  , sampling_type="cell", units='' )
+df.ds.add_field( ("gamer", 'specific_enthalpy_sr'), function=df._specific_enthalpy_sr, sampling_type="cell", units='' )
+df.ds.add_field( ("gamer", '4_velocity_x')        , function=df._4_velocity_x        , sampling_type="cell", units='code_length/code_time' )
+df.ds.add_field( ("gamer", '4_velocity_y')        , function=df._4_velocity_y        , sampling_type="cell", units='code_length/code_time' )
+df.ds.add_field( ("gamer", '4_velocity_z')        , function=df._4_velocity_z        , sampling_type="cell", units='code_length/code_time' )
+df.ds.add_field( ("gamer", 'Lorentz_factor')      , function=df._lorentz_factor      , sampling_type="cell", units='' )
+df.ds.add_field( ("gamer", 'threshold')      , function=df._threshold        , sampling_type="cell", units='' )
    
 df.ds.periodicity = (True, True, True)
 
 ad = df.ds.all_data()
 
-t0 = time.time()
-
-vertice1, Ux = ad.extract_isocontours('Lorentz_factor', 10.0, sample_values='4_velocity_x')
-vertice2, Uy = ad.extract_isocontours('Lorentz_factor', 10.0, sample_values='4_velocity_y')
-vertice3, Uz = ad.extract_isocontours('Lorentz_factor', 10.0, sample_values='4_velocity_z')
-
-vector1 = vertice1[1::3,:] - vertice1[::3,:]
-vector2 = vertice1[2::3,:] - vertice1[::3,:]
-
-normal = np.cross(vector1,vector2)
-
-U = np.vstack((Ux, Uy, Uz))
-U = np.transpose(U)
-U = U.to_ndarray()
-
-NormalDotU = np.sum(U * normal, axis=1)
+center = df.ds.domain_center
+x0 = center[0]
+normal_vector = [-1.0, 0.0, 0.0]
+radius = 1.875
+NumSecPerRank = 2
+MostLeftEdge=12
+MostRightEdge=30
+Length = MostRightEdge - MostLeftEdge
 
 
-NormSquare = LA.norm( normal, axis=1 )**2
+comm = MPI.COMM_WORLD
+TotalRanks = comm.Get_size()
+RankIdx = comm.Get_rank()
 
 
-NormalVelocity = np.transpose( [NormalDotU / NormSquare] ) * normal
+NumCylin =  TotalRanks*NumSecPerRank # this should be a multiple of numer of threads being used
+height = Length / NumCylin           # height of section
 
-NormalLorentzFactor = np.sqrt( 1.0 + np.sum ( NormalVelocity**2, axis=1 ) )
+for i in range(NumSecPerRank*RankIdx+1, NumSecPerRank*RankIdx+NumSecPerRank+1):
+ 
+    center[0] = - ( 0.5 * height * (2*i-1) + 0.5 ) * df.ds.length_unit + MostRightEdge * df.ds.length_unit
+    
+    print("RankIdx=%d" % RankIdx)
+    print("LeftEdge=%f, Center=%f, RightEdge=%f" % ( center[0]-0.5*height* df.ds.length_unit, center[0], center[0]+0.5*height* df.ds.length_unit ))
+    print("===========================================")
 
-#########################################################
+    cylinder=df.ds.disk(center, normal_vector, radius, height)
+    
+    vertice1_temp, Ux_temp = cylinder.extract_isocontours('threshold', 1.0, sample_values='4_velocity_x')
+    vertice2_temp, Uy_temp = cylinder.extract_isocontours('threshold', 1.0, sample_values='4_velocity_y')
+    vertice3_temp, Uz_temp = cylinder.extract_isocontours('threshold', 1.0, sample_values='4_velocity_z')
 
+    # compute vectors along triangle mesh's edges 
+    vector1 = vertice1_temp[1::3,:] - vertice1_temp[::3,:]
+    vector2 = vertice1_temp[2::3,:] - vertice1_temp[::3,:]
 
-UniqueVertice = np.unique(vertice1, axis=0)
-
-IdxVertice = np.zeros(vertice1.shape[0],dtype=np.int16)
-
-for idx in range(vertice1.shape[0]):
-    IdxVertice[idx:idx+1] = UniqueVertice.tolist().index(vertice1[idx:idx+1,:].tolist()[0])
-
-IdxVertice.shape = (int(IdxVertice.shape[0]/3), 3)
-
-
-#########################################################
-
-colormap = plt.get_cmap('jet')
-
-#NomalizationConst = 1.0/( np.amax(NormalLorentzFactor)-np.amin(NormalLorentzFactor) )
-NomalizationConst = 1.0/( 3.0 -np.amin(NormalLorentzFactor) )
-
-RGB = colormap(NormalLorentzFactor*NomalizationConst)*255
-
-RGB = RGB.astype(int)
-
-RGB = np.delete(RGB, 3, 1)
+    # normal vectors of triangular meshes, which have dimension (np.size(normal),)
+    normal_temp = np.cross(vector1,vector2)
 
 
-#########################################################
-#Ref:
-#https://stackoverflow.com/questions/26634579/convert-array-of-lists-to-array-of-tuples-triple
+    # find out which rows are vanish, ZeroRow have dimension (np.size(ZeroRow))
+    ZeroRow = np.where(~normal_temp.any(axis=1))[0]
 
-UniqueVerticeTuple = np.empty(UniqueVertice.shape[0], dtype=[('x', '<f4'), ('y', '<f4'), ('z', '<f4')])
-
-UniqueVerticeTuple[:]=[tuple(i) for i in UniqueVertice]
-
-
-#########################################################
-#Ref:
-#https://stackoverflow.com/questions/57048757/how-to-combine-list-with-integer-in-an-array-of-tuples
-
-RGBList = RGB.tolist()
-
-IdxVerticeList = IdxVertice.tolist()
-
-Face = [tuple([IdxVerticeList[i]] + RGBList[i]) for i in range(len(IdxVerticeList))]
-
-Face = np.asarray(Face, dtype=[('vertex_indices', 'i4', (3,)),('red', 'u1'), ('green', 'u1'),('blue', 'u1')])
-
-#########################################################
-
-el = PlyElement.describe(UniqueVerticeTuple, "vertex")
-el2 = PlyElement.describe(Face, "face")
+    # remove the rows which is specified by ZeroRow
+    # -> note that np.delete() does NOT occur in-place
+    normal = np.delete(normal_temp, ZeroRow, axis=0)
+    Ux     = np.delete(Ux_temp    , ZeroRow, axis=0)
+    Uy     = np.delete(Uy_temp    , ZeroRow, axis=0)
+    Uz     = np.delete(Uz_temp    , ZeroRow, axis=0)
 
 
-PlyData([el, el2], text=True).write('ascii.ply')
-PlyData([el, el2]).write('binary.ply')
+    # create an 1D array
+    ZeroRow_vertice1 = np.arange(3*ZeroRow.shape[0])
 
-t1 = time.time()
-print("BigStuff took %.5e sec" % (t1 - t0))
-
-#print ("Face--------------------")
-#print ( Face )
-#print("ndim:{0}".format(Face.ndim))
-#print("shape:{0}".format(Face.shape))
-#print("shape:{0}".format(Face.dtype))
-#print ("UniqueVerticeTuple--------------------")
-#print ( UniqueVerticeTuple )
-#print("ndim:{0}".format(UniqueVerticeTuple.ndim))
-#print("shape:{0}".format(UniqueVerticeTuple.shape))
-#print("shape:{0}".format(UniqueVerticeTuple.dtype))
-#print ("RGB--------------------")
-#print ( RGB )
-#print("ndim:{0}".format(RGB.ndim))
-#print("shape:{0}".format(RGB.shape))
-#print ("IdxVertice--------------------")
-#print ( IdxVertice )
-#print("ndim:{0}".format(IdxVertice.ndim))
-#print("shape:{0}".format(IdxVertice.shape))
-#print ("UniqueVertice--------------------")
-#print ( UniqueVertice )
-#print("ndim:{0}".format(UniqueVertice.ndim))
-#print("shape:{0}".format(UniqueVertice.shape))
-#print ("vertice1--------------------")
-#print ( vertice1 )
-#print("ndim:{0}".format(vertice1.ndim))
-#print("shape:{0}".format(vertice1.shape))
-#print ("vector1--------------------")
-#print ( vector1 )
-#print("ndim:{0}".format(vector1.ndim))
-#print("shape:{0}".format(vector1.shape))
-#print ("vector2--------------------")
-#print ( vector2 )
-#print("ndim:{0}".format(vector2.ndim))
-#print("shape:{0}".format(vector2.shape))
-#print ("normal--------------------")
-#print ( normal )
-#print("ndim:{0}".format(normal.ndim))
-#print("shape:{0}".format(normal.shape))
-#print ( "Ux--------------------" )
-#print ( Ux )
-#print ( "Uy--------------------" )
-#print ( Uy )
-#print ( "Uz--------------------" )
-#print ( Uz )
-#print("ndim:{0}".format(Uz.ndim))
-#print("shape:{0}".format(Uz.shape))
-#print ("U--------------------")
-#print ( U )
-#print("ndim:{0}".format(U.ndim))
-#print("shape:{0}".format(U.shape))
-#print ("NormalDotU--------------------")
-#print ( NormalDotU )
-#print("ndim:{0}".format(NormalDotU.ndim))
-#print("shape:{0}".format(NormalDotU.shape))
-#print ("NormSquare--------------------")
-#print ( NormSquare )
-#print("ndim:{0}".format(NormSquare.ndim))
-#print("shape:{0}".format(NormSquare.shape))
-#print ("NormalVelocity--------------------")
-#print ( NormalVelocity )
-#print("ndim:{0}".format(NormalVelocity.ndim))
-#print("shape:{0}".format(NormalVelocity.shape))
-#print ("NormalLorentzFactor--------------------")
-#print ( NormalLorentzFactor )
-#print("ndim:{0}".format(NormalLorentzFactor.ndim))
-#print("shape:{0}".format(NormalLorentzFactor.shape))
+    
+    for i in range(0, ZeroRow.shape[0]):
+       ZeroRow_vertice1[3*i  ] = 3*ZeroRow[i]
+       ZeroRow_vertice1[3*i+1] = 3*ZeroRow[i] + 1
+       ZeroRow_vertice1[3*i+2] = 3*ZeroRow[i] + 2 
 
 
+    # remove the vertice which are collinear in 'triangle' meshes
+    vertice1 = np.delete(vertice1_temp  , ZeroRow_vertice1, axis=0)
+
+
+    U = np.vstack((Ux, Uy, Uz))
+    U = np.transpose(U)
+    U = U.to_ndarray()
+
+    # compute the dot product of normal vector and 4-velocity
+    NormalDotU = np.sum(U * normal, axis=1)
+    
+    # compute the 2-norm of normal vector     
+    NormSquare = LA.norm( normal, axis=1 )**2    
+
+    # compute the normal component of 4-velocity
+    NormalVelocity = np.transpose( [NormalDotU / NormSquare] ) * normal
+    
+    NormalLorentzFactor = np.sqrt( 1.0 + np.sum ( NormalVelocity**2, axis=1 ) )
+    
+    #########################################################
+    
+    
+    UniqueVertice = np.unique(vertice1, axis=0)
+    
+    IdxVertice = np.zeros(vertice1.shape[0],dtype=np.int16)
+    
+    for idx in range(vertice1.shape[0]):
+        IdxVertice[idx:idx+1] = UniqueVertice.tolist().index(vertice1[idx:idx+1,:].tolist()[0])
+    
+    IdxVertice.shape = (int(IdxVertice.shape[0]/3), 3)
+    
+    
+    #########################################################
+    
+    colormap = plt.get_cmap('jet')
+    
+    #NomalizationConst = 1.0/( np.amax(NormalLorentzFactor)-np.amin(NormalLorentzFactor) )
+    NomalizationConst = 1.0/( 3.0 - np.amin(NormalLorentzFactor) )
+    
+    RGB = colormap(NormalLorentzFactor*NomalizationConst)*255
+    
+    RGB = RGB.astype(int)
+    
+    RGB = np.delete(RGB, 3, 1)
+    
+    
+    #########################################################
+    #Ref:
+    #https://stackoverflow.com/questions/26634579/convert-array-of-lists-to-array-of-tuples-triple
+    
+    UniqueVerticeTuple = np.empty(UniqueVertice.shape[0], dtype=[('x', '<f4'), ('y', '<f4'), ('z', '<f4')])
+    
+    UniqueVerticeTuple[:]=[tuple(i) for i in UniqueVertice]
+    
+    
+    #########################################################
+    #Ref:
+    #https://stackoverflow.com/questions/57048757/how-to-combine-list-with-integer-in-an-array-of-tuples
+    
+    RGBList = RGB.tolist()
+    
+    IdxVerticeList = IdxVertice.tolist()
+    
+    Face = [tuple([IdxVerticeList[i]] + RGBList[i]) for i in range(len(IdxVerticeList))]
+    
+    Face = np.asarray(Face, dtype=[('vertex_indices', 'i4', (3,)),('red', 'u1'), ('green', 'u1'),('blue', 'u1')])
+    
+    #########################################################
+    
+    el = PlyElement.describe(UniqueVerticeTuple, "vertex")
+    el2 = PlyElement.describe(Face, "face")
+    
+    FileName = 'binary_{:f}.ply'.format(center[0])
+    
+    PlyData([el, el2], text=True).write(FileName)
+     
+if RankIdx is 0:
+  t1 = time.time()
+  print("BigStuff took %.5e sec" % (t1 - t0))

@@ -242,12 +242,7 @@ def _threshold (field, data):
    Ux = data["MomX"]/(data["Dens"]*h)
    Uy = data["MomY"]/(data["Dens"]*h)
    Uz = data["MomZ"]/(data["Dens"]*h)
-   factor = np.sqrt(1*(ds.length_unit/ds.time_unit)**2 + Ux**2 + Uy**2 + Uz**2)*(ds.time_unit/ds.length_unit)
-   center = data.get_field_parameter('center')
-   y_hat = data["y"] - center[1]
-   z_hat = data["z"] - center[2]
-   rho = np.sqrt( y_hat**2 + z_hat**2 )
-   y_hat /= rho
-   z_hat /= rho
-   Ur = Uy*y_hat + Uz*z_hat
-   return np.where( (factor>10.0) & (Ur > 1.50),1.0, 0.0 )
+   LorentzFactor = data["Lorentz_factor"]
+#   Ur = data["cylindrical_radial_4velocity"]
+#   return np.where( (LorentzFactor>10.0) & (Ur > .00),1.0, 0.0 )
+   return np.where( (LorentzFactor>25.0), 1.0, 0.0 )
