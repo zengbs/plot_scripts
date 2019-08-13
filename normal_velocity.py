@@ -11,15 +11,20 @@ import time
 
 df.ds = yt.load('Data_000027')
 
+# start ticking
 t0 = time.time()
 
 # add new derived field
-df.ds.add_field( ("gamer", 'specific_enthalpy_sr'), function=df._specific_enthalpy_sr, sampling_type="cell", units='' )
-df.ds.add_field( ("gamer", '4_velocity_x')        , function=df._4_velocity_x        , sampling_type="cell", units='code_length/code_time' )
-df.ds.add_field( ("gamer", '4_velocity_y')        , function=df._4_velocity_y        , sampling_type="cell", units='code_length/code_time' )
-df.ds.add_field( ("gamer", '4_velocity_z')        , function=df._4_velocity_z        , sampling_type="cell", units='code_length/code_time' )
-df.ds.add_field( ("gamer", 'Lorentz_factor')      , function=df._lorentz_factor      , sampling_type="cell", units='' )
-df.ds.add_field( ("gamer", 'threshold')      , function=df._threshold        , sampling_type="cell", units='' )
+df.ds.add_field( ("gamer", 'specific_enthalpy_sr'),function=df._specific_enthalpy_sr, sampling_type="cell", units='' )
+df.ds.add_field( ("gamer", '4_velocity_x')        ,function=df._4_velocity_x        , sampling_type="cell", units='code_length/code_time' )
+df.ds.add_field( ("gamer", '4_velocity_y')        ,function=df._4_velocity_y        , sampling_type="cell", units='code_length/code_time' )
+df.ds.add_field( ("gamer", '4_velocity_z')        ,function=df._4_velocity_z        , sampling_type="cell", units='code_length/code_time' )
+df.ds.add_field( ("gamer", 'Lorentz_factor')      ,function=df._lorentz_factor      , sampling_type="cell", units='' )
+df.ds.add_field( ("gamer", 'threshold')           ,function=df._threshold           , sampling_type="cell", units='' )
+df.ds.add_field( ("gamer", '4_sound_speed')       ,function=df._4_sound_speed       , sampling_type="cell", units='' )
+df.ds.add_field( ("gamer", 'Mach_number_x_sr')    ,function=df._Mach_number_x_sr    , sampling_type="cell", units='' )
+df.ds.add_field( ("gamer", 'Mach_number_y_sr')    ,function=df._Mach_number_y_sr    , sampling_type="cell", units='' )
+df.ds.add_field( ("gamer", 'Mach_number_z_sr')    ,function=df._Mach_number_z_sr    , sampling_type="cell", units='' )
    
 df.ds.periodicity = (True, True, True)
 
@@ -30,18 +35,22 @@ x0 = center[0]
 normal_vector = [-1.0, 0.0, 0.0]
 radius = 1.875
 NumSecPerRank = 2
-MostLeftEdge=12
+MostLeftEdge=11
 MostRightEdge=30
 Length = MostRightEdge - MostLeftEdge
 
+Max = 4.0
+Min = 1.0
 
 comm = MPI.COMM_WORLD
 TotalRanks = comm.Get_size()
 RankIdx = comm.Get_rank()
 
+# this should be a multiple of numer of threads being used
+NumCylin =  TotalRanks*NumSecPerRank
 
-NumCylin =  TotalRanks*NumSecPerRank # this should be a multiple of numer of threads being used
-height = Length / NumCylin           # height of section
+# height of section
+height = Length / NumCylin           
 
 for i in range(NumSecPerRank*RankIdx+1, NumSecPerRank*RankIdx+NumSecPerRank+1):
  
@@ -53,9 +62,9 @@ for i in range(NumSecPerRank*RankIdx+1, NumSecPerRank*RankIdx+NumSecPerRank+1):
 
     cylinder=df.ds.disk(center, normal_vector, radius, height)
     
-    vertice1_temp, Ux_temp = cylinder.extract_isocontours('threshold', 1.0, sample_values='4_velocity_x')
-    vertice2_temp, Uy_temp = cylinder.extract_isocontours('threshold', 1.0, sample_values='4_velocity_y')
-    vertice3_temp, Uz_temp = cylinder.extract_isocontours('threshold', 1.0, sample_values='4_velocity_z')
+    vertice1_temp, Ux_temp = cylinder.extract_isocontours('threshold', 1.0, sample_values='Mach_number_x_sr')
+    vertice2_temp, Uy_temp = cylinder.extract_isocontours('threshold', 1.0, sample_values='Mach_number_y_sr')
+    vertice3_temp, Uz_temp = cylinder.extract_isocontours('threshold', 1.0, sample_values='Mach_number_z_sr')
 
     # compute vectors along triangle mesh's edges 
     vector1 = vertice1_temp[1::3,:] - vertice1_temp[::3,:]
@@ -102,30 +111,33 @@ for i in range(NumSecPerRank*RankIdx+1, NumSecPerRank*RankIdx+NumSecPerRank+1):
 
     # compute the normal component of 4-velocity
     NormalVelocity = np.transpose( [NormalDotU / NormSquare] ) * normal
-    
+   
+    # compute the Lorentz factor of normal component velocity 
     NormalLorentzFactor = np.sqrt( 1.0 + np.sum ( NormalVelocity**2, axis=1 ) )
     
     #########################################################
     
-    
+    # remove duplicate vertice
     UniqueVertice = np.unique(vertice1, axis=0)
-    
+   
+    # assign an unique index to every vertice
     IdxVertice = np.zeros(vertice1.shape[0],dtype=np.int16)
-    
+   
+    # convert format 
     for idx in range(vertice1.shape[0]):
         IdxVertice[idx:idx+1] = UniqueVertice.tolist().index(vertice1[idx:idx+1,:].tolist()[0])
-    
+   
+    # reshape 
     IdxVertice.shape = (int(IdxVertice.shape[0]/3), 3)
     
     
     #########################################################
-    
+    # assign color bar    
     colormap = plt.get_cmap('jet')
     
-    #NomalizationConst = 1.0/( np.amax(NormalLorentzFactor)-np.amin(NormalLorentzFactor) )
-    NomalizationConst = 1.0/( 3.0 - np.amin(NormalLorentzFactor) )
-    
-    RGB = colormap(NormalLorentzFactor*NomalizationConst)*255
+
+    # colored in linear scale 
+    RGB = colormap((NormalLorentzFactor - Min) / (Max-Min))*255
     
     RGB = RGB.astype(int)
     
@@ -134,16 +146,17 @@ for i in range(NumSecPerRank*RankIdx+1, NumSecPerRank*RankIdx+NumSecPerRank+1):
     
     #########################################################
     #Ref:
-    #https://stackoverflow.com/questions/26634579/convert-array-of-lists-to-array-of-tuples-triple
-    
+    # -> https://stackoverflow.com/questions/26634579/convert-array-of-lists-to-array-of-tuples-triple
+   
     UniqueVerticeTuple = np.empty(UniqueVertice.shape[0], dtype=[('x', '<f4'), ('y', '<f4'), ('z', '<f4')])
     
+    # convert array of list to array of tuples 
     UniqueVerticeTuple[:]=[tuple(i) for i in UniqueVertice]
     
     
     #########################################################
     #Ref:
-    #https://stackoverflow.com/questions/57048757/how-to-combine-list-with-integer-in-an-array-of-tuples
+    # -> https://stackoverflow.com/questions/57048757/how-to-combine-list-with-integer-in-an-array-of-tuples
     
     RGBList = RGB.tolist()
     

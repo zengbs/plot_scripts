@@ -162,14 +162,14 @@ for df.ds in ts.piter():
  
 # add new derived field
  if field not in ( 'total_energy_per_volume', 'momentum_x', 'momentum_y', 'momentum_z' ):
-   df.ds.add_field( ("gamer", 'specific_enthalpy_sr')  , function=df._specific_enthalpy_sr  , sampling_type="cell", units='' )
-   df.ds.add_field( ("gamer", '4_velocity_x')  , function=df._4_velocity_x  , sampling_type="cell", units='code_length/code_time' )
-   df.ds.add_field( ("gamer", '4_velocity_y' ) , function=df._4_velocity_y  , sampling_type="cell", units='code_length/code_time' )
-   df.ds.add_field( ("gamer", '4_velocity_z' ) , function=df._4_velocity_z  , sampling_type="cell", units='code_length/code_time' )
-   df.ds.add_field( ("gamer", 'Lorentz_factor' ), function=df._lorentz_factor  , sampling_type="cell", units='' )
-   df.ds.add_field( ("gamer", 'cylindrical_radial_4velocity')      , function=df._cylindrical_radial_4velocity      , sampling_type="cell", units='code_length/code_time' )
-   df.ds.add_field( ("gamer", 'proper_number_density' ), function=df._proper_number_density  , sampling_type="cell", units='1/code_length**3' )
-   df.ds.add_field( ("gamer", field)  , function=function  , sampling_type="cell", units=unit )
+   df.ds.add_field( ("gamer", 'specific_enthalpy_sr'        ), function=df._specific_enthalpy_sr        , sampling_type="cell", units=''                      )
+   df.ds.add_field( ("gamer", '4_velocity_x'                ), function=df._4_velocity_x                , sampling_type="cell", units='code_length/code_time' )
+   df.ds.add_field( ("gamer", '4_velocity_y'                ), function=df._4_velocity_y                , sampling_type="cell", units='code_length/code_time' )
+   df.ds.add_field( ("gamer", '4_velocity_z'                ), function=df._4_velocity_z                , sampling_type="cell", units='code_length/code_time' )
+   df.ds.add_field( ("gamer", 'Lorentz_factor'              ), function=df._lorentz_factor              , sampling_type="cell", units=''                      )
+   df.ds.add_field( ("gamer", 'cylindrical_radial_4velocity'), function=df._cylindrical_radial_4velocity, sampling_type="cell", units='code_length/code_time' )
+   df.ds.add_field( ("gamer", 'proper_number_density'       ), function=df._proper_number_density       , sampling_type="cell", units='1/code_length**3'      )
+   df.ds.add_field( ("gamer", field                         ), function=function                        , sampling_type="cell", units=unit                    )
 
  ad = df.ds.all_data()
 
@@ -253,6 +253,9 @@ for df.ds in ts.piter():
 #   if field == 'Lorentz_factor':
 #     sz.annotate_velocity(factor = 16, normalize=False)
 #     sz.annotate_streamlines('velocity_x', 'velocity_y')
+
+   sz.annotate_line((11, 0, 20), (11, 40, 20), coord_system='data')
+   sz.annotate_line((30, 0, 20), (30, 40, 20), coord_system='data')
 
    sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = {time:.2f} grid$/c$', text_args={'color':'black'})
    sz.set_cmap( field, colormap )
