@@ -59,14 +59,14 @@ def _number_density_sr(field, data):
 
 def _thermal_energy_density_sr( field, data ):
    h=data["specific_enthalpy_sr"]
-   thermal_density = h * data["Dens"] - data["Dens"] - data["Lorentz_factor"] * data["pressure_sr"]
-   return thermal_density * ( ds.length_unit**2 / ds.time_unit**2 )
+   thermal_density = data["Dens"] * (h - 1.0 ) * ( ds.length_unit / ds.time_unit )**2 - data["Lorentz_factor"] * data["pressure_sr"]
+   return thermal_density
 
 def _kinetic_energy_density_sr(field, data):
    h=data["specific_enthalpy_sr"]
    P = data["pressure_sr"]
    factor = data["Lorentz_factor"] 
-   kinetic_energy_density = ( data["Dens"] * ( ds.length_unit / ds.time_unit )**2 * h + P * ( ds.length_unit / ds.time_unit )**3 ) * ( factor * ( ds.time_unit / ds.length_unit ) - 1 )
+   kinetic_energy_density = data["Dens"] * h * ( ds.length_unit / ds.time_unit )**2 + P * ( factor - 1.0 )
    return kinetic_energy_density
 
 def _Bernoulli_const( field, data ):
@@ -239,10 +239,27 @@ def _Mach_number_z_sr (field, data):
 
 def _threshold (field, data):
    h=data["specific_enthalpy_sr"]
-   Ux = data["MomX"]/(data["Dens"]*h)
-   Uy = data["MomY"]/(data["Dens"]*h)
-   Uz = data["MomZ"]/(data["Dens"]*h)
+   Ux = data["4_velocity_x"] 
+   Uy = data["4_velocity_y"]
+   Uz = data["4_velocity_z"]
    LorentzFactor = data["Lorentz_factor"]
 #   Ur = data["cylindrical_radial_4velocity"]
 #   return np.where( (LorentzFactor>10.0) & (Ur > .00),1.0, 0.0 )
    return np.where( (LorentzFactor>25.0), 1.0, 0.0 )
+
+
+def _synchrotron_map( field, data ):
+   global theta, phi, normal
+
+   Ux = data["4_velocity_x"] 
+   Uy = data["4_velocity_y"]
+   Uz = data["4_velocity_z"]
+
+   Var = data["Lorentz_factor"] - (Ux*normal[0]+Uy*normal[1]+Uz*normal[2])*(ds.time_unit/ds.length_unit)
+
+   # beaming factor
+   BeamingFactor = Var**-2.0
+
+   h=data["specific_enthalpy_sr"]
+   thermal_density = data["Dens"] * (h - 1.0 ) * ( ds.length_unit / ds.time_unit )**2 - data["Lorentz_factor"] * data["pressure_sr"]
+   return thermal_density * BeamingFactor

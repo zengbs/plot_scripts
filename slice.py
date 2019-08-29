@@ -128,9 +128,6 @@ if field == '3_velocity_y':
 if field == '3_velocity_z':
       unit= 'code_length/code_time'
       function=df._3_velocity_z
-if field == 'isentropic_constant':
-      unit = ''
-      function=df._isentropic_constant
 if field == 'entropy_per_particle':
       unit = ''
       function=df._entropy_per_particle
@@ -140,6 +137,9 @@ if field == 'sound_speed':
 if field == 'threshold':
       unit = ''
       function=df._threshold
+if field == 'synchrotron_map':
+      unit = ''
+      function=df._synchrotron_map
 
 
 t0 = time.time()
@@ -151,7 +151,7 @@ ts = yt.load( [ prefix+'/Data_%06d'%idx for idx in range(idx_start, idx_end+1, d
 
 for df.ds in ts.piter():
 
-# take note
+# take notes
  if df.ds["EoS"] == 2:
    print ('%s %.6f %s' % ('Equation of state: constant gamma (', df.ds["Gamma"], ')\n'))
  elif df.ds["EoS"] == 1:
@@ -167,8 +167,9 @@ for df.ds in ts.piter():
    df.ds.add_field( ("gamer", '4_velocity_y'                ), function=df._4_velocity_y                , sampling_type="cell", units='code_length/code_time' )
    df.ds.add_field( ("gamer", '4_velocity_z'                ), function=df._4_velocity_z                , sampling_type="cell", units='code_length/code_time' )
    df.ds.add_field( ("gamer", 'Lorentz_factor'              ), function=df._lorentz_factor              , sampling_type="cell", units=''                      )
-   df.ds.add_field( ("gamer", 'cylindrical_radial_4velocity'), function=df._cylindrical_radial_4velocity, sampling_type="cell", units='code_length/code_time' )
+#   df.ds.add_field( ("gamer", 'cylindrical_radial_4velocity'), function=df._cylindrical_radial_4velocity, sampling_type="cell", units='code_length/code_time' )
    df.ds.add_field( ("gamer", 'proper_number_density'       ), function=df._proper_number_density       , sampling_type="cell", units='1/code_length**3'      )
+   df.ds.add_field( ("gamer", 'pressure_sr'                 ), function=df._pressure_sr          , sampling_type="cell", units='code_mass/(code_length*code_time**2)')
    df.ds.add_field( ("gamer", field                         ), function=function                        , sampling_type="cell", units=unit                    )
 
  ad = df.ds.all_data()
@@ -189,21 +190,22 @@ for df.ds in ts.piter():
      sys.exit(0)
      
 
-
+#   ! cut and plot
 #   if ( field in ( '4_velocity_x' ,'4_velocity_y' ,'4_velocity_z', 'momentum_x', 'momentum_y', 'momentum_z', 'kinetic_energy_density' )):
 #     cr=ad.cut_region(["obj['kinetic_energy_density'] > 0.0"])
 #   else:
 #     cr=ad.clone()
 
+#   center[0] = 200.0
    sz = yt.SlicePlot( df.ds, cut_axis, field, center=center, origin='native', data_source=ad )
 
-######## set the width of plot window
+#   ! set the width of plot window
 #   center[0] = 300.0
-#   sz = yt.SlicePlot( df.ds, cut_axis, field, center=center, origin='native', data_source=ad, width=(50,20)  )
+#   sz = yt.SlicePlot( df.ds, cut_axis, field, center=center, origin='native', data_source=ad, width=(300,120)  )
 
-######## cut cylinder shape region
-#   center: coordinate at center of cylinder shape region
-
+#   ! cut cylinder shape region 
+#   ! center: coordinate at the center of cylinder shape region
+#
 #   normal_vector = [-1.0, 0.0, 0.0]  
 #   radius = 0.7
 #   height = 1.0 
@@ -216,17 +218,18 @@ for df.ds in ts.piter():
 
 
 
-######## set range of color bar
-#   sz.set_zlim( field, 42.0, 'max')
+#   ! set the range of color bar
+#   sz.set_zlim( field, 0.1, 14.0)
    sz.set_zlim( field, 'min', 'max')
 
-######## set figure size
-#   sz.set_figure_size(100)
+#   ! set figure size
+#   sz.set_figure_size(150)
 
-######## set range of linear
+#   ! set linear scale around zero
 #   sz.set_log( field, log, linthresh=1e-10 )
    sz.set_log( field, log )
 
+#   ! zoom in
    sz.zoom(zoom)
 
 
@@ -249,13 +252,14 @@ for df.ds in ts.piter():
    sz.annotate_title('slice (' + cut_plane + ') ' + pwd[-1])
    sz.set_font({'weight':'bold', 'size':'22'})
 
+#  ! annote velocity vectors
+#   sz.annotate_velocity(factor = 16, normalize=False)
+#  ! annotate streamlines
+#   sz.annotate_streamlines('velocity_x', 'velocity_y')
 
-#   if field == 'Lorentz_factor':
-#     sz.annotate_velocity(factor = 16, normalize=False)
-#     sz.annotate_streamlines('velocity_x', 'velocity_y')
-
-   sz.annotate_line((11, 0, 20), (11, 40, 20), coord_system='data')
-   sz.annotate_line((30, 0, 20), (30, 40, 20), coord_system='data')
+#  ! annotate straight line
+# for line_x in range(50,95,5):
+#   sz.annotate_line((line_x, 0, 20), (line_x, 40, 20), coord_system='data')
 
    sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = {time:.2f} grid$/c$', text_args={'color':'black'})
    sz.set_cmap( field, colormap )
@@ -266,7 +270,7 @@ for df.ds in ts.piter():
     sz.annotate_grids()
 #   sz.annotate_quiver()
 #   sz.annotate_line((70,80),(70,0), coord_system='plot')
-#    sz.annotate_streamlines('momentum_y','momentum_z')
+#   sz.annotate_streamlines('momentum_y','momentum_z')
 #   sz.save( mpl_kwargs={"dpi":dpi} )
 #   sz.save( name='Data_%06d_' %idx_start + cut_plane, suffix='eps' )
    sz.save( name='Data_%06d_' %df.ds["DumpID"] + str(cut_plane), suffix='png' )
