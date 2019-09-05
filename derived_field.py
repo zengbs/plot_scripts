@@ -59,14 +59,21 @@ def _number_density_sr(field, data):
 
 def _thermal_energy_density_sr( field, data ):
    h=data["specific_enthalpy_sr"]
-   thermal_density = data["Dens"] * (h - 1.0 ) * ( ds.length_unit / ds.time_unit )**2 - data["Lorentz_factor"] * data["pressure_sr"]
-   return thermal_density
+   n=data["proper_number_density"]
+   ThermalEngyDens = n * (h - 1.0 ) * ( ds.mass_unit ) * ( ds.length_unit / ds.time_unit )**2 - data["pressure_sr"]
+   return ThermalEngyDens
+
+def _internal_energy_density_sr( field, data ):
+   h=data["specific_enthalpy_sr"]
+   n=data["proper_number_density"]
+   InternalEngyDens = n * h * ( ds.mass_unit ) * ( ds.length_unit / ds.time_unit )**2 - data["pressure_sr"]
+   return InternalEngyDens
 
 def _kinetic_energy_density_sr(field, data):
    h=data["specific_enthalpy_sr"]
    P = data["pressure_sr"]
    factor = data["Lorentz_factor"] 
-   kinetic_energy_density = data["Dens"] * h * ( ds.length_unit / ds.time_unit )**2 + P * ( factor - 1.0 )
+   kinetic_energy_density = ( data["Dens"] * h * ( ds.length_unit / ds.time_unit )**2 + P ) * ( factor - 1.0 )
    return kinetic_energy_density
 
 def _Bernoulli_const( field, data ):
@@ -106,19 +113,30 @@ def _3_velocity_x( field, data ):
    Ux = data["4_velocity_x"] 
    factor = data["Lorentz_factor"]
    Vx = Ux / factor
-   return Vx*(ds.length_unit/ds.time_unit)
+   return Vx
 
 def _3_velocity_y( field, data ):
    Uy = data["4_velocity_y"] 
    factor = data["Lorentz_factor"]
    Vy = Uy / factor
-   return Vy*(ds.length_unit/ds.time_unit)
+   return Vy
 
 def _3_velocity_z( field, data ):
    Uz = data["4_velocity_z"] 
    factor = data["Lorentz_factor"]
    Vz = Uz / factor
-   return Vz*(ds.length_unit/ds.time_unit)
+   return Vz
+
+def _3_velocity_magnitude( field, data ):
+   Ux = data["4_velocity_x"] 
+   Uy = data["4_velocity_y"] 
+   Uz = data["4_velocity_z"] 
+   factor = data["Lorentz_factor"]
+   Vx = Ux / factor
+   Vy = Uy / factor
+   Vz = Uz / factor
+   V = np.sqrt( Vx**2.0 + Vy**2.0 + Vz**2.0 )
+   return V
 
 def _Cp_per_particle( field, data ): 
    if   ds["EoS"] == 2:
@@ -248,18 +266,52 @@ def _threshold (field, data):
    return np.where( (LorentzFactor>25.0), 1.0, 0.0 )
 
 
-def _synchrotron_map( field, data ):
+def _synchrotron_emissivity( field, data ):
    global theta, phi, normal
 
+#  number density ratio between non-thermal particles to thermal particles
+   e1=1e-3
+#  energy density ratio between non-thermal particles to thermal particles
+   e2=1.0
+#  energy density ratio between magneticity and thermal particles
+   eB=1e-3
+#  ratio of the maximum and minimum non-thermal energy
+   C=1e3
+#  power-law index ( p != 2.0)
+   p=2.1
+
+#  internal energy density of fluid
+   h=data["specific_enthalpy_sr"]
+   n=data["proper_number_density"] * ds.length_unit**3
+   InternalEngyDens = n * h - data["pressure_sr"] * ( ds.length_unit * ds.time_unit**2 ) / ds.mass_unit
+
+#  normalization constant for power law distribution
+   A=( (e2*InternalEngyDens*(p-2.0)) / (1.0-C**(2.0-p)) )**(p-1.0)
+   B=(              (1.0-C**(1.0-p)) / (e1*n*(p-1.0))   )**(p-2.0)
+   N0=A/B
+
+#  magnetic energy density
+   uB = eB*InternalEngyDens
+
+#  magnitude of magnetic field
+   B= np.sqrt(8.0*np.pi*uB)
+
+#  critical frequency / Lorentz factor (TBD!)
+   Nu0=B
+
+#  observed frequency
+   Nu= 1.0
+
+#  emissivity
+   j=N0*uB* ( Nu0**(-1.5+0.5*p) ) * (1.0-data["Lorentz_factor"]**-2) * Nu**(0.5-0.5*p)
+#   v = data["3_velocity_magnitude"] * ds.time_unit / ds.length_unit
+#   j=N0*uB* ( Nu0**(-1.5+0.5*p) ) * Nu**(0.5-0.5*p) * (0.5*np.tanh( 10*v-7 )+0.5)
+
+#  beaming factor
    Ux = data["4_velocity_x"] 
    Uy = data["4_velocity_y"]
    Uz = data["4_velocity_z"]
-
    Var = data["Lorentz_factor"] - (Ux*normal[0]+Uy*normal[1]+Uz*normal[2])*(ds.time_unit/ds.length_unit)
-
-   # beaming factor
    BeamingFactor = Var**-2.0
 
-   h=data["specific_enthalpy_sr"]
-   thermal_density = data["Dens"] * (h - 1.0 ) * ( ds.length_unit / ds.time_unit )**2 - data["Lorentz_factor"] * data["pressure_sr"]
-   return thermal_density * BeamingFactor
+   return j * BeamingFactor*( ds.mass_unit ) / ( ds.length_unit * ds.time_unit**2 )

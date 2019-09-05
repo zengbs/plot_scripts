@@ -128,6 +128,9 @@ if field == '3_velocity_y':
 if field == '3_velocity_z':
       unit= 'code_length/code_time'
       function=df._3_velocity_z
+if field == '3_velocity_magnitude':
+      unit= 'code_length/code_time'
+      function=df._3_velocity_magnitude
 if field == 'entropy_per_particle':
       unit = ''
       function=df._entropy_per_particle
@@ -137,9 +140,12 @@ if field == 'sound_speed':
 if field == 'threshold':
       unit = ''
       function=df._threshold
-if field == 'synchrotron_map':
-      unit = ''
-      function=df._synchrotron_map
+if field == 'synchrotron_emissivity':
+      unit = 'code_mass/(code_length*code_time**2)'
+      function=df._synchrotron_emissivity
+if field == 'internal_energy_density_sr':
+      unit= 'code_mass/(code_length*code_time**2)'
+      function=df._internal_energy_density_sr
 
 
 t0 = time.time()
@@ -190,7 +196,7 @@ for df.ds in ts.piter():
      sys.exit(0)
      
 
-#   ! cut and plot
+#  ! cut and plot
 #   if ( field in ( '4_velocity_x' ,'4_velocity_y' ,'4_velocity_z', 'momentum_x', 'momentum_y', 'momentum_z', 'kinetic_energy_density' )):
 #     cr=ad.cut_region(["obj['kinetic_energy_density'] > 0.0"])
 #   else:
@@ -226,8 +232,8 @@ for df.ds in ts.piter():
 #   sz.set_figure_size(150)
 
 #   ! set linear scale around zero
-#   sz.set_log( field, log, linthresh=1e-10 )
-   sz.set_log( field, log )
+   sz.set_log( field, log, linthresh=1e-10 )
+#   sz.set_log( field, log )
 
 #   ! zoom in
    sz.zoom(zoom)
