@@ -99,6 +99,9 @@ if field == 'specific_enthalpy_sr':
       function=df._specific_enthalpy_sr
 if field == 'total_energy_per_volume':
       unit = 'code_mass/(code_length*code_time**2)'
+if field == 'gravitational_potential':
+      unit = 'code_length**2/code_time**2'
+      function=df._gravitational_potential
 if field == 'number_density_sr':
       unit = '1/code_length**3'
       function=df._number_density_sr
@@ -225,7 +228,7 @@ for df.ds in ts.piter():
 
 
 #   ! set the range of color bar
-#   sz.set_zlim( field, 0.1, 14.0)
+#   sz.set_zlim( field, 0.0, 1.0)
    sz.set_zlim( field, 'min', 'max')
 
 #   ! set figure size

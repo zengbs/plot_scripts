@@ -6,6 +6,9 @@ global ds
 def _temperature_sr(field, data):
     return data["Temp"]
 
+def _gravitational_potential(field, data):
+    return data["Pote"]
+
 def _pressure_sr( field, data ):
    pres = data["proper_number_density"] * data["Temp"]
    return pres*ds.mass_unit*ds.length_unit**2/(ds.time_unit**2)

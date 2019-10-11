@@ -5,9 +5,7 @@ import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
-
-def _temperature_sr(field, data):
-    return data["Temp"]
+import derived_field as df
 
 
 # load the command-line parameters
@@ -43,22 +41,40 @@ colormap    = 'arbre'
 center_mode = 'c'
 dpi         = 150
 
+Point1 = (0, 5, 5)
+Point2 = (10, 5, 5)
+axis='x'
 
 yt.enable_parallelism()
 
 ts = yt.load( [ prefix+'/Data_%06d'%idx for idx in range(idx_start, idx_end+1, didx) ] )
 
-for ds in ts.piter():
+for df.ds in ts.piter():
 
 # add new derived field
-   ds.add_field( ("gamer", "temp") , function=_temperature_sr  , sampling_type="cell", units="" )
-   field='temp'
-   my_ray=ds.ray((375, 94.75, 93.75), (375, 92.75, 93.75))
-   srt = np.argsort(my_ray['y'])
-   density = my_ray[field][srt]
+   field='gravitational_potential'
+
+   df.ds.add_field( ("gamer", 'specific_enthalpy_sr'        ), function=df._specific_enthalpy_sr        , sampling_type="cell", units=''                      )
+   df.ds.add_field( ("gamer", '4_velocity_x'                ), function=df._4_velocity_x                , sampling_type="cell", units='code_length/code_time' )
+   df.ds.add_field( ("gamer", '4_velocity_y'                ), function=df._4_velocity_y                , sampling_type="cell", units='code_length/code_time' )
+   df.ds.add_field( ("gamer", '4_velocity_z'                ), function=df._4_velocity_z                , sampling_type="cell", units='code_length/code_time' )
+   df.ds.add_field( ("gamer", 'Lorentz_factor'              ), function=df._lorentz_factor              , sampling_type="cell", units=''                      )
+#   df.ds.add_field( ("gamer", 'cylindrical_radial_4velocity'), function=df._cylindrical_radial_4velocity, sampling_type="cell", units='code_length/code_time' )
+   df.ds.add_field( ("gamer", 'proper_number_density'       ), function=df._proper_number_density       , sampling_type="cell", units='1/code_length**3'      )
+   df.ds.add_field( ("gamer", 'pressure_sr'                 ), function=df._pressure_sr          , sampling_type="cell", units='code_mass/(code_length*code_time**2)')
+   df.ds.add_field( ("gamer", field                         ), function=function                        , sampling_type="cell", units=unit                    )
+
+   my_ray=df.ds.ray(Point1, Point2)
+
+   srt = np.argsort(my_ray[axis])
+
    
+   plt.plot(np.array(my_ray[axis][srt]), np.array(my_ray[field][srt]), 'bo', markersize=2)
+
+
 #   plt.semilogy(np.array(my_ray['x'][srt]), np.array(my_ray[field][srt]), 'bo')
-   plt.plot(np.array(my_ray['y'][srt]), np.array(my_ray[field][srt]), 'bo', markersize=2)
-   plt.xlabel('y')
+#   plt.yscale("log")
+   plt.xlabel(axis)
    plt.ylabel(field)
-   plt.savefig("density_xsweep.png")
+
+   plt.savefig(field + "_ray_Data_%06d_" %df.ds["DumpID"] + str(axis) + "_axis")

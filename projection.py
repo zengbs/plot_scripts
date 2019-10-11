@@ -210,10 +210,13 @@ for df.ds in ts.piter():
            df.ds.add_field( ("gamer", field                  ), function=function                 , sampling_type="cell", units=unit                    )
   
 #      ! make a projected plot
-       sz = yt.ProjectionPlot( df.ds, 'z', field, center='c', data_source=ad )
-#       sz = yt.OffAxisProjectionPlot( df.ds, df.normal, field, 'c', width, north_vector=north_vector, data_source=ad )
+       if ( df.theta is 0 and df.phi is 0 ):
+          sz = yt.ProjectionPlot( df.ds, 'z', field, center='c', data_source=ad )
+       else:
+          sz = yt.OffAxisProjectionPlot( df.ds, df.normal, field, 'c', width, north_vector=north_vector, data_source=ad )
 
 #      ! set the range of color bar
+#       sz.set_zlim( field, 'min', 30)
        sz.set_zlim( field, 'min', 'max')
 
 #      ! set figure size
