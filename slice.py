@@ -228,8 +228,8 @@ for df.ds in ts.piter():
 
 
 #   ! set the range of color bar
-#   sz.set_zlim( field, 0.0, 1.0)
-   sz.set_zlim( field, 'min', 'max')
+   sz.set_zlim( field, 1e-8, 'max')
+#   sz.set_zlim( field, 'min', 'max')
 
 #   ! set figure size
 #   sz.set_figure_size(150)
