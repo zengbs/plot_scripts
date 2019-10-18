@@ -47,8 +47,8 @@ dpi         = 150
 #Point2 = [10, 5.0, 5.0]
 #Point1 = [0 ,  0,  0] 
 #Point2 = [10, 10, 10]
-
-Center = [5.0, 5.0, 5.0]
+radius=  0.0574
+Center = [radius,radius,radius ]
 
 
 # theta = angle between vector and z-axis 
@@ -57,18 +57,18 @@ Center = [5.0, 5.0, 5.0]
 # center --> side
 theta_1   = 90.0*np.pi/180.0
 phi_1     = 0.0*np.pi/180.0
-NPoints_1 = 12500 
+NPoints_1 = 143
 
 
 # center --> edge
 theta_2   = 90.0*np.pi/180.0
 phi_2     = 45.0*np.pi/180.0
-NPoints_2 = 17676
+NPoints_2 = 202
 
 # center --> corner
 theta_3   = np.arccos(1.0/np.sqrt(3.0)) 
 phi_3     = 45.0*np.pi/180.0
-NPoints_3 = 21649
+NPoints_3 = 249
 
 
 

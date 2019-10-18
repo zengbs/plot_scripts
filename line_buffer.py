@@ -49,7 +49,7 @@ Point2 = [100.0, 50.0, 50.0]
 #Point2 = [0.1148, 0.0574, 0.0574]
 #Point1 = (0, 0, 0)
 #Point2 = (10, 10, 10)
-NPoints = 500
+NPoints = 5000
 
 yt.enable_parallelism()
 
@@ -77,11 +77,19 @@ for df.ds in ts.piter():
    df.ds.add_field( ("gamer", 'temperature_sr'              ), function=df._temperature_sr              , sampling_type="cell", units='' )
    
 
-#  load data
+#  line plot
    plot = yt.LinePlot(df.ds, field, Point1, Point2, NPoints, figure_size=10)
-   plot.set_log(field, True)
-   plot.set_xlabel('x-axis')
-#   plot.set_ylim( field, 1e-5, 1.0)
-#   plot.set_x_unit('kpc')
-#   plot.set_unit(field, 'kg/cm**3')
-   plot.save( name='Data_%06d' %df.ds["DumpID"], suffix='png' )
+#   plot.set_log(field, True)
+#   plot.set_xlabel('x-axis')
+##   plot.set_ylim( field, 1e-5, 1.0)
+##   plot.set_x_unit('kpc')
+##   plot.set_unit(field, 'kg/cm**3')
+#   plot.save( name='Data_%06d' %df.ds["DumpID"], suffix='png' )
+
+
+#  extract data from line plot
+   axis = np.linspace(Point1[0], Point2[0], num=NPoints)
+
+   line = np.array(plot)
+   plt.plot(axis, line, 'bo')    
+   
