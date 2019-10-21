@@ -228,15 +228,15 @@ for df.ds in ts.piter():
 
 
 #   ! set the range of color bar
-#   sz.set_zlim( field, 1e-8, 'max')
    sz.set_zlim( field, 'min', 'max')
+#   sz.set_zlim( field, 4e-28, 1e-23)
 
 #   ! set figure size
 #   sz.set_figure_size(150)
 
 #   ! set linear scale around zero
-   sz.set_log( field, log, linthresh=1e-10 )
-#   sz.set_log( field, log )
+#   sz.set_log( field, log, linthresh=1e-10 )
+   sz.set_log( field, log )
 
 #   ! zoom in
    sz.zoom(zoom)
