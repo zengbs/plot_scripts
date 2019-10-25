@@ -77,7 +77,7 @@ if field == 'proper_mass_density':
       unit= 'g/cm**3'
       function=df._proper_mass_density
 if field == 'temperature_sr':
-      unit= 'K'
+      unit= 'GeV'
       function=df._temperature_sr
 if field == 'Lorentz_factor':
       unit = ''
@@ -173,14 +173,6 @@ for df.ds in ts.piter():
 
 # add new derived field
  if field not in ( 'total_energy_per_volume', 'momentum_x', 'momentum_y', 'momentum_z' ):
-#   df.ds.add_field( ("gamer", 'temperature_sr'              ), function=df._temperature_sr              , sampling_type="cell", units='K'                      )
-#   df.ds.add_field( ("gamer", 'specific_enthalpy_sr'        ), function=df._specific_enthalpy_sr        , sampling_type="cell", units='(cm/s)**2'                      )
-#   df.ds.add_field( ("gamer", '4_velocity_x'                ), function=df._4_velocity_x                , sampling_type="cell", units='cm/s' )
-#   df.ds.add_field( ("gamer", '4_velocity_y'                ), function=df._4_velocity_y                , sampling_type="cell", units='cm/s' )
-#   df.ds.add_field( ("gamer", '4_velocity_z'                ), function=df._4_velocity_z                , sampling_type="cell", units='cm/s' )
-#   df.ds.add_field( ("gamer", 'Lorentz_factor'              ), function=df._lorentz_factor              , sampling_type="cell", units=''                      )
-#   df.ds.add_field( ("gamer", 'proper_mass_density'         ), function=df._proper_mass_density       , sampling_type="cell", units='1/cm**3'      )
-#   df.ds.add_field( ("gamer", 'pressure_sr'                 ), function=df._pressure_sr          , sampling_type="cell", units='g/(cm*s**2)')
    df.ds.add_field( ("gamer", field                         ), function=function                        , sampling_type="cell", units=unit                    )
 
  ad = df.ds.all_data()
@@ -230,8 +222,8 @@ for df.ds in ts.piter():
 
 
 #   ! set the range of color bar
-#   sz.set_zlim( field, 'min', 'max')
-   sz.set_zlim( field, 4e-28, 1e-23)
+   sz.set_zlim( field, 'min', 'max')
+#   sz.set_zlim( field, 4e-28, 1e-23)
 
 #   ! set figure size
 #   sz.set_figure_size(150)
@@ -245,18 +237,12 @@ for df.ds in ts.piter():
 
 
    if cut_axis == 'x':
-#     sz.set_xlabel('y (grid)')
-#     sz.set_ylabel('z (grid)')
      x='%0.3f'% center[0]
      cut_plane ='x_'+x.zfill(8)
    elif cut_axis == 'y':
-#     sz.set_xlabel('z (grid)')
-#     sz.set_ylabel('x (grid)')
      y='%0.3f'% center[1]
      cut_plane ='y_'+y.zfill(8)
    elif cut_axis == 'z':
-#     sz.set_xlabel('x (grid)')
-#     sz.set_ylabel('y (grid)')
      z='%0.3f'% center[2]
      cut_plane ='z_'+z.zfill(8)
 

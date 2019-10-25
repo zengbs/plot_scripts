@@ -22,7 +22,7 @@ GeV = 1.0e9*eV
 
 def _temperature_sr(field, data):
     Temp = data["Temp"]
-    Temp *= ( mp * c**2 / kboltz )
+    Temp *= ( mp * c**2  )
     return Temp
 
 def _gravitational_potential(field, data):
@@ -30,9 +30,7 @@ def _gravitational_potential(field, data):
 
 def _pressure_sr( field, data ):
     Temp = data["Temp"]
-    Temp *= ( mp * c**2 / kboltz )
-
-    eta = kboltz * Temp / ( mp * c**2 )
+    eta = Temp
 
     if ds["EoS"] == 2:
       h_c2 = 1.0 + data["Gamma"] * eta / ( data["Gamma"] - 1.0 )
@@ -42,25 +40,22 @@ def _pressure_sr( field, data ):
       print ("Your EoS doesn't support yet!")
       sys.exit(0)
 
-    h = h_c2 * c**2
 
-    Ux = data["MomX"]*c**2/(data["Dens"]*h)
-    Uy = data["MomY"]*c**2/(data["Dens"]*h)
-    Uz = data["MomZ"]*c**2/(data["Dens"]*h)
+    Ux = data["MomX"]/(data["Dens"]*h_c2)
+    Uy = data["MomY"]/(data["Dens"]*h_c2)
+    Uz = data["MomZ"]/(data["Dens"]*h_c2)
     Lorentz_factor = np.sqrt(1 + (Ux/c)**2 + (Uy/c)**2 + (Uz/c)**2)
     rho = data["Dens"]/Lorentz_factor
 
-    pres = rho * Temp * kboltz
-    pres *= 1.0 / mp
+    pres = rho * eta * c**2
     return pres
 
 def _proper_mass_density( field, data ):
     #ds = ds1
     #ds = ds2
     Temp = data["Temp"]
-    Temp *= ( mp * c**2 / kboltz )
 
-    eta = kboltz * Temp / ( mp * c**2 )
+    eta = Temp
 
     if ds["EoS"] == 2:
       h_c2 = 1.0 + data["Gamma"] * eta / ( data["Gamma"] - 1.0 )
@@ -70,27 +65,18 @@ def _proper_mass_density( field, data ):
       print ("Your EoS doesn't support yet!")
       sys.exit(0)
 
-    h = h_c2 * c**2
 
-    Ux = data["MomX"]*c**2/(data["Dens"]*h)
-    Uy = data["MomY"]*c**2/(data["Dens"]*h)
-    Uz = data["MomZ"]*c**2/(data["Dens"]*h)
+    Ux = data["MomX"]/(data["Dens"]*h_c2)
+    Uy = data["MomY"]/(data["Dens"]*h_c2)
+    Uz = data["MomZ"]/(data["Dens"]*h_c2)
     Lorentz_factor = np.sqrt(1 + (Ux/c)**2 + (Uy/c)**2 + (Uz/c)**2)
     n = data["Dens"]/Lorentz_factor
     return n
 
 def _lorentz_factor( field, data ):
-    Ux = data["4_velocity_x"]
-    Uy = data["4_velocity_y"]
-    Uz = data["4_velocity_z"]
-    factor = np.sqrt(1 + (Ux/c)**2 + (Uy/c)**2 + (Uz/c)**2)
-    return factor
-
-def _4_velocity_x( field, data ):
     Temp = data["Temp"]
-    Temp *= ( mp * c**2 / kboltz )
 
-    eta = kboltz * Temp / ( mp * c**2 )
+    eta = Temp
 
     if ds["EoS"] == 2:
       h_c2 = 1.0 + data["Gamma"] * eta / ( data["Gamma"] - 1.0 )
@@ -100,25 +86,67 @@ def _4_velocity_x( field, data ):
       print ("Your EoS doesn't support yet!")
       sys.exit(0)
 
-    h = h_c2 * c**2
 
-    Ux = data["MomX"]*c**2/(data["Dens"]*h)
+    Ux = data["MomX"]/(data["Dens"]*h_c2)
+    Uy = data["MomY"]/(data["Dens"]*h_c2)
+    Uz = data["MomZ"]/(data["Dens"]*h_c2)
+    Lorentz_factor = np.sqrt(1 + (Ux/c)**2 + (Uy/c)**2 + (Uz/c)**2)
+    return Lorentz_factor
+
+def _4_velocity_x( field, data ):
+    Temp = data["Temp"]
+    eta = Temp
+
+    if ds["EoS"] == 2:
+      h_c2 = 1.0 + data["Gamma"] * eta / ( data["Gamma"] - 1.0 )
+    elif ds["EoS"] == 1:
+      h_c2 = 2.5*eta+np.sqrt(2.25*eta**2+1.0)
+    else:
+      print ("Your EoS doesn't support yet!")
+      sys.exit(0)
+
+
+    Ux = data["MomX"]/(data["Dens"]*h_c2)
     return Ux
 
 
 def _4_velocity_y( field, data ):
-   h=data["specific_enthalpy_sr"]
-   Uy = data["MomY"]*c**2/(data["Dens"]*h)
-   return Uy
+    Temp = data["Temp"]
+    eta = Temp
+
+    if ds["EoS"] == 2:
+      h_c2 = 1.0 + data["Gamma"] * eta / ( data["Gamma"] - 1.0 )
+    elif ds["EoS"] == 1:
+      h_c2 = 2.5*eta+np.sqrt(2.25*eta**2+1.0)
+    else:
+      print ("Your EoS doesn't support yet!")
+      sys.exit(0)
+
+
+    Uy = data["MomY"]/(data["Dens"]*h_c2)
+    return Uy
+
 
 def _4_velocity_z( field, data ):
-    h=data["specific_enthalpy_sr"]
-    Uz = data["MomZ"]*c**2/(data["Dens"]*h)
+    Temp = data["Temp"]
+    eta = Temp
+
+    if ds["EoS"] == 2:
+      h_c2 = 1.0 + data["Gamma"] * eta / ( data["Gamma"] - 1.0 )
+    elif ds["EoS"] == 1:
+      h_c2 = 2.5*eta+np.sqrt(2.25*eta**2+1.0)
+    else:
+      print ("Your EoS doesn't support yet!")
+      sys.exit(0)
+
+
+    Uz = data["MomZ"]/(data["Dens"]*h_c2)
     return Uz
 
+
 def _specific_enthalpy_sr( field, data ):
-    Temp = data["temperature_sr"]
-    eta = kboltz * Temp / ( mp * c**2 )
+    Temp = data["Temp"]
+    eta = Temp
 
     if ds["EoS"] == 2:
       h_c2 = 1.0 + data["Gamma"] * eta / ( data["Gamma"] - 1.0 )
@@ -227,8 +255,8 @@ def _Cp_per_particle( field, data ):
    if   ds["EoS"] == 2:
      Cp = data["Gamma"] / ( data["Gamma"] - 1.0 )
    elif ds["EoS"] == 1:
-     temp = data["temperature_sr"]
-     Cp = 2.50 + 2.25 * data["temperature_sr"]*kboltz / np.sqrt( 2.25 * (kboltz*data["temperature_sr"])**2 + (mp*c**2)**2 )
+     temp = data["Temp"]
+     Cp = 2.50 + 2.25 * data["Temp"] / np.sqrt( 2.25 * data["Temp"]**2 + 1.0 )
    else:
      print ("Your EoS doesn't support yet!")
      sys.exit(0)
@@ -240,8 +268,8 @@ def _Cv_per_particle( field, data ):
    if   ds["EoS"] == 2:
      Cv = 1.0 / ( data["Gamma"] - 1.0 )
    elif ds["EoS"] == 1:
-     temp = data["temperature_sr"]
-     Cv = 1.50 + 2.25 * data["temperature_sr"]*kboltz / np.sqrt( 2.25 * (kboltz*data["temperature_sr"])**2 + (mp*c**2)**2 )
+     temp = data["Temp"]
+     Cv = 1.50 + 2.25 * data["Temp"] / np.sqrt( 2.25 * data["Temp"]**2 + 1.0 )
    else:
      print ("Your EoS doesn't support yet!")
      sys.exit(0)
@@ -276,7 +304,7 @@ def _entropy_per_particle(field, data):
      T1=1.0
      n1=2.0
      A1=1.5*T1+np.sqrt(2.25*T1**2+1.0)
-     T2=data["temperature_sr"]
+     T2=data["Temp"]
      n2=data["proper_mass_density"] * ds.length_unit**3
      A2=1.5*T2+np.sqrt(2.25*T2**2+1.0)
      delta_s=1.5*np.log(T2/T1) + 1.5*np.log(A2/A1) - np.log(n2/n1)
@@ -358,38 +386,68 @@ def _synchrotron_emissivity( field, data ):
 #  power-law index ( p != 2.0)
    p=2.1
 
-#  internal energy density of fluid
-   h=data["specific_enthalpy_sr"]
-   n=data["proper_mass_density"] * ds.length_unit**3
-   InternalEngyDens = n * h - data["pressure_sr"] * ( ds.length_unit * ds.time_unit**2 ) / ds.mass_unit
+#  specific enthalpy
+   Temp = data["Temp"]
+   eta = Temp
+
+   if ds["EoS"] == 2:
+     h_c2 = 1.0 + data["Gamma"] * eta / ( data["Gamma"] - 1.0 )
+   elif ds["EoS"] == 1:
+     h_c2 = 2.5*eta+np.sqrt(2.25*eta**2+1.0)
+   else:
+     print ("Your EoS doesn't support yet!")
+     sys.exit(0)
+
+
+#  proper mass density
+   Ux = data["MomX"]/(data["Dens"]*h_c2)
+   Uy = data["MomY"]/(data["Dens"]*h_c2)
+   Uz = data["MomZ"]/(data["Dens"]*h_c2)
+   Lorentz_factor = np.sqrt(1 + (Ux/c)**2 + (Uy/c)**2 + (Uz/c)**2)
+   rho = data["Dens"]/Lorentz_factor
+
+#  pressure
+   pres = rho * eta * c**2
+
+
+#  internal energy density of fluid (including rest mass energy)
+   h = h_c2 * c**2
+   InternalEngyDens = rho * h - pres
+   u = InternalEngyDens / (mp*c**2)
+
+#  prope number density
+   n = rho / mp
 
 #  normalization constant for power law distribution
-   A=( (e2*InternalEngyDens*(p-2.0)) / (1.0-C**(2.0-p)) )**(p-1.0)
-   B=(              (1.0-C**(1.0-p)) / (e1*n*(p-1.0))   )**(p-2.0)
-   N0=A/B
+   A=( (  e2*u*(p-2.0) ) / ( 1.0-C**(2.0-p)) )**(p-1.0)
+   B=( (1.0-C**(1.0-p) ) / ( e1*n*(p-1.0))   )**(p-2.0)
+   N0=A*B
 
 #  magnetic energy density
    uB = eB*InternalEngyDens
 
 #  magnitude of magnetic field
-   B= np.sqrt(8.0*np.pi*uB)
+   B= np.sqrt( 8.0*np.pi*uB )
 
-#  critical frequency / Lorentz factor (TBD!)
-   Nu0=B
+#  critical frequency (Hz)
+#  --> We set particle mass to mp because 90% of cosmic ray are proton
+   Nu0=3.0*qp*B/(4.0*np.pi*mp*c)
 
-#  observed frequency
-   Nu= 1.0
+#  observed frequency (Hz)
+   Nu= 0.5*Nu0
 
 #  emissivity
-   j=N0*uB* ( Nu0**(-1.5+0.5*p) ) * (1.0-data["Lorentz_factor"]**-2) * Nu**(0.5-0.5*p)
-#   v = data["3_velocity_magnitude"] * ds.time_unit / ds.length_unit
-#   j=N0*uB* ( Nu0**(-1.5+0.5*p) ) * Nu**(0.5-0.5*p) * (0.5*np.tanh( 10*v-7 )+0.5)
+   j = ( qp**2/(mp*c**2) )**2 * c * N0*uB*  Nu0**(-1.5+0.5*p)  * Nu**(0.5-0.5*p)
+
+#  coefficient
+   j *= 4.0/9.0
+
+#  we assume emissivity is proportional to v**2
+   j *= (1.0-Lorentz_factor**-2)
 
 #  beaming factor
-   Ux = data["4_velocity_x"] 
-   Uy = data["4_velocity_y"]
-   Uz = data["4_velocity_z"]
-   Var = data["Lorentz_factor"] - (Ux*normal[0]+Uy*normal[1]+Uz*normal[2])*(ds.time_unit/ds.length_unit)
+   Var = Lorentz_factor - (Ux*normal[0]+Uy*normal[1]+Uz*normal[2]) / c
+
    BeamingFactor = Var**-2.0
 
-   return j * BeamingFactor*( ds.mass_unit ) / ( ds.length_unit * ds.time_unit**2 )
+   return j * BeamingFactor
