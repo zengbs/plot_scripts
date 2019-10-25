@@ -107,11 +107,7 @@ ts = yt.load( [ prefix+'/Data_%06d'%idx for idx in range(idx_start, idx_end+1, d
 for df.ds in ts.piter():
 
 #  add new derived field
-   #field='gravitational_potential'
-   field='proper_mass_density'
-   #field='pressure_sr'
-   #field='Dens'
-   #field='4_velocity_x'
+   field='temperature_sr'
 
 #   df.ds.add_field( ("gamer", 'specific_enthalpy_sr'        ), function=df._specific_enthalpy_sr        , sampling_type="cell", units=''                      )
 #   df.ds.add_field( ("gamer", '4_velocity_x'                ), function=df._4_velocity_x                , sampling_type="cell", units='code_length/code_time' )
@@ -119,9 +115,10 @@ for df.ds in ts.piter():
 #   df.ds.add_field( ("gamer", '4_velocity_z'                ), function=df._4_velocity_z                , sampling_type="cell", units='code_length/code_time' )
 #   df.ds.add_field( ("gamer", 'Lorentz_factor'              ), function=df._lorentz_factor              , sampling_type="cell", units=''                      )
 #   df.ds.add_field( ("gamer", '3_velocity_magnitude'        ), function=df._3_velocity_magnitude        , sampling_type="cell", units='code_length/code_time' )
-   df.ds.add_field( ("gamer", 'proper_mass_density'          ), function=df._proper_mass_density       , sampling_type="cell", units='g/cm**3'      )
+#   df.ds.add_field( ("gamer", 'proper_mass_density'          ), function=df._proper_mass_density       , sampling_type="cell", units='g/cm**3'      )
 #   df.ds.add_field( ("gamer", 'pressure_sr'                 ), function=df._pressure_sr                 , sampling_type="cell", units='g/(cm*s**2)')
 #   df.ds.add_field( ("gamer", 'gravitational_potential'     ), function=df._gravitational_potential     , sampling_type="cell", units='(code_length/code_time)**2')
+   df.ds.add_field( ("gamer", 'temperature_sr'               ), function=df._temperature_sr              , sampling_type="cell", units='K')
 
    NPoints = 5000
    
@@ -150,16 +147,16 @@ for df.ds in ts.piter():
    x_min = np.amin(ray)
    x_max = np.amax(ray)
    plt.xlim(x_min, x_max)
-   plt.ylim(4e-28, 1e-23) # mass density
+   #plt.ylim(4e-28, 1e-23) # mass density
    #plt.ylim(2e-11, 1e-8)  # pressure
    #plt.ylim(5e-5, 1.0)  # Dens
    #plt.ylim(-2e-4, 1e-4)  # Ux
 
-   plt.xscale('log') 
+   #plt.xscale('log') 
    plt.yscale('log') 
    #plt.yscale('symlog', linthreshy=1e-10) 
    plt.xlabel('kpc')
-   plt.ylabel('mass density (g/cm**3)')
+   plt.ylabel('temperuature (K)')
    #plt.ylabel('4-velocity_x (cm/s)')
    #plt.ylabel('pressure (g/(cm*s**2))')
    FigName = 'Data_%06d_LinePlot_%s.png' % ( df.ds["DumpID"], field )

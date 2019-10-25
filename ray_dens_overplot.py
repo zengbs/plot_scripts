@@ -17,8 +17,8 @@ parser.add_argument( '-e', action='store', required=True,  type=int, dest='idx_e
                      help='last data index' )
 parser.add_argument( '-d', action='store', required=False, type=int, dest='didx',
                      help='delta data index [%(default)d]', default=1 )
-parser.add_argument( '-i', action='store', required=False,  type=str, dest='prefix',
-                     help='data path prefix [%(default)s]', default='./' )
+#parser.add_argument( '-i', action='store', required=False,  type=str, dest='prefix',
+#                     help='data path prefix [%(default)s]', default='./' )
 
 args=parser.parse_args()
 
@@ -34,7 +34,7 @@ print( '-------------------------------------------------------------------\n' )
 idx_start   = args.idx_start
 idx_end     = args.idx_end
 didx        = args.didx
-prefix      = args.prefix
+#prefix      = args.prefix
 
 
 dpi         = 150
@@ -95,33 +95,35 @@ dpi         = 150
 #theta   = [  theta_1,   theta_2,   theta_3]
 #NPoints = [NPoints_1, NPoints_2, NPoints_3]
 
+#Point1 = [160, 160, 160]
+#Point2 = [320, 160, 160]
+Point1 = [80, 80, 80]
+Point2 = [160, 80, 80]
 
-Point1 = [80 ,80,80]
-Point2 = [160,80,80]
+
+prefix1='/projectY/tseng/gamer/bin/halo/test_24a'
+prefix2='/projectY/tseng/gamer/bin/halo/test_24b'
+prefix3='/projectY/tseng/gamer/bin/halo/test_24c'
 
 
-yt.enable_parallelism()
 
-ts = yt.load( [ prefix+'/Data_%06d'%idx for idx in range(idx_start, idx_end+1, didx) ] )
+for idx in range(idx_start, idx_end+1):
 
-for df.ds in ts.piter():
+   FileName1='/Data_%06d' % (idx)
+   FileName2='/Data_%06d' % (idx)
+   FileName3='/Data_%06d' % (idx)
+
+   df.ds1 = yt.load( prefix1+FileName1  )
+   df.ds2 = yt.load( prefix2+FileName2  )
+   df.ds3 = yt.load( prefix2+FileName2  )
+
 
 #  add new derived field
-   #field='gravitational_potential'
    field='proper_mass_density'
-   #field='pressure_sr'
-   #field='Dens'
-   #field='4_velocity_x'
 
-#   df.ds.add_field( ("gamer", 'specific_enthalpy_sr'        ), function=df._specific_enthalpy_sr        , sampling_type="cell", units=''                      )
-#   df.ds.add_field( ("gamer", '4_velocity_x'                ), function=df._4_velocity_x                , sampling_type="cell", units='code_length/code_time' )
-#   df.ds.add_field( ("gamer", '4_velocity_y'                ), function=df._4_velocity_y                , sampling_type="cell", units='code_length/code_time' )
-#   df.ds.add_field( ("gamer", '4_velocity_z'                ), function=df._4_velocity_z                , sampling_type="cell", units='code_length/code_time' )
-#   df.ds.add_field( ("gamer", 'Lorentz_factor'              ), function=df._lorentz_factor              , sampling_type="cell", units=''                      )
-#   df.ds.add_field( ("gamer", '3_velocity_magnitude'        ), function=df._3_velocity_magnitude        , sampling_type="cell", units='code_length/code_time' )
-   df.ds.add_field( ("gamer", 'proper_mass_density'          ), function=df._proper_mass_density       , sampling_type="cell", units='g/cm**3'      )
-#   df.ds.add_field( ("gamer", 'pressure_sr'                 ), function=df._pressure_sr                 , sampling_type="cell", units='g/(cm*s**2)')
-#   df.ds.add_field( ("gamer", 'gravitational_potential'     ), function=df._gravitational_potential     , sampling_type="cell", units='(code_length/code_time)**2')
+   df.ds1.add_field( ("gamer", 'proper_mass_density'          ), function=df._proper_mass_density       , sampling_type="cell", units='g/cm**3'      )
+   df.ds2.add_field( ("gamer", 'proper_mass_density'          ), function=df._proper_mass_density       , sampling_type="cell", units='g/cm**3'      )
+   df.ds3.add_field( ("gamer", 'proper_mass_density'          ), function=df._proper_mass_density       , sampling_type="cell", units='g/cm**3'      )
 
    NPoints = 5000
    
@@ -131,37 +133,48 @@ for df.ds in ts.piter():
    
    for j in range(0, NPoints):
       point          = [ray[j], Point1[1], Point1[2]]
-      point_obj      = df.ds.point(point*df.ds.length_unit)
-      field_at_point = point_obj['gamer', field]
-      np_ary = np.asarray(field_at_point)
+
+      point_obj1      = df.ds1.point(point*df.ds1.length_unit)
+      field_at_point1 = point_obj1['gamer', field]
+      np_ary1 = np.asarray(field_at_point1)
+
+      point_obj2      = df.ds2.point(point*df.ds2.length_unit)
+      field_at_point2 = point_obj2['gamer', field]
+      np_ary2 = np.asarray(field_at_point2)
+
+      point_obj3      = df.ds3.point(point*df.ds3.length_unit)
+      field_at_point3 = point_obj3['gamer', field]
+      np_ary3 = np.asarray(field_at_point3)
 
       if (j is 0):
-        field_gamer = np_ary
+        field_gamer1 = np_ary1
+        field_gamer2 = np_ary2
+        field_gamer3 = np_ary3
       else:
-        field_gamer = np.hstack((field_gamer,np_ary))
+        field_gamer1 = np.hstack((field_gamer1,np_ary1))
+        field_gamer2 = np.hstack((field_gamer2,np_ary2))
+        field_gamer3 = np.hstack((field_gamer3,np_ary3))
 
 #  offset
    ray -= 80.0
 
 #  plot
-   plt.plot	( ray, field_gamer, 'ro', markersize=1.0 )
+   plt.plot	( ray, field_gamer1, 'ro', markersize=1.0, label='f=1+3T' )
+   plt.plot	( ray, field_gamer2, 'bx', markersize=1.0, label='f=1+3T+3.5T^2' )
+   plt.plot	( ray, field_gamer3, 'kv', markersize=1.0, label='f=full expression' )
+
+   plt.legend(loc='lower left')
 
 #  get extreme values
    x_min = np.amin(ray)
    x_max = np.amax(ray)
    plt.xlim(x_min, x_max)
    plt.ylim(4e-28, 1e-23) # mass density
-   #plt.ylim(2e-11, 1e-8)  # pressure
-   #plt.ylim(5e-5, 1.0)  # Dens
-   #plt.ylim(-2e-4, 1e-4)  # Ux
 
    plt.xscale('log') 
    plt.yscale('log') 
-   #plt.yscale('symlog', linthreshy=1e-10) 
    plt.xlabel('kpc')
    plt.ylabel('mass density (g/cm**3)')
-   #plt.ylabel('4-velocity_x (cm/s)')
-   #plt.ylabel('pressure (g/(cm*s**2))')
-   FigName = 'Data_%06d_LinePlot_%s.png' % ( df.ds["DumpID"], field )
+   FigName = 'Data_%06d_LinePlot_%s_ComparisonT.png' % ( df.ds1["DumpID"], field )
    plt.savefig( FigName )
    plt.close()

@@ -73,81 +73,81 @@ if ( start_cut > end_cut ):
    print('-ex should be greater than -sx!')
    sys.exit(0)
 
-if field == 'proper_number_density':
-      unit= '1/code_length**3'
-      function=df._proper_number_density
+if field == 'proper_mass_density':
+      unit= 'g/cm**3'
+      function=df._proper_mass_density
 if field == 'temperature_sr':
-      unit= ''
+      unit= 'K'
       function=df._temperature_sr
 if field == 'Lorentz_factor':
       unit = ''
       function=df._lorentz_factor
 if field == 'pressure_sr':
-      unit= 'code_mass/(code_length*code_time**2)'
+      unit= 'g/(cm*s**2)'
       function=df._pressure_sr
 if field == '4_velocity_x':
-      unit= 'code_length/code_time'
+      unit= 'cm/s'
       function=df._4_velocity_x
 if field == '4_velocity_y':
-      unit= 'code_length/code_time'
+      unit= 'cm/s'
       function=df._4_velocity_y
 if field == '4_velocity_z':
-      unit= 'code_length/code_time'
+      unit= 'cm/s'
       function=df._4_velocity_z
 if field == 'specific_enthalpy_sr':
-      unit= ''
+      unit= '(cm/s)**2'
       function=df._specific_enthalpy_sr
 if field == 'total_energy_per_volume':
-      unit = 'code_mass/(code_length*code_time**2)'
+      unit = 'g/(cm*s**2)'
 if field == 'gravitational_potential':
-      unit = 'code_length**2/code_time**2'
+      unit= '(cm/s)**2'
       function=df._gravitational_potential
-if field == 'number_density_sr':
-      unit = '1/code_length**3'
-      function=df._number_density_sr
+if field == 'mass_density_sr':
+      unit = '1/cm**3'
+      function=df._mass_density_sr
 if field in ('momentum_x', 'momentum_y', 'momentum_z'):
-        unit = 'code_mass/(code_time*code_length**2)'
+        unit = 'g/(s*cm**2)'
 if field == 'thermal_energy_density_sr':
-      unit= 'code_mass/(code_length*code_time**2)'
+      unit= 'g/(cm*s**2)'
       function=df._thermal_energy_density_sr
 if field == 'kinetic_energy_density_sr':
-      unit= 'code_mass/(code_length*code_time**2)'
+      unit= 'g/(cm*s**2)'
       function=df._kinetic_energy_density_sr
 if field == 'Bernoulli_constant':
-      unit= ''
+      unit= '(cm/s)**2'
       function=df._Bernoulli_const
 if field == 'spherical_radial_4velocity':
-      unit= 'code_length/code_time'
+      unit= 'cm/s'
       function=df._spherical_radial_4velocity
 if field == 'cylindrical_radial_4velocity':
-      unit= 'code_length/code_time'
+      unit= 'cm/s'
       function=df._cylindrical_radial_4velocity
 if field == '3_velocity_x':
-      unit= 'code_length/code_time'
+      unit= 'cm/s'
       function=df._3_velocity_x
 if field == '3_velocity_y':
-      unit= 'code_length/code_time'
+      unit= 'cm/s'
       function=df._3_velocity_y
 if field == '3_velocity_z':
-      unit= 'code_length/code_time'
+      unit= 'cm/s'
       function=df._3_velocity_z
 if field == '3_velocity_magnitude':
-      unit= 'code_length/code_time'
+      unit= 'cm/s'
       function=df._3_velocity_magnitude
 if field == 'entropy_per_particle':
       unit = ''
       function=df._entropy_per_particle
 if field == 'sound_speed':
-      unit = 'code_length/code_time'
+      unit = 'cm/s'
       function=df._sound_speed
 if field == 'threshold':
       unit = ''
       function=df._threshold
 if field == 'synchrotron_emissivity':
-      unit = 'code_mass/(code_length*code_time**2)'
+      unit = 'g/(cm*s**2)'
       function=df._synchrotron_emissivity
 if field == 'internal_energy_density_sr':
-      unit= 'code_mass/(code_length*code_time**2)'
+      unit= 'g/(cm*s**2)'
       function=df._internal_energy_density_sr
 
 
@@ -160,6 +160,7 @@ ts = yt.load( [ prefix+'/Data_%06d'%idx for idx in range(idx_start, idx_end+1, d
 
 for df.ds in ts.piter():
 
+
 # take notes
  if df.ds["EoS"] == 2:
    print ('%s %.6f %s' % ('Equation of state: constant gamma (', df.ds["Gamma"], ')\n'))
@@ -168,17 +169,18 @@ for df.ds in ts.piter():
  else:
    print ("Your EoS doesn't support yet!\n")
    sys.exit(0)
- 
+
+
 # add new derived field
  if field not in ( 'total_energy_per_volume', 'momentum_x', 'momentum_y', 'momentum_z' ):
-   df.ds.add_field( ("gamer", 'specific_enthalpy_sr'        ), function=df._specific_enthalpy_sr        , sampling_type="cell", units=''                      )
-   df.ds.add_field( ("gamer", '4_velocity_x'                ), function=df._4_velocity_x                , sampling_type="cell", units='code_length/code_time' )
-   df.ds.add_field( ("gamer", '4_velocity_y'                ), function=df._4_velocity_y                , sampling_type="cell", units='code_length/code_time' )
-   df.ds.add_field( ("gamer", '4_velocity_z'                ), function=df._4_velocity_z                , sampling_type="cell", units='code_length/code_time' )
-   df.ds.add_field( ("gamer", 'Lorentz_factor'              ), function=df._lorentz_factor              , sampling_type="cell", units=''                      )
-#   df.ds.add_field( ("gamer", 'cylindrical_radial_4velocity'), function=df._cylindrical_radial_4velocity, sampling_type="cell", units='code_length/code_time' )
-   df.ds.add_field( ("gamer", 'proper_number_density'       ), function=df._proper_number_density       , sampling_type="cell", units='1/code_length**3'      )
-   df.ds.add_field( ("gamer", 'pressure_sr'                 ), function=df._pressure_sr          , sampling_type="cell", units='code_mass/(code_length*code_time**2)')
+#   df.ds.add_field( ("gamer", 'temperature_sr'              ), function=df._temperature_sr              , sampling_type="cell", units='K'                      )
+#   df.ds.add_field( ("gamer", 'specific_enthalpy_sr'        ), function=df._specific_enthalpy_sr        , sampling_type="cell", units='(cm/s)**2'                      )
+#   df.ds.add_field( ("gamer", '4_velocity_x'                ), function=df._4_velocity_x                , sampling_type="cell", units='cm/s' )
+#   df.ds.add_field( ("gamer", '4_velocity_y'                ), function=df._4_velocity_y                , sampling_type="cell", units='cm/s' )
+#   df.ds.add_field( ("gamer", '4_velocity_z'                ), function=df._4_velocity_z                , sampling_type="cell", units='cm/s' )
+#   df.ds.add_field( ("gamer", 'Lorentz_factor'              ), function=df._lorentz_factor              , sampling_type="cell", units=''                      )
+#   df.ds.add_field( ("gamer", 'proper_mass_density'         ), function=df._proper_mass_density       , sampling_type="cell", units='1/cm**3'      )
+#   df.ds.add_field( ("gamer", 'pressure_sr'                 ), function=df._pressure_sr          , sampling_type="cell", units='g/(cm*s**2)')
    df.ds.add_field( ("gamer", field                         ), function=function                        , sampling_type="cell", units=unit                    )
 
  ad = df.ds.all_data()
@@ -228,8 +230,8 @@ for df.ds in ts.piter():
 
 
 #   ! set the range of color bar
-   sz.set_zlim( field, 'min', 'max')
-#   sz.set_zlim( field, 4e-28, 1e-23)
+#   sz.set_zlim( field, 'min', 'max')
+   sz.set_zlim( field, 4e-28, 1e-23)
 
 #   ! set figure size
 #   sz.set_figure_size(150)
@@ -243,18 +245,18 @@ for df.ds in ts.piter():
 
 
    if cut_axis == 'x':
-     sz.set_xlabel('y (grid)')
-     sz.set_ylabel('z (grid)')
+#     sz.set_xlabel('y (grid)')
+#     sz.set_ylabel('z (grid)')
      x='%0.3f'% center[0]
      cut_plane ='x_'+x.zfill(8)
    elif cut_axis == 'y':
-     sz.set_xlabel('z (grid)')
-     sz.set_ylabel('x (grid)')
+#     sz.set_xlabel('z (grid)')
+#     sz.set_ylabel('x (grid)')
      y='%0.3f'% center[1]
      cut_plane ='y_'+y.zfill(8)
    elif cut_axis == 'z':
-     sz.set_xlabel('x (grid)')
-     sz.set_ylabel('y (grid)')
+#     sz.set_xlabel('x (grid)')
+#     sz.set_ylabel('y (grid)')
      z='%0.3f'% center[2]
      cut_plane ='z_'+z.zfill(8)
 
@@ -270,10 +272,14 @@ for df.ds in ts.piter():
 # for line_x in range(50,95,5):
 #   sz.annotate_line((line_x, 0, 20), (line_x, 40, 20), coord_system='data')
 
-   sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = {time:.2f} grid$/c$', text_args={'color':'black'})
+   df.ds["Unit_L"]*df.ds.length_unit
+   UNIT_T = df.ds["Unit_T"]*df.ds.time_unit
+
+
+   sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = {time:.4f} kpc/$c$', text_args={'color':'black'})
    sz.set_cmap( field, colormap )
    sz.set_unit( field, unit )
-   sz.set_axes_unit( 'code_length' )
+   sz.set_axes_unit( 'kpc' )
 
    if grid:
     sz.annotate_grids()
