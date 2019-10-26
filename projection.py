@@ -205,13 +205,13 @@ for df.ds in ts.piter():
            df.ds.add_field( ("gamer", field                  ), function=function                 , sampling_type="cell", units=unit                    )
   
 #      ! make a projected plot
-       if ( df.theta is 0 and df.phi is 0 ):
+       if ( df.theta == 0.0 and df.phi == 0.0 ):
           sz = yt.ProjectionPlot( df.ds, 'z', field, center='c', data_source=ad )
        else:
           sz = yt.OffAxisProjectionPlot( df.ds, df.normal, field, 'c', width, north_vector=north_vector, data_source=ad )
 
 #      ! set the range of color bar
-#       sz.set_zlim( field, 1e-11, 1e-9)
+#       sz.set_zlim( field, 5e-8, 1e-7)
        sz.set_zlim( field, 'min', 'max')
 
 #      ! set figure size
@@ -235,11 +235,10 @@ for df.ds in ts.piter():
 
 #      ! annotate straight line
 #       sz.annotate_line((line_x, 0, 20), (line_x, 40, 20), coord_system='data')
-
        sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = {time:.2f} grid$/c$', text_args={'color':'black'})
        sz.set_cmap( field, colormap )
-       sz.set_unit( field, 'code_length*'+unit )
-       sz.set_axes_unit( 'code_length' )
+       sz.set_unit( field, 'cm*'+unit )
+       sz.set_axes_unit( 'cm' )
 
 #      ! save picture
        filename = 'theta=%.2f_phi=%.2f' %(df.theta, df.phi)

@@ -403,7 +403,9 @@ def _synchrotron_emissivity( field, data ):
    Ux = data["MomX"]/(data["Dens"]*h_c2)
    Uy = data["MomY"]/(data["Dens"]*h_c2)
    Uz = data["MomZ"]/(data["Dens"]*h_c2)
+   
    Lorentz_factor = np.sqrt(1 + (Ux/c)**2 + (Uy/c)**2 + (Uz/c)**2)
+
    rho = data["Dens"]/Lorentz_factor
 
 #  pressure
@@ -419,8 +421,8 @@ def _synchrotron_emissivity( field, data ):
    n = rho / mp
 
 #  normalization constant for power law distribution
-   A=( (  e2*u*(p-2.0) ) / ( 1.0-C**(2.0-p)) )**(p-1.0)
-   B=( (1.0-C**(1.0-p) ) / ( e1*n*(p-1.0))   )**(p-2.0)
+   A = ( (  e2*u*(p-2.0) ) / ( 1.0-C**(2.0-p)) )**(p-1.0)
+   B = ( (1.0-C**(1.0-p) ) / ( e1*n*(p-1.0))   )**(p-2.0)
    N0=A*B
 
 #  magnetic energy density
@@ -434,7 +436,7 @@ def _synchrotron_emissivity( field, data ):
    Nu0=3.0*qp*B/(4.0*np.pi*mp*c)
 
 #  observed frequency (Hz)
-   Nu= 0.5*Nu0
+   Nu= 1.0*Nu0
 
 #  emissivity
    j = ( qp**2/(mp*c**2) )**2 * c * N0*uB*  Nu0**(-1.5+0.5*p)  * Nu**(0.5-0.5*p)
@@ -447,7 +449,6 @@ def _synchrotron_emissivity( field, data ):
 
 #  beaming factor
    Var = Lorentz_factor - (Ux*normal[0]+Uy*normal[1]+Uz*normal[2]) / c
-
    BeamingFactor = Var**-2.0
 
    return j * BeamingFactor
