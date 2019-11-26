@@ -22,6 +22,8 @@ parser.add_argument( '-st', action='store', required=True,  type=int,   dest='id
 parser.add_argument( '-et', action='store', required=True,  type=int,   dest='idx_end',   help='last data index' )
 parser.add_argument( '-dt', action='store', required=False, type=int,   dest='didx',      help='delta data index [%(default)d]', default=1 )
 parser.add_argument( '-i',  action='store', required=False, type=str,   dest='prefix',    help='data path prefix [%(default)s]', default='./' )
+parser.add_argument( '-max',action='store', required=False, type=float, dest='maxlim',    help='max lim', default=float('nan') )
+parser.add_argument( '-min',action='store', required=False, type=float, dest='minlim',    help='min lim', default=float('nan') )
 parser.add_argument( '-z',  action='store', required=True,  type=int,   dest='zoom',      help='zoom in' )
 parser.add_argument( '-l',  action='store', required=True,  type=int,   dest='log',       help='log scale' )
 parser.add_argument( '-g',  action='store', required=True,  type=int,   dest='grid',      help='grids' )
@@ -221,9 +223,16 @@ for df.ds in ts.piter():
 
 
 
-#   ! set the range of color bar
-   sz.set_zlim( field, 'min', 'max')
-#   sz.set_zlim( field, 4e-28, 1e-23)
+#  ! set the range of color bar
+   if   (     math.isnan(minlim) and not math.isnan(maxlim) ):
+     sz.set_zlim( field, "min", maxlim)
+   elif ( not math.isnan(minlim) and     math.isnan(maxlim) ):
+     sz.set_zlim( field, minlim, "max")
+   elif (     math.isnan(minlim) and     math.isnan(maxlim) ):
+     sz.set_zlim( field, "min", "max")
+   else:
+     sz.set_zlim( field, minlim, maxlim)
+
 
 #   ! set figure size
 #   sz.set_figure_size(150)

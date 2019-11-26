@@ -6,6 +6,7 @@ import yt.visualization.eps_writer as eps
 import derived_field as df
 import time
 import os
+import math
 
 pwd = os.getcwd()
 pwd = pwd.split('/')
@@ -18,11 +19,13 @@ parser.add_argument( '-stheta', action='store', required=True,  type=float, dest
 parser.add_argument( '-etheta', action='store', required=True,  type=float, dest='tail_theta', help='end theta' )
 parser.add_argument( '-sphi  ', action='store', required=True,  type=float, dest='head_phi',   help='start phi' )
 parser.add_argument( '-ephi  ', action='store', required=True,  type=float, dest='tail_phi',   help='end phi' )
-parser.add_argument( '-nx'    , action='store', required=True,  type=float, dest='N_cut',      help='number of cuts between -sx and -ex' )
+parser.add_argument( '-nx'    , action='store', required=True,  type=float, dest='N_cut',      help='number of cuts between -sx and -ex')
 parser.add_argument( '-st'    , action='store', required=True,  type=int,   dest='idx_start',  help='first data index' )
 parser.add_argument( '-et'    , action='store', required=True,  type=int,   dest='idx_end',    help='last data index' )
 parser.add_argument( '-dt'    , action='store', required=False, type=int,   dest='didx',       help='delta data index [%(default)d]', default=1 )
 parser.add_argument( '-i'     , action='store', required=False, type=str,   dest='prefix',     help='data path prefix [%(default)s]', default='./' )
+parser.add_argument( '-max'   , action='store', required=False, type=float, dest='maxlim',     help='max lim', default=float('nan') )
+parser.add_argument( '-min'   , action='store', required=False, type=float, dest='minlim',     help='min lim', default=float('nan') )
 parser.add_argument( '-z'     , action='store', required=True,  type=int,   dest='zoom',       help='zoom in' )
 parser.add_argument( '-l'     , action='store', required=True,  type=int,   dest='log',        help='log scale' )
 
@@ -48,6 +51,8 @@ didx        = args.didx
 prefix      = args.prefix
 zoom        = args.zoom
 log         = args.log
+maxlim      = args.maxlim
+minlim      = args.minlim
 
 colormap    = 'afmhot'
 
@@ -139,6 +144,7 @@ if field == 'threshold':
       function=df._threshold
 if field == 'synchrotron_emissivity':
       unit = 'g/(cm*s**2)'
+      #unit = 'g**2/(cm**4*s**2)'
       function=df._synchrotron_emissivity
 if field == 'internal_energy_density_sr':
       unit= 'g/(cm*s**2)'
@@ -211,8 +217,14 @@ for df.ds in ts.piter():
           sz = yt.OffAxisProjectionPlot( df.ds, df.normal, field, 'c', width, north_vector=north_vector, data_source=ad )
 
 #      ! set the range of color bar
-#       sz.set_zlim( field, 5e-8, 1e-7)
-       sz.set_zlim( field, 'min', 'max')
+       if   (     math.isnan(minlim) and not math.isnan(maxlim) ):
+         sz.set_zlim( field, "min", maxlim)
+       elif ( not math.isnan(minlim) and     math.isnan(maxlim) ):
+         sz.set_zlim( field, minlim, "max")
+       elif (     math.isnan(minlim) and     math.isnan(maxlim) ):
+         sz.set_zlim( field, "min", "max")
+       else:
+         sz.set_zlim( field, minlim, maxlim)
 
 #      ! set figure size
 #       sz.set_figure_size(150)
@@ -238,7 +250,7 @@ for df.ds in ts.piter():
        sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = {time:.2f} grid$/c$', text_args={'color':'black'})
        sz.set_cmap( field, colormap )
        sz.set_unit( field, 'cm*'+unit )
-       sz.set_axes_unit( 'cm' )
+       sz.set_axes_unit( 'kpc' )
 
 #      ! save picture
        filename = 'theta=%.2f_phi=%.2f' %(df.theta, df.phi)
