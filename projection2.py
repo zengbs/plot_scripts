@@ -26,6 +26,9 @@ parser.add_argument( '-dt'    , action='store', required=False, type=int,   dest
 parser.add_argument( '-i'     , action='store', required=False, type=str,   dest='prefix',     help='data path prefix [%(default)s]', default='./' )
 parser.add_argument( '-max'   , action='store', required=False, type=float, dest='maxlim',     help='max lim', default=float('nan') )
 parser.add_argument( '-min'   , action='store', required=False, type=float, dest='minlim',     help='min lim', default=float('nan') )
+parser.add_argument( '-max_max'  , action='store', required=False, type=float, dest='max_max',     help='min lim', default=float('nan') )
+parser.add_argument( '-max_min'  , action='store', required=False, type=float, dest='max_min',     help='min lim', default=float('nan') )
+parser.add_argument( '-max_d'  , action='store', required=True, type=float, dest='max_d',     help='min lim', default=float('nan') )
 parser.add_argument( '-z'     , action='store', required=True,  type=int,   dest='zoom',       help='zoom in' )
 parser.add_argument( '-l'     , action='store', required=True,  type=int,   dest='log',        help='log scale' )
 
@@ -53,6 +56,9 @@ zoom        = args.zoom
 log         = args.log
 maxlim      = args.maxlim
 minlim      = args.minlim
+max_max     = args.max_max
+max_min     = args.max_min
+max_d       = args.max_d
 
 colormap    = 'afmhot'
 
@@ -217,50 +223,59 @@ for df.ds in ts.piter():
           sz = yt.OffAxisProjectionPlot( df.ds, df.normal, field, 'c', width, north_vector=north_vector, data_source=ad )
 
 #      ! set the range of color bar
-       if   (     math.isnan(minlim) and not math.isnan(maxlim) ):
-         sz.set_zlim( field, "min", maxlim)
-       elif ( not math.isnan(minlim) and     math.isnan(maxlim) ):
-         sz.set_zlim( field, minlim, "max")
-       elif (     math.isnan(minlim) and     math.isnan(maxlim) ):
-         sz.set_zlim( field, "min", "max")
-       else:
-         sz.set_zlim( field, minlim, maxlim)
+       #if   (     math.isnan(minlim) and not math.isnan(maxlim) ):
+       #  sz.set_zlim( field, "min", maxlim)
+       #elif ( not math.isnan(minlim) and     math.isnan(maxlim) ):
+       #  sz.set_zlim( field, minlim, "max")
+       #elif (     math.isnan(minlim) and     math.isnan(maxlim) ):
+       #  sz.set_zlim( field, "min", "max")
+       #else:
+       #  sz.set_zlim( field, minlim, maxlim)
 
-#      ! set figure size
-#       sz.set_figure_size(150)
+       maxlim = max_min
 
-#      ! set linear scale around zero
-#       sz.set_log( field, log, linthresh=1e-10 )
-       sz.set_log( field, log )
+       while ( maxlim <= max_max ):
 
-#      ! zoom in
-       sz.zoom(zoom)
 
-#      ! unit conversion
-       df.theta *= 180.0/np.pi
-       df.phi   *= 180.0/np.pi
+           sz.set_zlim( field, 'min', maxlim)
 
-#      ! annotate a title
-       title = r'$\theta = %.2f^\circ, \phi=%.2f^\circ$' %(df.theta, df.phi)
-       sz.annotate_title(title + pwd[-1])
-       sz.set_font({'weight':'bold', 'size':'22'})
+#          ! set figure size
+#           sz.set_figure_size(150)
 
-#      ! annotate straight line
-#       sz.annotate_line((line_x, 0, 20), (line_x, 40, 20), coord_system='data')
-       sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = {time:.2f} grid$/c$', text_args={'color':'black'})
-       sz.set_cmap( field, colormap )
-       sz.set_unit( field, 'cm*'+unit )
-       sz.set_axes_unit( 'kpc' )
+#          ! set linear scale around zero
+#           sz.set_log( field, log, linthresh=1e-10 )
+           sz.set_log( field, log )
 
-#      ! save picture
-       filename = 'theta=%.2f_phi=%.2f' %(df.theta, df.phi)
-       sz.save( name='Data_%06d_' %df.ds["DumpID"] + filename, suffix='png' )
+#          ! zoom in
+           sz.zoom(zoom)
 
-#      ! advance angle
-       if N_cut > 1:
-        angle += np.fabs(head_angle - tail_angle) / N_cut
-       else:
-        angle += tail_angle + 1
+#          ! unit conversion
+           df.theta *= 180.0/np.pi
+           df.phi   *= 180.0/np.pi
+
+#          ! annotate a title
+           title = r'$\theta = %.2f^\circ, \phi=%.2f^\circ$' %(df.theta, df.phi)
+           sz.annotate_title(title + pwd[-1])
+           sz.set_font({'weight':'bold', 'size':'22'})
+
+#          ! annotate straight line
+#           sz.annotate_line((line_x, 0, 20), (line_x, 40, 20), coord_system='data')
+           sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = {time:.2f} grid$/c$', text_args={'color':'black'})
+           sz.set_cmap( field, colormap )
+           sz.set_unit( field, 'cm*'+unit )
+           sz.set_axes_unit( 'kpc' )
+
+#          ! save picture
+           filename = 'theta=%.2f_phi=%.2f' %(df.theta, df.phi)
+           sz.save( name='Data_%06d_%2.1e' %( df.ds["DumpID"], maxlim ) + filename, suffix='png' )
+
+#          ! advance angle
+           if N_cut > 1:
+            angle += np.fabs(head_angle - tail_angle) / N_cut
+           else:
+            angle += tail_angle + 1
+
+           maxlim += max_d
 
 # ! end timer
 t1 = time.time()

@@ -6,6 +6,7 @@ import yt.visualization.eps_writer as eps
 import derived_field as df
 import time
 import os
+import math
 
 pwd = os.getcwd()
 pwd = pwd.split('/')
@@ -50,6 +51,8 @@ prefix      = args.prefix
 zoom        = args.zoom
 log         = args.log
 grid        = args.grid
+maxlim      = args.maxlim
+minlim      = args.minlim
 
 colormap    = 'arbre'
 
@@ -105,7 +108,7 @@ if field == 'gravitational_potential':
       unit= '(cm/s)**2'
       function=df._gravitational_potential
 if field == 'mass_density_sr':
-      unit = '1/cm**3'
+      unit = 'g/cm**3'
       function=df._mass_density_sr
 if field in ('momentum_x', 'momentum_y', 'momentum_z'):
         unit = 'g/(s*cm**2)'
@@ -247,13 +250,13 @@ for df.ds in ts.piter():
 
    if cut_axis == 'x':
      x='%0.3f'% center[0]
-     cut_plane ='x_'+x.zfill(8)
+     cut_plane ='x='+x.zfill(8)
    elif cut_axis == 'y':
      y='%0.3f'% center[1]
-     cut_plane ='y_'+y.zfill(8)
+     cut_plane ='y='+y.zfill(8)
    elif cut_axis == 'z':
      z='%0.3f'% center[2]
-     cut_plane ='z_'+z.zfill(8)
+     cut_plane ='z='+z.zfill(8)
 
    sz.annotate_title('slice (' + cut_plane + ') ' + pwd[-1])
    sz.set_font({'weight':'bold', 'size':'22'})
@@ -274,7 +277,8 @@ for df.ds in ts.piter():
    sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = {time:.4f} kpc/$c$', text_args={'color':'black'})
    sz.set_cmap( field, colormap )
    sz.set_unit( field, unit )
-   sz.set_axes_unit( 'kpc' )
+   #sz.set_axes_unit( 'kpc' )
+   sz.set_axes_unit( 'code_length' )
 
    if grid:
     sz.annotate_grids()

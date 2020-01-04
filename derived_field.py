@@ -29,6 +29,8 @@ def _gravitational_potential(field, data):
     return data["Pote"]
 
 def _pressure_sr( field, data ):
+    #ds = ds1
+    #ds = ds2
     Temp = data["Temp"]
     eta = Temp
 
@@ -223,28 +225,78 @@ def _cylindrical_radial_4velocity(field, data):
    return Uy*y_uni + Uz*z_uni
 
 def _3_velocity_x( field, data ):
-   Ux = data["4_velocity_x"] 
-   factor = data["Lorentz_factor"]
+   eta = data["Temp"]
+
+   if ds["EoS"] == 2:
+     h_c2 = 1.0 + data["Gamma"] * eta / ( data["Gamma"] - 1.0 )
+   elif ds["EoS"] == 1:
+     h_c2 = 2.5*eta+np.sqrt(2.25*eta**2+1.0)
+   else:
+     print ("Your EoS doesn't support yet!")
+     sys.exit(0)
+
+
+   Ux = data["MomX"]/(data["Dens"]*h_c2)
+   Uy = data["MomY"]/(data["Dens"]*h_c2)
+   Uz = data["MomZ"]/(data["Dens"]*h_c2)
+   factor = np.sqrt(1 + (Ux/c)**2 + (Uy/c)**2 + (Uz/c)**2)
    Vx = Ux / factor
    return Vx
 
 def _3_velocity_y( field, data ):
-   Uy = data["4_velocity_y"] 
-   factor = data["Lorentz_factor"]
+   eta = data["Temp"]
+
+   if ds["EoS"] == 2:
+     h_c2 = 1.0 + data["Gamma"] * eta / ( data["Gamma"] - 1.0 )
+   elif ds["EoS"] == 1:
+     h_c2 = 2.5*eta+np.sqrt(2.25*eta**2+1.0)
+   else:
+     print ("Your EoS doesn't support yet!")
+     sys.exit(0)
+
+
+   Ux = data["MomX"]/(data["Dens"]*h_c2)
+   Uy = data["MomY"]/(data["Dens"]*h_c2)
+   Uz = data["MomZ"]/(data["Dens"]*h_c2)
+   factor = np.sqrt(1 + (Ux/c)**2 + (Uy/c)**2 + (Uz/c)**2)
    Vy = Uy / factor
    return Vy
 
 def _3_velocity_z( field, data ):
-   Uz = data["4_velocity_z"] 
-   factor = data["Lorentz_factor"]
+   eta = data["Temp"]
+
+   if ds["EoS"] == 2:
+     h_c2 = 1.0 + data["Gamma"] * eta / ( data["Gamma"] - 1.0 )
+   elif ds["EoS"] == 1:
+     h_c2 = 2.5*eta+np.sqrt(2.25*eta**2+1.0)
+   else:
+     print ("Your EoS doesn't support yet!")
+     sys.exit(0)
+
+
+   Ux = data["MomX"]/(data["Dens"]*h_c2)
+   Uy = data["MomY"]/(data["Dens"]*h_c2)
+   Uz = data["MomZ"]/(data["Dens"]*h_c2)
+   factor = np.sqrt(1 + (Ux/c)**2 + (Uy/c)**2 + (Uz/c)**2)
    Vz = Uz / factor
    return Vz
 
 def _3_velocity_magnitude( field, data ):
-   Ux = data["4_velocity_x"] 
-   Uy = data["4_velocity_y"] 
-   Uz = data["4_velocity_z"] 
-   factor = data["Lorentz_factor"]
+   eta = data["Temp"]
+
+   if ds["EoS"] == 2:
+     h_c2 = 1.0 + data["Gamma"] * eta / ( data["Gamma"] - 1.0 )
+   elif ds["EoS"] == 1:
+     h_c2 = 2.5*eta+np.sqrt(2.25*eta**2+1.0)
+   else:
+     print ("Your EoS doesn't support yet!")
+     sys.exit(0)
+
+
+   Ux = data["MomX"]/(data["Dens"]*h_c2)
+   Uy = data["MomY"]/(data["Dens"]*h_c2)
+   Uz = data["MomZ"]/(data["Dens"]*h_c2)
+   factor = np.sqrt(1 + (Ux/c)**2 + (Uy/c)**2 + (Uz/c)**2)
    Vx = Ux / factor
    Vy = Uy / factor
    Vz = Uz / factor
@@ -375,17 +427,17 @@ def _threshold (field, data):
 def _synchrotron_emissivity( field, data ):
    global theta, phi, normal
 
-#  number density ratio between non-thermal particles to thermal particles
-   e1=1e-3
-#  energy density ratio between non-thermal particles to thermal particles
-   e2=1.0
-#  energy density ratio between magneticity and thermal particles
-   eB=1e-3
-#  ratio of the maximum and minimum non-thermal energy
-   C=1e3
-#  power-law index ( p != 2.0)
-   p=2.1
-
+##  number density ratio between non-thermal particles to thermal particles
+#   e1=1e-3
+##  energy density ratio between non-thermal particles to thermal particles
+#   e2=1.0
+##  energy density ratio between magneticity and thermal particles
+#   eB=1e-3
+##  ratio of the maximum and minimum non-thermal energy
+#   C=1e3
+##  power-law index ( p != 2.0)
+#   p=2.1
+#
 #  specific enthalpy
    Temp = data["Temp"]
    eta = Temp
@@ -410,42 +462,45 @@ def _synchrotron_emissivity( field, data ):
 
 #  pressure
    pres = rho * eta * c**2
+#
+#
+##  internal energy density of fluid (including rest mass energy)
+#   h = h_c2 * c**2
+#   InternalEngyDens = rho * h - pres
+#   u = InternalEngyDens / (mp*c**2)
+#
+##  prope number density
+#   n = rho / mp
+#
+##  normalization constant for power law distribution
+#   A = ( (  e2*u*(p-2.0) ) / ( 1.0-C**(2.0-p)) )**(p-1.0)
+#   B = ( (1.0-C**(1.0-p) ) / ( e1*n*(p-1.0))   )**(p-2.0)
+#   N0=A*B
+#
+##  magnetic energy density
+#   uB = eB*InternalEngyDens
+#
+##  magnitude of magnetic field
+#   B= np.sqrt( 8.0*np.pi*uB )
+#
+##  critical frequency (Hz)
+##  --> We set particle mass to mp because 90% of cosmic ray are proton
+#   Nu0=3.0*qp*B/(4.0*np.pi*mp*c)
+#
+##  observed frequency (Hz)
+#   Nu= 1.0*Nu0
+#
+##  emissivity
+#   j = ( qp**2/(mp*c**2) )**2 * c * N0*uB*  Nu0**(-1.5+0.5*p)  * Nu**(0.5-0.5*p)
+#
+##  coefficient
+#   j *= 4.0/9.0
+#
+##  we assume emissivity is proportional to v**2
+#   j *= (1.0-Lorentz_factor**-2)
 
-
-#  internal energy density of fluid (including rest mass energy)
-   h = h_c2 * c**2
-   InternalEngyDens = rho * h - pres
-   u = InternalEngyDens / (mp*c**2)
-
-#  prope number density
-   n = rho / mp
-
-#  normalization constant for power law distribution
-   A = ( (  e2*u*(p-2.0) ) / ( 1.0-C**(2.0-p)) )**(p-1.0)
-   B = ( (1.0-C**(1.0-p) ) / ( e1*n*(p-1.0))   )**(p-2.0)
-   N0=A*B
-
-#  magnetic energy density
-   uB = eB*InternalEngyDens
-
-#  magnitude of magnetic field
-   B= np.sqrt( 8.0*np.pi*uB )
-
-#  critical frequency (Hz)
-#  --> We set particle mass to mp because 90% of cosmic ray are proton
-   Nu0=3.0*qp*B/(4.0*np.pi*mp*c)
-
-#  observed frequency (Hz)
-   Nu= 1.0*Nu0
-
-#  emissivity
-   j = ( qp**2/(mp*c**2) )**2 * c * N0*uB*  Nu0**(-1.5+0.5*p)  * Nu**(0.5-0.5*p)
-
-#  coefficient
-   j *= 4.0/9.0
-
-#  we assume emissivity is proportional to v**2
-   j *= (1.0-Lorentz_factor**-2)
+   j = pres * rho * Temp * np.tanh(Temp/(1.4142136e+00-1.0))
+#   j = pres * rho * Temp * np.tanh(Temp)
 
 #  beaming factor
    Var = Lorentz_factor - (Ux*normal[0]+Uy*normal[1]+Uz*normal[2]) / c

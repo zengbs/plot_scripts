@@ -116,11 +116,11 @@ for idx in range(idx_start, idx_end+1):
 
 
 #  add new derived field
-   field1='density'
-   field2='proper_mass_density'
+   field1='pressure'
+   field2='pressure_sr'
 
-   #df.ds1.add_field( ("gamer", 'proper_mass_density'          ), function=df._proper_mass_density       , sampling_type="cell", units='g/cm**3'      )
-   df.ds2.add_field( ("gamer", 'proper_mass_density'          ), function=df._proper_mass_density       , sampling_type="cell", units='g/cm**3'      )
+   #df.ds1.add_field( ("gamer", 'proper_mass_density' ), function=df._proper_mass_density       , sampling_type="cell", units='g/cm**3'      )
+   df.ds2.add_field( ("gamer",  'pressure_sr'         ), function=df._pressure_sr       , sampling_type="cell", units='g/(cm*s**2)'      )
 
    NPoints = 5000
    
@@ -160,12 +160,12 @@ for idx in range(idx_start, idx_end+1):
    x_min = np.amin(ray)
    x_max = np.amax(ray)
    plt.xlim(x_min, x_max)
-   plt.ylim(4e-28, 1e-23) # mass density
+   #plt.ylim(4e-28, 1e-23) # mass density
 
    #plt.xscale('log') 
    plt.yscale('log') 
    plt.xlabel('kpc')
-   plt.ylabel('mass density (g/cm**3)')
+   plt.ylabel('pressure (g/(cm*s**2))')
    FigName = 'Data_%06d_LinePlot_%s_ComparisonT.png' % ( df.ds1["DumpID"], field1 )
    plt.savefig( FigName )
    plt.close()
