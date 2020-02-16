@@ -144,7 +144,8 @@ if field == 'threshold':
       function=df._threshold
 if field == 'synchrotron_emissivity':
       #unit = 'g/(cm*s**2)'
-      unit = 'g**2/(cm**4*s**2)'
+      #unit = 'g**2/(cm**4*s**2)'
+      unit = 'g**2/(cm**2*s**4)'
       function=df._synchrotron_emissivity
 if field == 'internal_energy_density_sr':
       unit= 'g/(cm*s**2)'
@@ -230,7 +231,7 @@ for df.ds in ts.piter():
 #       sz.set_figure_size(150)
 
 #      ! set linear scale around zero
-#       sz.set_log( field, log, linthresh=1e-10 )
+#       sz.set_log( field, log, linthresh=1e-5 )
        sz.set_log( field, log )
 
 #      ! zoom in
@@ -247,10 +248,10 @@ for df.ds in ts.piter():
 
 #      ! annotate straight line
 #       sz.annotate_line((line_x, 0, 20), (line_x, 40, 20), coord_system='data')
-       sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = {time:.2f} grid$/c$', text_args={'color':'black'})
+       sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = {time:.2f} pc$/c$', text_args={'color':'black'})
        sz.set_cmap( field, colormap )
        sz.set_unit( field, 'cm*'+unit )
-       sz.set_axes_unit( 'kpc' )
+       sz.set_axes_unit( 'pc' )
 
 #      ! save picture
        filename = 'theta=%.2f_phi=%.2f' %(df.theta, df.phi)

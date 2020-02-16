@@ -8,26 +8,29 @@ import time
 import os
 import math
 
-pwd = os.getcwd()
-pwd = pwd.split('/')
 
 # load the command-line parameters
 parser = argparse.ArgumentParser( description='Plot slices for sr-hydro' )
 
-parser.add_argument( '-f',  action='store', required=True,  type=str,   dest='field',     help='pressure, 4_velocity_x/y/z, Lorentz_factor' )
-parser.add_argument( '-p',  action='store', required=True,  type=str,   dest='cut_axis',  help='axis you want to cut' )
-parser.add_argument( '-sx', action='store', required=True,  type=float, dest='start_cut', help='start cut' )
-parser.add_argument( '-ex', action='store', required=True,  type=float, dest='end_cut',   help='end cut' )
-parser.add_argument( '-nx', action='store', required=True,  type=float, dest='N_cut',     help='number of cuts between -sx and -ex' )
-parser.add_argument( '-st', action='store', required=True,  type=int,   dest='idx_start', help='first data index' )
-parser.add_argument( '-et', action='store', required=True,  type=int,   dest='idx_end',   help='last data index' )
-parser.add_argument( '-dt', action='store', required=False, type=int,   dest='didx',      help='delta data index [%(default)d]', default=1 )
-parser.add_argument( '-i',  action='store', required=False, type=str,   dest='prefix',    help='data path prefix [%(default)s]', default='./' )
-parser.add_argument( '-max',action='store', required=False, type=float, dest='maxlim',    help='max lim', default=float('nan') )
-parser.add_argument( '-min',action='store', required=False, type=float, dest='minlim',    help='min lim', default=float('nan') )
-parser.add_argument( '-z',  action='store', required=True,  type=int,   dest='zoom',      help='zoom in' )
-parser.add_argument( '-l',  action='store', required=True,  type=int,   dest='log',       help='log scale' )
-parser.add_argument( '-g',  action='store', required=True,  type=int,   dest='grid',      help='grids' )
+parser.add_argument( '-f',      action='store', required=True,  type=str,   dest='field',     help='pressure, 4_velocity_x/y/z, Lorentz_factor' )
+parser.add_argument( '-p',      action='store', required=True,  type=str,   dest='cut_axis',  help='axis you want to cut' )
+parser.add_argument( '-sx',     action='store', required=True,  type=float, dest='start_cut', help='start cut' )
+parser.add_argument( '-ex',     action='store', required=True,  type=float, dest='end_cut',   help='end cut' )
+parser.add_argument( '-nx',     action='store', required=True,  type=float, dest='N_cut',     help='number of cuts between -sx and -ex' )
+parser.add_argument( '-st',     action='store', required=True,  type=int,   dest='idx_start', help='first data index' )
+parser.add_argument( '-et',     action='store', required=True,  type=int,   dest='idx_end',   help='last data index' )
+parser.add_argument( '-dt',     action='store', required=False, type=int,   dest='didx',      help='delta data index [%(default)d]', default=1 )
+parser.add_argument( '-i',      action='store', required=False, type=str,   dest='prefix',    help='data path prefix [%(default)s]', default='./' )
+parser.add_argument( '-max',    action='store', required=False, type=float, dest='maxlim',    help='max lim', default=float('nan') )
+parser.add_argument( '-min',    action='store', required=False, type=float, dest='minlim',    help='min lim', default=float('nan') )
+parser.add_argument( '-z',      action='store', required=True,  type=int,   dest='zoom',      help='zoom in' )
+parser.add_argument( '-l',      action='store', required=True,  type=int,   dest='log',       help='log scale' )
+parser.add_argument( '-g',      action='store', required=True,  type=int,   dest='grid',      help='grids' )
+parser.add_argument( '-title',  action='store', required=True,  type=str,   dest='title',     help='title' )
+parser.add_argument( '-axunit', action='store', required=True,  type=str,   dest='axunit',    help='unit for axis' )
+parser.add_argument( '-namecbr',action='store', required=True,  type=str,   dest='namecbr',   help='name of colorbar' )
+parser.add_argument( '-fileformat', action='store', required=True,  type=str,   dest='fileformat',    help='file format' )
+parser.add_argument( '-linthesh',   action='store', required=True,  type=float, dest='linthesh',      help='linear threshold' )
 
 args=parser.parse_args()
 
@@ -53,6 +56,11 @@ log         = args.log
 grid        = args.grid
 maxlim      = args.maxlim
 minlim      = args.minlim
+title       = args.title
+axunit      = args.axunit
+namecbr     = args.namecbr
+fileformat  = args.fileformat
+linthesh    = args.linthesh
 
 colormap    = 'arbre'
 
@@ -87,6 +95,9 @@ if field == 'temperature_sr':
 if field == 'Lorentz_factor':
       unit = ''
       function=df._lorentz_factor
+if field == 'Lorentz_factor_1':
+      unit = ''
+      function=df._lorentz_factor_1
 if field == 'pressure_sr':
       unit= 'g/(cm*s**2)'
       function=df._pressure_sr
@@ -181,6 +192,8 @@ for df.ds in ts.piter():
    df.ds.add_field( ("gamer", field                         ), function=function                        , sampling_type="cell", units=unit                    )
 
  ad = df.ds.all_data()
+ dd = df.ds.r[field]
+ print(dd)
 
  origin = start_cut
 
@@ -241,12 +254,19 @@ for df.ds in ts.piter():
 #   sz.set_figure_size(150)
 
 #   ! set linear scale around zero
-#   sz.set_log( field, log, linthresh=1e-10 )
-   sz.set_log( field, log )
+   if ( linthesh > 0 and log is 1 ):
+     sz.set_log( field, log, linthesh )
+   elif ( linthesh is -1 ):
+     sz.set_log( field, log )
 
 #   ! zoom in
    sz.zoom(zoom)
 
+#   sz.set_unit(field, 'code_mass/code_length**3')
+
+#   ! name of colorbar
+   if ( namecbr != "default" ):
+     sz.set_colorbar_label( field, namecbr )
 
    if cut_axis == 'x':
      x='%0.3f'% center[0]
@@ -258,7 +278,16 @@ for df.ds in ts.piter():
      z='%0.3f'% center[2]
      cut_plane ='z='+z.zfill(8)
 
-   sz.annotate_title('slice (' + cut_plane + ') ' + pwd[-1])
+#   ! title
+   if ( title == "default" ):
+     pwd = os.getcwd()
+     pwd = pwd.split('/')
+     sz.annotate_title('slice (' + cut_plane + ') ' + pwd[-1])
+   else:
+     sz.annotate_title(title)
+ 
+
+
    sz.set_font({'weight':'bold', 'size':'22'})
 
 #  ! annote velocity vectors
@@ -274,11 +303,10 @@ for df.ds in ts.piter():
    UNIT_T = df.ds["Unit_T"]*df.ds.time_unit
 
 
-   sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = {time:.4f} kpc/$c$', text_args={'color':'black'})
+   sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = {time:.4f} '+ axunit +'/$c$', text_args={'color':'black'})
    sz.set_cmap( field, colormap )
    sz.set_unit( field, unit )
-   #sz.set_axes_unit( 'kpc' )
-   sz.set_axes_unit( 'code_length' )
+   sz.set_axes_unit( axunit )
 
    if grid:
     sz.annotate_grids()
@@ -287,7 +315,7 @@ for df.ds in ts.piter():
 #   sz.annotate_streamlines('momentum_y','momentum_z')
 #   sz.save( mpl_kwargs={"dpi":dpi} )
 #   sz.save( name='Data_%06d_' %idx_start + cut_plane, suffix='eps' )
-   sz.save( name='Data_%06d_' %df.ds["DumpID"] + str(cut_plane), suffix='png' )
+   sz.save( name='Data_%06d_' %df.ds["DumpID"] + str(cut_plane), suffix=fileformat )
 
    if N_cut > 1:
     origin += np.fabs(start_cut-end_cut)/N_cut

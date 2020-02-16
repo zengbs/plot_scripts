@@ -93,7 +93,34 @@ def _lorentz_factor( field, data ):
     Uy = data["MomY"]/(data["Dens"]*h_c2)
     Uz = data["MomZ"]/(data["Dens"]*h_c2)
     Lorentz_factor = np.sqrt(1 + (Ux/c)**2 + (Uy/c)**2 + (Uz/c)**2)
+
+    #Ux *= ds.time_unit / ds.length_unit
+    #Uy *= ds.time_unit / ds.length_unit
+    #Uz *= ds.time_unit / ds.length_unit
+    #Lorentz_factor = np.sqrt(1 + Ux**2 + Uy**2 + Uz**2)
+
     return Lorentz_factor
+
+def _lorentz_factor_1( field, data ):
+    Temp = data["Temp"]
+
+    eta = Temp
+
+    if ds["EoS"] == 2:
+      h_c2 = 1.0 + data["Gamma"] * eta / ( data["Gamma"] - 1.0 )
+    elif ds["EoS"] == 1:
+      h_c2 = 2.5*eta+np.sqrt(2.25*eta**2+1.0)
+    else:
+      print ("Your EoS doesn't support yet!")
+      sys.exit(0)
+
+
+    Ux = data["MomX"]/(data["Dens"]*h_c2)
+    Uy = data["MomY"]/(data["Dens"]*h_c2)
+    Uz = data["MomZ"]/(data["Dens"]*h_c2)
+    Usqr = (Ux/c)**2 + (Uy/c)**2 + (Uz/c)**2
+    Lorentz_factor = np.sqrt(1 + Usqr)
+    return Usqr / ( Lorentz_factor + 1 )
 
 def _4_velocity_x( field, data ):
     Temp = data["Temp"]
@@ -499,8 +526,16 @@ def _synchrotron_emissivity( field, data ):
 ##  we assume emissivity is proportional to v**2
 #   j *= (1.0-Lorentz_factor**-2)
 
-   j = pres * rho * Temp * np.tanh(Temp/(1.4142136e+00-1.0))
-#   j = pres * rho * Temp * np.tanh(Temp)
+#  U = 1.0
+#   j = pres * rho * Temp * np.tanh(Temp/(1.4142136e+00-1.0))
+# U = 10.0
+#   j = pres * rho * Temp * np.tanh(Temp/(1.0049875621120890e+01-1.0))
+#   j = pres * rho * Temp
+#   j = pres * rho * Temp
+   j = pres**2 * Temp * np.tanh(Temp/(1.0049875621120890e+01-1.0))
+#   j = pres**2 * np.tanh(Temp/(1.0049875621120890e+01-1.0))**2
+#   j = pres**2 * np.exp(-9.0/Temp)
+#   j = pres**2 * np.tanh(Temp/(1.0049875621120890e+01-1.0))
 
 #  beaming factor
    Var = Lorentz_factor - (Ux*normal[0]+Uy*normal[1]+Uz*normal[2]) / c
