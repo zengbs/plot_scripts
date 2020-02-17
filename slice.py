@@ -1,9 +1,9 @@
+from __main__ import *
 import argparse
 import sys
 import yt
 import numpy as np
 import yt.visualization.eps_writer as eps
-import derived_field as df
 import time
 import os
 import math
@@ -31,16 +31,17 @@ parser.add_argument( '-axunit', action='store', required=True,  type=str,   dest
 parser.add_argument( '-namecbr',action='store', required=True,  type=str,   dest='namecbr',   help='name of colorbar' )
 parser.add_argument( '-fileformat', action='store', required=True,  type=str,   dest='fileformat',    help='file format' )
 parser.add_argument( '-linthesh',   action='store', required=True,  type=float, dest='linthesh',      help='linear threshold' )
+parser.add_argument( '-normalconst',action='store', required=True,  type=float, dest='normalconst',   help='nomalized constant' )
 
 args=parser.parse_args()
 
 # take note
-print( '\nCommand-line arguments:' )
-print( '-------------------------------------------------------------------' )
-for t in range( len(sys.argv) ):
-   print( str(sys.argv[t]) ),
-print( '' )
-print( '-------------------------------------------------------------------\n' )
+#print( '\nCommand-line arguments:' )
+#print( '-------------------------------------------------------------------' )
+#for t in range( len(sys.argv) ):
+#   print( str(sys.argv[t]) ),
+#print( '' )
+#print( '-------------------------------------------------------------------\n' )
 
 field       = args.field
 cut_axis    = args.cut_axis
@@ -61,11 +62,13 @@ axunit      = args.axunit
 namecbr     = args.namecbr
 fileformat  = args.fileformat
 linthesh    = args.linthesh
+normalconst = args.normalconst
 
 colormap    = 'arbre'
 
 dpi         = 150
 
+import derived_field as df
 
 # check parameter
 ########################################
@@ -192,8 +195,7 @@ for df.ds in ts.piter():
    df.ds.add_field( ("gamer", field                         ), function=function                        , sampling_type="cell", units=unit                    )
 
  ad = df.ds.all_data()
- dd = df.ds.r[field]
- print(dd)
+# dd = df.ds.r[field]
 
  origin = start_cut
 
@@ -254,10 +256,10 @@ for df.ds in ts.piter():
 #   sz.set_figure_size(150)
 
 #   ! set linear scale around zero
-   if ( linthesh > 0 and log is 1 ):
-     sz.set_log( field, log, linthesh )
-   elif ( linthesh is -1 ):
-     sz.set_log( field, log )
+   if ( linthesh > 0 and ( log == 1) ):
+     sz.set_log( field, True, linthesh )
+   elif ( linthesh == -1 ):
+     sz.set_log( field, False )
 
 #   ! zoom in
    sz.zoom(zoom)
