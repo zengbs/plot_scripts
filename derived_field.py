@@ -1,5 +1,6 @@
 import numpy as np
 from yt.units import G, kboltz, c, mp, qp
+from __main__ import *
 
 
 global ds1, ds2, ds
@@ -16,7 +17,6 @@ GeV = 1.0e9*eV
 #UNIT_M = ds["Unit_M"]*ds.mass_unit
 #UNIT_D = ds["Unit_D"]*ds.mass_unit*ds.length_unit**-3
 #UNIT_T = ds["Unit_T"]*ds.time_unit
-
 
 
 
@@ -50,7 +50,7 @@ def _pressure_sr( field, data ):
     rho = data["Dens"]/Lorentz_factor
 
     pres = rho * eta * c**2
-    return pres
+    return pres/normalconst
 
 def _proper_mass_density( field, data ):
     #ds = ds1
@@ -73,7 +73,7 @@ def _proper_mass_density( field, data ):
     Uz = data["MomZ"]/(data["Dens"]*h_c2)
     Lorentz_factor = np.sqrt(1 + (Ux/c)**2 + (Uy/c)**2 + (Uz/c)**2)
     n = data["Dens"]/Lorentz_factor
-    return n
+    return n/normalconst
 
 def _lorentz_factor( field, data ):
     Temp = data["Temp"]
@@ -92,12 +92,12 @@ def _lorentz_factor( field, data ):
     Ux = data["MomX"]/(data["Dens"]*h_c2)
     Uy = data["MomY"]/(data["Dens"]*h_c2)
     Uz = data["MomZ"]/(data["Dens"]*h_c2)
-    Lorentz_factor = np.sqrt(1 + (Ux/c)**2 + (Uy/c)**2 + (Uz/c)**2)
+    #Lorentz_factor = np.sqrt(1 + (Ux/c)**2 + (Uy/c)**2 + (Uz/c)**2)
 
-    #Ux *= ds.time_unit / ds.length_unit
-    #Uy *= ds.time_unit / ds.length_unit
-    #Uz *= ds.time_unit / ds.length_unit
-    #Lorentz_factor = np.sqrt(1 + Ux**2 + Uy**2 + Uz**2)
+    Ux *= ds.time_unit / ds.length_unit
+    Uy *= ds.time_unit / ds.length_unit
+    Uz *= ds.time_unit / ds.length_unit
+    Lorentz_factor = np.sqrt(1 + Ux**2 + Uy**2 + Uz**2)
 
     return Lorentz_factor
 
@@ -187,15 +187,15 @@ def _specific_enthalpy_sr( field, data ):
 
     h = h_c2 * c**2
 
-    return h
+    return h/normalconst
 
 def _enthalpy_density_sr( field, data ):
     h=data["specific_enthalpy_sr"]
     n = data["Dens"]/data["Lorentz_factor"]
-    return h*n
+    return h*n/normalconst
 
 def _mass_density_sr(field, data):
-   return data["Dens"]
+   return data["Dens"]/normalconst
 
 
 def _thermal_energy_density_sr( field, data ):
@@ -203,26 +203,26 @@ def _thermal_energy_density_sr( field, data ):
    n=data["proper_mass_density"]
    p=data["pressure_sr"]
    ThermalEngyDens = n*m*h-p-n*mp*c**2
-   return ThermalEngyDens
+   return ThermalEngyDens/normalconst
 
 def _internal_energy_density_sr( field, data ):
    h=data["specific_enthalpy_sr"]
    n=data["proper_mass_density"]
    InternalEngyDens = n*m*h-p
-   return InternalEngyDens
+   return InternalEngyDens/normalconst
 
 def _kinetic_energy_density_sr(field, data):
    h=data["specific_enthalpy_sr"]
    P = data["pressure_sr"]
    factor = data["Lorentz_factor"] 
    kinetic_energy_density = ( data["Dens"] * h + P ) * ( factor - 1.0 )
-   return kinetic_energy_density
+   return kinetic_energy_density/normalconst
 
 def _Bernoulli_const( field, data ):
    h=data["specific_enthalpy_sr"]
    factor = data["Lorentz_factor"]
    BernpulliConst = factor * h
-   return BernpulliConst
+   return BernpulliConst/normalconst
 
 def _spherical_radial_4velocity(field, data):
    Ux = data["4_velocity_x"] 
@@ -340,7 +340,7 @@ def _Cp_per_particle( field, data ):
      print ("Your EoS doesn't support yet!")
      sys.exit(0)
    Cp *= kboltz
-   return Cp
+   return Cp/normalconst
 
 
 def _Cv_per_particle( field, data ): 
@@ -353,20 +353,20 @@ def _Cv_per_particle( field, data ):
      print ("Your EoS doesn't support yet!")
      sys.exit(0)
    Cv *= kboltz
-   return Cv
+   return Cv/normalconst
 
 def _Cp_per_volume( field, data ): 
    Cp = data["Cp_per_particle"]
    Cp /= data["proper_mass_density"]
    Cp *= mp
-   return Cp
+   return Cp/normalconst
 
 
 def _Cv_per_volume( field, data ): 
    Cv = data["Cv_per_particle"]
    Cv /= data["proper_mass_density"]
    Cv *= mp
-   return Cv
+   return Cv/normalconst
 
 def _Adiabatic_Index( field, data ):
    Cp = data["Cp_per_particle"]
@@ -390,7 +390,7 @@ def _entropy_per_particle(field, data):
    else:
      print ("Your EoS doesn't support yet!")
      sys.exit(0)
-   return delta_s
+   return delta_s/normalconst
    
  
 def _sound_speed (field, data):
@@ -422,23 +422,39 @@ def _4_sound_speed (field, data):
    return Cs
 
 
-def _Mach_number_x_sr (field, data):
-   h=data["specific_enthalpy_sr"]
-   Ux = data["4_velocity_x"]
-   four_Cs = data["4_sound_speed"]
-   return Ux / four_Cs
+def _Mach_number_sr (field, data):
+   Temp = data["Temp"]
+   eta = Temp
 
-def _Mach_number_y_sr (field, data):
-   h=data["specific_enthalpy_sr"]
-   Uy = data["4_velocity_y"]
-   four_Cs = data["4_sound_speed"]
-   return Uy / four_Cs
 
-def _Mach_number_z_sr (field, data):
-   h=data["specific_enthalpy_sr"]
-   Uz = data["4_velocity_z"]
-   four_Cs = data["4_sound_speed"]
-   return Uz / four_Cs
+   if ds["EoS"] == 2:
+     h_c2 = 1.0 + data["Gamma"] * eta / ( data["Gamma"] - 1.0 )
+   elif ds["EoS"] == 1:
+     h_c2 = 2.5*eta+np.sqrt(2.25*eta**2+1.0)
+   else:
+     print ("Your EoS doesn't support yet!")
+     sys.exit(0)
+
+
+   Ux = data["MomX"]/(data["Dens"]*h_c2)
+   Uy = data["MomY"]/(data["Dens"]*h_c2)
+   Uz = data["MomZ"]/(data["Dens"]*h_c2)
+
+   ratio = eta / h_c2
+
+   if ds["EoS"] == 2:
+     Cs_sq = data["Gamma"] * ratio
+   elif ds["EoS"] == 1:
+     Cs_sq = ( ratio / 3.0 ) * ( ( 5.0 - 8.0 * ratio ) / ( 1.0 - ratio ) )
+   else:
+     print ("Your EoS doesn't support yet!")
+     sys.exit(0)
+
+   Cs = np.sqrt(Cs_sq / (1.0-Cs_sq) )
+   Cs *= c
+
+   return np.sqrt (Ux**2 + Uy**2 + Uz**2 ) / Cs
+
 
 def _threshold (field, data):
    h=data["specific_enthalpy_sr"]
@@ -531,8 +547,8 @@ def _synchrotron_emissivity( field, data ):
 # U = 10.0
 #   j = pres * rho * Temp * np.tanh(Temp/(1.0049875621120890e+01-1.0))
 #   j = pres * rho * Temp
-#   j = pres * rho * Temp
-   j = pres**2 * Temp * np.tanh(Temp/(1.0049875621120890e+01-1.0))
+#   j = pres**2
+   j = pres**2 * np.tanh(Temp/0.077)
 #   j = pres**2 * np.tanh(Temp/(1.0049875621120890e+01-1.0))**2
 #   j = pres**2 * np.exp(-9.0/Temp)
 #   j = pres**2 * np.tanh(Temp/(1.0049875621120890e+01-1.0))

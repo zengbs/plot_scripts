@@ -168,6 +168,10 @@ if field == 'synchrotron_emissivity':
 if field == 'internal_energy_density_sr':
       unit= 'g/(cm*s**2)'
       function=df._internal_energy_density_sr
+if field == 'Mach_number_sr':
+      unit= ''
+      function=df._Mach_number_sr
+     
 
 
 t0 = time.time()
@@ -257,9 +261,9 @@ for df.ds in ts.piter():
 
 #   ! set linear scale around zero
    if ( linthesh > 0 and ( log == 1) ):
-     sz.set_log( field, True, linthesh )
+     sz.set_log( field, log, linthesh )
    elif ( linthesh == -1 ):
-     sz.set_log( field, False )
+     sz.set_log( field, log )
 
 #   ! zoom in
    sz.zoom(zoom)
