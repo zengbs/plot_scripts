@@ -1,4 +1,5 @@
 import numpy as np
+import re
 from yt.units import G, kboltz, c, mp, qp
 from __main__ import *
 
@@ -470,6 +471,17 @@ def _threshold (field, data):
 def _synchrotron_emissivity( field, data ):
    global theta, phi, normal
 
+   fp = open('Input__TestProb', "r")
+   for line in iter(fp):                                      
+      if ( line[0:10:1] == "Jet_SrcVel" ):                   
+         FourVelocity_Src = re.findall(r"[-+]?\d*\.\d+|[-+]?\d+", line)[0]
+         FourVelocity_Src = float(FourVelocity_Src)
+   fp.close()        
+
+   Gamma_Src = np.sqrt( 1.0 + FourVelocity_Src**2 )
+
+   Gamma_Src_1 = FourVelocity_Src**2 / ( 1.0 + Gamma_Src )
+
 ##  number density ratio between non-thermal particles to thermal particles
 #   e1=1e-3
 ##  energy density ratio between non-thermal particles to thermal particles
@@ -548,8 +560,9 @@ def _synchrotron_emissivity( field, data ):
 #   j = pres * rho * Temp * np.tanh(Temp/(1.0049875621120890e+01-1.0))
 #   j = pres * rho * Temp
 #   j = pres**2
-   j = pres**2 * np.tanh(Temp/0.077)
-#   j = pres**2 * np.tanh(Temp/(1.0049875621120890e+01-1.0))**2
+#   j = pres**2 * np.tanh(Temp/0.077)
+   j = pres**2 * np.tanh(Temp/Gamma_Src_1)**2
+    
 #   j = pres**2 * np.exp(-9.0/Temp)
 #   j = pres**2 * np.tanh(Temp/(1.0049875621120890e+01-1.0))
 
