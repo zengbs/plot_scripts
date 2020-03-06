@@ -7,6 +7,7 @@ import yt.visualization.eps_writer as eps
 import time
 import os
 import math
+from textwrap import wrap
 
 pwd = os.getcwd()
 pwd = pwd.split('/')
@@ -28,7 +29,7 @@ parser.add_argument( '-max'   , action='store', required=False, type=float, dest
 parser.add_argument( '-min'   , action='store', required=False, type=float, dest='minlim',     help='min lim', default=float('nan') )
 parser.add_argument( '-z'     , action='store', required=True,  type=int,   dest='zoom',       help='zoom in' )
 parser.add_argument( '-l'     , action='store', required=True,  type=int,   dest='log',        help='log scale' )
-parser.add_argument( '-freq'    ,action='store', required=False,  type=float, dest='freq',      help='frequency (keV)' )
+parser.add_argument( '-freq'    ,action='store', required=False,  type=str, dest='freq',      help='frequency (keV)' )
 parser.add_argument( '-emission',action='store', required=False,  type=str,  dest='emission',  help='emission type' )
 
 args=parser.parse_args()
@@ -148,9 +149,9 @@ if field == 'threshold':
       unit = ''
       function=df._threshold
 if field == 'emissivity':
-      if (emission == "non_relativistic_thermal_Bremsstrahlung_per_frequency"):
+      if (emission == "NR_thermal_Bremss_per_freq"):
            unit = 'g*s**2/cm'
-      if ( emission == "non_relativistic_thermal_Bremsstrahlung_all_frequency" or emission == "synchrotron" ):
+      if ( emission == "NR_thermal_Bremss_all_freq" or emission == "synchrotron" ):
            unit = 'g*s**3/cm'
       function=df._emissivity
 if field == 'internal_energy_density_sr':
@@ -248,7 +249,15 @@ for df.ds in ts.piter():
        df.phi   *= 180.0/np.pi
 
 #      ! annotate a title
-       title = r'$\theta = %.2f^\circ, \phi=%.2f^\circ$' %(df.theta, df.phi)
+       if ( field == 'emissivity' ):
+         if ( emission == 'synchrotron' ):
+             title = emission
+         if ( emission == 'NR_thermal_Bremss_all_freq' ):
+             title = '%s' %( "NR bremss " )
+         if ( emission == 'NR_thermal_Bremss_per_freq' ):
+             title = '%s, hv=%s keV ' %( "NR bremss", freq )
+       else:
+         title = ""
        sz.annotate_title(title + pwd[-1])
        sz.set_font({'weight':'bold', 'size':'22'})
 

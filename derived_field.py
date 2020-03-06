@@ -512,12 +512,23 @@ def _emissivity( field, data ):
    if ( emission == "synchrotron" ):
      j = pres**2 * np.tanh(eta/Gamma_Src_1)**2
      j *= ds.length_unit * ds.time_unit**7/ ds.mass_unit
-   if ( emission == "non_relativistic_thermal_Bremsstrahlung_per_frequency" ):
+   if ( emission == "NR_thermal_Bremss_per_freq" ):
      n = data["Dens"]/Lorentz_factor
      kT = eta * mp * c**2 / (1e3*eV)
-     j = (n**2) * (eta**-0.5 ) * ( np.exp(-freq/kT)  )
+
+     freq1=freq.split(',')
+     freq1 = np.asarray(freq1)
+     freq1=freq1.astype(np.float)
+
+     sum_exp = 0.0
+
+     for f in freq1:
+        idx = np.where(freq1==f)
+        sum_exp += np.exp(-freq1[idx]/kT)
+
+     j = (n**2) * (eta**-0.5 ) * sum_exp
      j *= ds.length_unit **5 * ds.time_unit**2 / ds.mass_unit
-   if ( emission == "non_relativistic_thermal_Bremsstrahlung_all_frequency" ):
+   if ( emission == "NR_thermal_Bremss_all_freq" ):
      n = data["Dens"]/Lorentz_factor
      j = (n**2) * (eta**+0.5 )
      j *= ds.length_unit **5 * ds.time_unit**3 / ds.mass_unit
