@@ -12,26 +12,28 @@ import math
 # load the command-line parameters
 parser = argparse.ArgumentParser( description='Plot slices for sr-hydro' )
 
-parser.add_argument( '-f',      action='store', required=True,  type=str,   dest='field',     help='pressure, 4_velocity_x/y/z, Lorentz_factor' )
-parser.add_argument( '-p',      action='store', required=True,  type=str,   dest='cut_axis',  help='axis you want to cut' )
-parser.add_argument( '-sx',     action='store', required=True,  type=float, dest='start_cut', help='start cut' )
-parser.add_argument( '-ex',     action='store', required=True,  type=float, dest='end_cut',   help='end cut' )
-parser.add_argument( '-nx',     action='store', required=True,  type=float, dest='N_cut',     help='number of cuts between -sx and -ex' )
-parser.add_argument( '-st',     action='store', required=True,  type=int,   dest='idx_start', help='first data index' )
-parser.add_argument( '-et',     action='store', required=True,  type=int,   dest='idx_end',   help='last data index' )
-parser.add_argument( '-dt',     action='store', required=False, type=int,   dest='didx',      help='delta data index [%(default)d]', default=1 )
-parser.add_argument( '-i',      action='store', required=False, type=str,   dest='prefix',    help='data path prefix [%(default)s]', default='./' )
-parser.add_argument( '-max',    action='store', required=False, type=float, dest='maxlim',    help='max lim', default=float('nan') )
-parser.add_argument( '-min',    action='store', required=False, type=float, dest='minlim',    help='min lim', default=float('nan') )
-parser.add_argument( '-z',      action='store', required=True,  type=int,   dest='zoom',      help='zoom in' )
-parser.add_argument( '-l',      action='store', required=True,  type=int,   dest='log',       help='log scale' )
-parser.add_argument( '-g',      action='store', required=True,  type=int,   dest='grid',      help='grids' )
-parser.add_argument( '-title',  action='store', required=True,  type=str,   dest='title',     help='title' )
-parser.add_argument( '-axunit', action='store', required=True,  type=str,   dest='axunit',    help='unit for axis' )
-parser.add_argument( '-namecbr',action='store', required=True,  type=str,   dest='namecbr',   help='name of colorbar' )
+parser.add_argument( '-f',       action='store', required=True,  type=str,   dest='field',     help='pressure, 4_velocity_x/y/z, Lorentz_factor' )
+parser.add_argument( '-p',       action='store', required=True,  type=str,   dest='cut_axis',  help='axis you want to cut' )
+parser.add_argument( '-sx',      action='store', required=True,  type=float, dest='start_cut', help='start cut' )
+parser.add_argument( '-ex',      action='store', required=True,  type=float, dest='end_cut',   help='end cut' )
+parser.add_argument( '-nx',      action='store', required=True,  type=float, dest='N_cut',     help='number of cuts between -sx and -ex' )
+parser.add_argument( '-st',      action='store', required=True,  type=int,   dest='idx_start', help='first data index' )
+parser.add_argument( '-et',      action='store', required=True,  type=int,   dest='idx_end',   help='last data index' )
+parser.add_argument( '-dt',      action='store', required=False, type=int,   dest='didx',      help='delta data index [%(default)d]', default=1 )
+parser.add_argument( '-i',       action='store', required=False, type=str,   dest='prefix',    help='data path prefix [%(default)s]', default='./' )
+parser.add_argument( '-max',     action='store', required=False, type=float, dest='maxlim',    help='max lim', default=float('nan') )
+parser.add_argument( '-min',     action='store', required=False, type=float, dest='minlim',    help='min lim', default=float('nan') )
+parser.add_argument( '-z',       action='store', required=True,  type=int,   dest='zoom',      help='zoom in' )
+parser.add_argument( '-l',       action='store', required=True,  type=int,   dest='log',       help='log scale' )
+parser.add_argument( '-g',       action='store', required=True,  type=int,   dest='grid',      help='grids' )
+parser.add_argument( '-title',   action='store', required=True,  type=str,   dest='title',     help='title' )
+parser.add_argument( '-axunit',  action='store', required=True,  type=str,   dest='axunit',    help='unit for axis' )
+parser.add_argument( '-namecbr', action='store', required=True,  type=str,   dest='namecbr',   help='name of colorbar' )
 parser.add_argument( '-fileformat', action='store', required=True,  type=str,   dest='fileformat',    help='file format' )
 parser.add_argument( '-linthesh',   action='store', required=True,  type=float, dest='linthesh',      help='linear threshold' )
 parser.add_argument( '-normalconst',action='store', required=True,  type=float, dest='normalconst',   help='nomalized constant' )
+parser.add_argument( '-freq'    ,action='store', required=False,  type=float, dest='freq',      help='frequency (keV)' )
+parser.add_argument( '-emission',action='store', required=False,  type=str,   dest='emission',  help='emission type' )
 
 args=parser.parse_args()
 
@@ -63,6 +65,8 @@ namecbr     = args.namecbr
 fileformat  = args.fileformat
 linthesh    = args.linthesh
 normalconst = args.normalconst
+freq        = args.freq
+emission    = args.emission
 
 colormap    = 'arbre'
 
@@ -162,9 +166,6 @@ if field == 'sound_speed':
 if field == 'threshold':
       unit = ''
       function=df._threshold
-if field == 'synchrotron_emissivity':
-      unit = 'g/(cm*s**2)'
-      function=df._synchrotron_emissivity
 if field == 'internal_energy_density_sr':
       unit= 'g/(cm*s**2)'
       function=df._internal_energy_density_sr

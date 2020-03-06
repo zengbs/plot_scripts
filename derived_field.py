@@ -1,6 +1,7 @@
 import numpy as np
+import math
 import re
-from yt.units import G, kboltz, c, mp, qp
+from yt.units import G, kboltz, c, mp, qp, eV
 from __main__ import *
 
 
@@ -468,7 +469,7 @@ def _threshold (field, data):
    return np.where( (LorentzFactor>25.0), 1.0, 0.0 )
 
 
-def _synchrotron_emissivity( field, data ):
+def _emissivity( field, data ):
    global theta, phi, normal
 
    fp = open('Input__TestProb', "r")
@@ -482,17 +483,6 @@ def _synchrotron_emissivity( field, data ):
 
    Gamma_Src_1 = FourVelocity_Src**2 / ( 1.0 + Gamma_Src )
 
-##  number density ratio between non-thermal particles to thermal particles
-#   e1=1e-3
-##  energy density ratio between non-thermal particles to thermal particles
-#   e2=1.0
-##  energy density ratio between magneticity and thermal particles
-#   eB=1e-3
-##  ratio of the maximum and minimum non-thermal energy
-#   C=1e3
-##  power-law index ( p != 2.0)
-#   p=2.1
-#
 #  specific enthalpy
    Temp = data["Temp"]
    eta = Temp
@@ -517,54 +507,21 @@ def _synchrotron_emissivity( field, data ):
 
 #  pressure
    pres = rho * eta * c**2
-#
-#
-##  internal energy density of fluid (including rest mass energy)
-#   h = h_c2 * c**2
-#   InternalEngyDens = rho * h - pres
-#   u = InternalEngyDens / (mp*c**2)
-#
-##  prope number density
-#   n = rho / mp
-#
-##  normalization constant for power law distribution
-#   A = ( (  e2*u*(p-2.0) ) / ( 1.0-C**(2.0-p)) )**(p-1.0)
-#   B = ( (1.0-C**(1.0-p) ) / ( e1*n*(p-1.0))   )**(p-2.0)
-#   N0=A*B
-#
-##  magnetic energy density
-#   uB = eB*InternalEngyDens
-#
-##  magnitude of magnetic field
-#   B= np.sqrt( 8.0*np.pi*uB )
-#
-##  critical frequency (Hz)
-##  --> We set particle mass to mp because 90% of cosmic ray are proton
-#   Nu0=3.0*qp*B/(4.0*np.pi*mp*c)
-#
-##  observed frequency (Hz)
-#   Nu= 1.0*Nu0
-#
-##  emissivity
-#   j = ( qp**2/(mp*c**2) )**2 * c * N0*uB*  Nu0**(-1.5+0.5*p)  * Nu**(0.5-0.5*p)
-#
-##  coefficient
-#   j *= 4.0/9.0
-#
-##  we assume emissivity is proportional to v**2
-#   j *= (1.0-Lorentz_factor**-2)
 
-#  U = 1.0
-#   j = pres * rho * Temp * np.tanh(Temp/(1.4142136e+00-1.0))
-# U = 10.0
-#   j = pres * rho * Temp * np.tanh(Temp/(1.0049875621120890e+01-1.0))
-#   j = pres * rho * Temp
-#   j = pres**2
-#   j = pres**2 * np.tanh(Temp/0.077)
-   j = pres**2 * np.tanh(Temp/Gamma_Src_1)**2
-    
-#   j = pres**2 * np.exp(-9.0/Temp)
-#   j = pres**2 * np.tanh(Temp/(1.0049875621120890e+01-1.0))
+#  synchrotron emission
+   if ( emission == "synchrotron" ):
+     j = pres**2 * np.tanh(eta/Gamma_Src_1)**2
+     j *= ds.length_unit * ds.time_unit**7/ ds.mass_unit
+   if ( emission == "non_relativistic_thermal_Bremsstrahlung_per_frequency" ):
+     n = data["Dens"]/Lorentz_factor
+     kT = eta * mp * c**2 / (1e3*eV)
+     j = (n**2) * (eta**-0.5 ) * ( np.exp(-freq/kT)  )
+     j *= ds.length_unit **5 * ds.time_unit**2 / ds.mass_unit
+   if ( emission == "non_relativistic_thermal_Bremsstrahlung_all_frequency" ):
+     n = data["Dens"]/Lorentz_factor
+     j = (n**2) * (eta**+0.5 )
+     j *= ds.length_unit **5 * ds.time_unit**3 / ds.mass_unit
+
 
 #  beaming factor
    Var = Lorentz_factor - (Ux*normal[0]+Uy*normal[1]+Uz*normal[2]) / c

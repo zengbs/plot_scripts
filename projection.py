@@ -1,9 +1,9 @@
+from __main__ import *
 import argparse
 import sys
 import yt
 import numpy as np
 import yt.visualization.eps_writer as eps
-import derived_field as df
 import time
 import os
 import math
@@ -28,6 +28,8 @@ parser.add_argument( '-max'   , action='store', required=False, type=float, dest
 parser.add_argument( '-min'   , action='store', required=False, type=float, dest='minlim',     help='min lim', default=float('nan') )
 parser.add_argument( '-z'     , action='store', required=True,  type=int,   dest='zoom',       help='zoom in' )
 parser.add_argument( '-l'     , action='store', required=True,  type=int,   dest='log',        help='log scale' )
+parser.add_argument( '-freq'    ,action='store', required=False,  type=float, dest='freq',      help='frequency (keV)' )
+parser.add_argument( '-emission',action='store', required=False,  type=str,  dest='emission',  help='emission type' )
 
 args=parser.parse_args()
 
@@ -53,11 +55,14 @@ zoom        = args.zoom
 log         = args.log
 maxlim      = args.maxlim
 minlim      = args.minlim
+freq        = args.freq
+emission    = args.emission
 
 colormap    = 'afmhot'
 
 dpi         = 150
 
+import derived_field as df
 
 # ! check parameter
 if (zoom < 1):
@@ -142,11 +147,12 @@ if field == 'sound_speed':
 if field == 'threshold':
       unit = ''
       function=df._threshold
-if field == 'synchrotron_emissivity':
-      #unit = 'g/(cm*s**2)'
-      #unit = 'g**2/(cm**4*s**2)'
-      unit = 'g**2/(cm**2*s**4)'
-      function=df._synchrotron_emissivity
+if field == 'emissivity':
+      if (emission == "non_relativistic_thermal_Bremsstrahlung_per_frequency"):
+           unit = 'g*s**2/cm'
+      if ( emission == "non_relativistic_thermal_Bremsstrahlung_all_frequency" or emission == "synchrotron" ):
+           unit = 'g*s**3/cm'
+      function=df._emissivity
 if field == 'internal_energy_density_sr':
       unit= 'g/(cm*s**2)'
       function=df._internal_energy_density_sr
