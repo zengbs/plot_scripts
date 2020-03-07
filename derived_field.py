@@ -94,13 +94,7 @@ def _lorentz_factor( field, data ):
     Ux = data["MomX"]/(data["Dens"]*h_c2)
     Uy = data["MomY"]/(data["Dens"]*h_c2)
     Uz = data["MomZ"]/(data["Dens"]*h_c2)
-    #Lorentz_factor = np.sqrt(1 + (Ux/c)**2 + (Uy/c)**2 + (Uz/c)**2)
-
-    Ux *= ds.time_unit / ds.length_unit
-    Uy *= ds.time_unit / ds.length_unit
-    Uz *= ds.time_unit / ds.length_unit
-    Lorentz_factor = np.sqrt(1 + Ux**2 + Uy**2 + Uz**2)
-
+    Lorentz_factor = np.sqrt(1 + (Ux/c)**2 + (Uy/c)**2 + (Uz/c)**2)
     return Lorentz_factor
 
 def _lorentz_factor_1( field, data ):
@@ -221,9 +215,25 @@ def _kinetic_energy_density_sr(field, data):
    return kinetic_energy_density/normalconst
 
 def _Bernoulli_const( field, data ):
-   h=data["specific_enthalpy_sr"]
-   factor = data["Lorentz_factor"]
-   BernpulliConst = factor * h
+   Temp = data["Temp"]
+   eta = Temp
+
+   if ds["EoS"] == 2:
+     h_c2 = 1.0 + data["Gamma"] * eta / ( data["Gamma"] - 1.0 )
+   elif ds["EoS"] == 1:
+     h_c2 = 2.5*eta+np.sqrt(2.25*eta**2+1.0)
+   else:
+     print ("Your EoS doesn't support yet!")
+     sys.exit(0)
+
+   h = h_c2 * c**2
+
+   Ux = data["MomX"]/(data["Dens"]*h_c2)
+   Uy = data["MomY"]/(data["Dens"]*h_c2)
+   Uz = data["MomZ"]/(data["Dens"]*h_c2)
+   Lorentz_factor = np.sqrt(1 + (Ux/c)**2 + (Uy/c)**2 + (Uz/c)**2)
+
+   BernpulliConst = Lorentz_factor * h
    return BernpulliConst/normalconst
 
 def _spherical_radial_4velocity(field, data):

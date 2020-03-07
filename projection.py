@@ -253,12 +253,12 @@ for df.ds in ts.piter():
          if ( emission == 'synchrotron' ):
              title = emission
          if ( emission == 'NR_thermal_Bremss_all_freq' ):
-             title = '%s' %( "NR bremss " )
+             title = '%s' %( "NR bremss" )
          if ( emission == 'NR_thermal_Bremss_per_freq' ):
-             title = '%s, hv=%s keV ' %( "NR bremss", freq )
+             title = '%s_hv=%s_keV' %( "NR bremss", freq )
        else:
          title = ""
-       sz.annotate_title(title + pwd[-1])
+       sz.annotate_title(title + '('+pwd[-1]+')')
        sz.set_font({'weight':'bold', 'size':'22'})
 
 #      ! annotate straight line
@@ -269,7 +269,7 @@ for df.ds in ts.piter():
        sz.set_axes_unit( 'pc' )
 
 #      ! save picture
-       filename = 'theta=%.2f_phi=%.2f' %(df.theta, df.phi)
+       filename = title + '_theta=%.2f_phi=%.2f' %(df.theta, df.phi)
        sz.save( name='Data_%06d_' %df.ds["DumpID"] + filename, suffix='png' )
 
 #      ! advance angle
