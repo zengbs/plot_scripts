@@ -1,7 +1,13 @@
 import numpy as np
 import math
 import re
-from yt.units import G, kboltz, c, mp, qp, eV
+from yt.units import gravitational_constant_cgs,\
+                     speed_of_light_cgs,        \
+                     charge_proton_cgs,         \
+                     eV,                        \
+                     boltzmann_constant_cgs,    \
+                     mass_hydrogen_cgs,         \
+                     planck_constant_cgs
 from __main__ import *
 
 
@@ -24,7 +30,7 @@ GeV = 1.0e9*eV
 
 def _temperature_sr(field, data):
     Temp = data["Temp"]
-    Temp *= ( mp * c**2  )
+    Temp *= ( mass_hydrogen_cgs * speed_of_light_cgs**2  )
     return Temp
 
 def _gravitational_potential(field, data):
@@ -48,10 +54,10 @@ def _pressure_sr( field, data ):
     Ux = data["MomX"]/(data["Dens"]*h_c2)
     Uy = data["MomY"]/(data["Dens"]*h_c2)
     Uz = data["MomZ"]/(data["Dens"]*h_c2)
-    Lorentz_factor = np.sqrt(1 + (Ux/c)**2 + (Uy/c)**2 + (Uz/c)**2)
+    Lorentz_factor = np.sqrt(1 + (Ux/speed_of_light_cgs)**2 + (Uy/speed_of_light_cgs)**2 + (Uz/speed_of_light_cgs)**2)
     rho = data["Dens"]/Lorentz_factor
 
-    pres = rho * eta * c**2
+    pres = rho * eta * speed_of_light_cgs**2
     return pres/normalconst
 
 def _proper_mass_density( field, data ):
@@ -73,7 +79,7 @@ def _proper_mass_density( field, data ):
     Ux = data["MomX"]/(data["Dens"]*h_c2)
     Uy = data["MomY"]/(data["Dens"]*h_c2)
     Uz = data["MomZ"]/(data["Dens"]*h_c2)
-    Lorentz_factor = np.sqrt(1 + (Ux/c)**2 + (Uy/c)**2 + (Uz/c)**2)
+    Lorentz_factor = np.sqrt(1 + (Ux/speed_of_light_cgs)**2 + (Uy/speed_of_light_cgs)**2 + (Uz/speed_of_light_cgs)**2)
     n = data["Dens"]/Lorentz_factor
     return n/normalconst
 
@@ -94,7 +100,7 @@ def _lorentz_factor( field, data ):
     Ux = data["MomX"]/(data["Dens"]*h_c2)
     Uy = data["MomY"]/(data["Dens"]*h_c2)
     Uz = data["MomZ"]/(data["Dens"]*h_c2)
-    Lorentz_factor = np.sqrt(1 + (Ux/c)**2 + (Uy/c)**2 + (Uz/c)**2)
+    Lorentz_factor = np.sqrt(1 + (Ux/speed_of_light_cgs)**2 + (Uy/speed_of_light_cgs)**2 + (Uz/speed_of_light_cgs)**2)
     return Lorentz_factor
 
 def _lorentz_factor_1( field, data ):
@@ -114,7 +120,7 @@ def _lorentz_factor_1( field, data ):
     Ux = data["MomX"]/(data["Dens"]*h_c2)
     Uy = data["MomY"]/(data["Dens"]*h_c2)
     Uz = data["MomZ"]/(data["Dens"]*h_c2)
-    Usqr = (Ux/c)**2 + (Uy/c)**2 + (Uz/c)**2
+    Usqr = (Ux/speed_of_light_cgs)**2 + (Uy/speed_of_light_cgs)**2 + (Uz/speed_of_light_cgs)**2
     Lorentz_factor = np.sqrt(1 + Usqr)
     return Usqr / ( Lorentz_factor + 1 )
 
@@ -181,7 +187,7 @@ def _specific_enthalpy_sr( field, data ):
       print ("Your EoS doesn't support yet!")
       sys.exit(0)
 
-    h = h_c2 * c**2
+    h = h_c2 * speed_of_light_cgs**2
 
     return h/normalconst
 
@@ -198,7 +204,7 @@ def _thermal_energy_density_sr( field, data ):
    h=data["specific_enthalpy_sr"]
    n=data["proper_mass_density"]
    p=data["pressure_sr"]
-   ThermalEngyDens = n*m*h-p-n*mp*c**2
+   ThermalEngyDens = n*m*h-p-n*mass_hydrogen_cgs*speed_of_light_cgs**2
    return ThermalEngyDens/normalconst
 
 def _internal_energy_density_sr( field, data ):
@@ -226,12 +232,12 @@ def _Bernoulli_const( field, data ):
      print ("Your EoS doesn't support yet!")
      sys.exit(0)
 
-   h = h_c2 * c**2
+   h = h_c2 * speed_of_light_cgs**2
 
    Ux = data["MomX"]/(data["Dens"]*h_c2)
    Uy = data["MomY"]/(data["Dens"]*h_c2)
    Uz = data["MomZ"]/(data["Dens"]*h_c2)
-   Lorentz_factor = np.sqrt(1 + (Ux/c)**2 + (Uy/c)**2 + (Uz/c)**2)
+   Lorentz_factor = np.sqrt(1 + (Ux/speed_of_light_cgs)**2 + (Uy/speed_of_light_cgs)**2 + (Uz/speed_of_light_cgs)**2)
 
    BernpulliConst = Lorentz_factor * h
    return BernpulliConst/normalconst
@@ -278,7 +284,7 @@ def _3_velocity_x( field, data ):
    Ux = data["MomX"]/(data["Dens"]*h_c2)
    Uy = data["MomY"]/(data["Dens"]*h_c2)
    Uz = data["MomZ"]/(data["Dens"]*h_c2)
-   factor = np.sqrt(1 + (Ux/c)**2 + (Uy/c)**2 + (Uz/c)**2)
+   factor = np.sqrt(1 + (Ux/speed_of_light_cgs)**2 + (Uy/speed_of_light_cgs)**2 + (Uz/speed_of_light_cgs)**2)
    Vx = Ux / factor
    return Vx
 
@@ -297,7 +303,7 @@ def _3_velocity_y( field, data ):
    Ux = data["MomX"]/(data["Dens"]*h_c2)
    Uy = data["MomY"]/(data["Dens"]*h_c2)
    Uz = data["MomZ"]/(data["Dens"]*h_c2)
-   factor = np.sqrt(1 + (Ux/c)**2 + (Uy/c)**2 + (Uz/c)**2)
+   factor = np.sqrt(1 + (Ux/speed_of_light_cgs)**2 + (Uy/speed_of_light_cgs)**2 + (Uz/speed_of_light_cgs)**2)
    Vy = Uy / factor
    return Vy
 
@@ -316,7 +322,7 @@ def _3_velocity_z( field, data ):
    Ux = data["MomX"]/(data["Dens"]*h_c2)
    Uy = data["MomY"]/(data["Dens"]*h_c2)
    Uz = data["MomZ"]/(data["Dens"]*h_c2)
-   factor = np.sqrt(1 + (Ux/c)**2 + (Uy/c)**2 + (Uz/c)**2)
+   factor = np.sqrt(1 + (Ux/speed_of_light_cgs)**2 + (Uy/speed_of_light_cgs)**2 + (Uz/speed_of_light_cgs)**2)
    Vz = Uz / factor
    return Vz
 
@@ -335,7 +341,7 @@ def _3_velocity_magnitude( field, data ):
    Ux = data["MomX"]/(data["Dens"]*h_c2)
    Uy = data["MomY"]/(data["Dens"]*h_c2)
    Uz = data["MomZ"]/(data["Dens"]*h_c2)
-   factor = np.sqrt(1 + (Ux/c)**2 + (Uy/c)**2 + (Uz/c)**2)
+   factor = np.sqrt(1 + (Ux/speed_of_light_cgs)**2 + (Uy/speed_of_light_cgs)**2 + (Uz/speed_of_light_cgs)**2)
    Vx = Ux / factor
    Vy = Uy / factor
    Vz = Uz / factor
@@ -351,7 +357,7 @@ def _Cp_per_particle( field, data ):
    else:
      print ("Your EoS doesn't support yet!")
      sys.exit(0)
-   Cp *= kboltz
+   Cp *= boltzmann_constant_cgs
    return Cp/normalconst
 
 
@@ -364,20 +370,20 @@ def _Cv_per_particle( field, data ):
    else:
      print ("Your EoS doesn't support yet!")
      sys.exit(0)
-   Cv *= kboltz
+   Cv *= boltzmann_constant_cgs
    return Cv/normalconst
 
 def _Cp_per_volume( field, data ): 
    Cp = data["Cp_per_particle"]
    Cp /= data["proper_mass_density"]
-   Cp *= mp
+   Cp *= mass_hydrogen_cgs
    return Cp/normalconst
 
 
 def _Cv_per_volume( field, data ): 
    Cv = data["Cv_per_particle"]
    Cv /= data["proper_mass_density"]
-   Cv *= mp
+   Cv *= mass_hydrogen_cgs
    return Cv/normalconst
 
 def _Adiabatic_Index( field, data ):
@@ -416,7 +422,7 @@ def _sound_speed (field, data):
      print ("Your EoS doesn't support yet!")
      sys.exit(0)
    Cs = np.sqrt(Cs_sq)
-   Cs *= c
+   Cs *= speed_of_light_cgs
    return Cs
 
 def _4_sound_speed (field, data):
@@ -430,7 +436,7 @@ def _4_sound_speed (field, data):
      print ("Your EoS doesn't support yet!")
      sys.exit(0)
    Cs = np.sqrt(Cs_sq / (1.0-Cs_sq) )
-   Cs *= c
+   Cs *= speed_of_light_cgs
    return Cs
 
 
@@ -463,7 +469,7 @@ def _Mach_number_sr (field, data):
      sys.exit(0)
 
    Cs = np.sqrt(Cs_sq / (1.0-Cs_sq) )
-   Cs *= c
+   Cs *= speed_of_light_cgs
 
    return np.sqrt (Ux**2 + Uy**2 + Uz**2 ) / Cs
 
@@ -511,20 +517,21 @@ def _emissivity( field, data ):
    Uy = data["MomY"]/(data["Dens"]*h_c2)
    Uz = data["MomZ"]/(data["Dens"]*h_c2)
    
-   Lorentz_factor = np.sqrt(1 + (Ux/c)**2 + (Uy/c)**2 + (Uz/c)**2)
+   Lorentz_factor = np.sqrt(1 + (Ux/speed_of_light_cgs)**2 + (Uy/speed_of_light_cgs)**2 + (Uz/speed_of_light_cgs)**2)
 
    rho = data["Dens"]/Lorentz_factor
 
 #  pressure
-   pres = rho * eta * c**2
+   pres = rho * eta * speed_of_light_cgs**2
 
-#  synchrotron emission
+#  synchrotron
    if ( emission == "synchrotron" ):
      j = pres**2 * np.tanh(eta/Gamma_Src_1)**2
      j *= ds.length_unit * ds.time_unit**7/ ds.mass_unit
+#  Bremsstrahlung per frequency
    if ( emission == "NR_thermal_Bremss_per_freq" ):
-     n = data["Dens"]/Lorentz_factor
-     kT = eta * mp * c**2 / (1e3*eV)
+     rho = data["Dens"]/Lorentz_factor
+     kT = eta * mass_hydrogen_cgs * speed_of_light_cgs**2
 
      freq1=freq.split(',')
      freq1 = np.asarray(freq1)
@@ -534,18 +541,22 @@ def _emissivity( field, data ):
 
      for f in freq1:
         idx = np.where(freq1==f)
-        sum_exp += np.exp(-freq1[idx]/kT)
+        sum_exp += np.exp(-freq1[idx]*1e3*eV/kT)
 
-     j = (n**2) * (eta**-0.5 ) * sum_exp
-     j *= ds.length_unit **5 * ds.time_unit**2 / ds.mass_unit
+     j  = ((rho/mass_hydrogen_cgs)**2) * ( kT**-0.5 ) * sum_exp
+     j *= (2**5)*(np.pi)*(charge_proton_cgs**6)/(3*mass_hydrogen_cgs*speed_of_light_cgs**3)
+     j *= np.sqrt( 2*np.pi/(3*mass_hydrogen_cgs) )
+#  Bremsstrahlung all frequency
    if ( emission == "NR_thermal_Bremss_all_freq" ):
-     n = data["Dens"]/Lorentz_factor
-     j = (n**2) * (eta**+0.5 )
-     j *= ds.length_unit **5 * ds.time_unit**3 / ds.mass_unit
+     rho = data["Dens"]/Lorentz_factor
+     kT = eta * mass_hydrogen_cgs * speed_of_light_cgs**2
+     j = ((rho/mass_hydrogen_cgs)**2) * (kT**0.5 )
+     j *= np.sqrt( 2*np.pi/(3*mass_hydrogen_cgs) )
+     j *= 2**5*np.pi*charge_proton_cgs**6 / ( 3*planck_constant_cgs*mass_hydrogen_cgs*speed_of_light_cgs**3 )
 
 
 #  beaming factor
-   Var = Lorentz_factor - (Ux*normal[0]+Uy*normal[1]+Uz*normal[2]) / c
+   Var = Lorentz_factor - (Ux*normal[0]+Uy*normal[1]+Uz*normal[2]) / speed_of_light_cgs
    BeamingFactor = Var**-2.0
 
    return j * BeamingFactor

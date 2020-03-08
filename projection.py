@@ -150,9 +150,9 @@ if field == 'threshold':
       function=df._threshold
 if field == 'emissivity':
       if (emission == "NR_thermal_Bremss_per_freq"):
-           unit = 'g*s**2/cm'
+           unit = 'g*s**-2/cm'
       if ( emission == "NR_thermal_Bremss_all_freq" or emission == "synchrotron" ):
-           unit = 'g*s**3/cm'
+           unit = 'g*s**-3/cm'
       function=df._emissivity
 if field == 'internal_energy_density_sr':
       unit= 'g/(cm*s**2)'
