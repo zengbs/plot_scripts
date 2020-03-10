@@ -18,7 +18,7 @@ def my_create_grps(name):
 #fs.copy('/Tree'    ,fd['/Tree']    )
 
 
-for idx in range(0,31):
+for idx in range(32,33):
 
    filename = "Data_%06d"%idx
 

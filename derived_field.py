@@ -31,7 +31,7 @@ GeV = 1.0e9*eV
 def _temperature_sr(field, data):
     Temp = data["Temp"]
     Temp *= ( mass_hydrogen_cgs * speed_of_light_cgs**2  )
-    return Temp
+    return Temp/normalconst
 
 def _gravitational_potential(field, data):
     return data["Pote"]
@@ -526,16 +526,17 @@ def _emissivity( field, data ):
 
 #  synchrotron
    if ( emission == "synchrotron" ):
-     j = pres**2 * np.tanh(eta/Gamma_Src_1)**2
-     j *= ds.length_unit * ds.time_unit**7/ ds.mass_unit
+     j = pres**2
+     j *= np.tanh(eta/Gamma_Src_1)**2
+     j *= ds.length_unit * ds.time_unit/ ds.mass_unit
 #  Bremsstrahlung per frequency
    if ( emission == "NR_thermal_Bremss_per_freq" ):
      rho = data["Dens"]/Lorentz_factor
      kT = eta * mass_hydrogen_cgs * speed_of_light_cgs**2
 
-     freq1=freq.split(',')
+     freq1 = freq.split(',')
      freq1 = np.asarray(freq1)
-     freq1=freq1.astype(np.float)
+     freq1 = freq1.astype(np.float)
 
      sum_exp = 0.0
 

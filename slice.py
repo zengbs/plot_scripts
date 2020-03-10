@@ -25,6 +25,11 @@ parser.add_argument( '-max',     action='store', required=False, type=float, des
 parser.add_argument( '-min',     action='store', required=False, type=float, dest='minlim',    help='min lim', default=float('nan') )
 parser.add_argument( '-z',       action='store', required=True,  type=int,   dest='zoom',      help='zoom in' )
 parser.add_argument( '-l',       action='store', required=True,  type=int,   dest='log',       help='log scale' )
+parser.add_argument( '-axis',    action='store', required=True,  type=int,   dest='axis',      help='hide axis' )
+parser.add_argument( '-cbr',     action='store', required=True,  type=int,   dest='cbr',       help='hide cbr' )
+parser.add_argument( '-timestamp', action='store', required=True,  type=int,   dest='timestamp', help='hide timestamp' )
+parser.add_argument( '-usertime',  action='store', required=True,  type=int, dest='usertime',  help='user time' )
+parser.add_argument( '-timeunit',  action='store', required=True,  type=str,   dest='timeunit',  help='time unit' )
 parser.add_argument( '-g',       action='store', required=True,  type=int,   dest='grid',      help='grids' )
 parser.add_argument( '-title',   action='store', required=True,  type=str,   dest='title',     help='title' )
 parser.add_argument( '-axunit',  action='store', required=True,  type=str,   dest='axunit',    help='unit for axis' )
@@ -32,7 +37,8 @@ parser.add_argument( '-namecbr', action='store', required=True,  type=str,   des
 parser.add_argument( '-fileformat', action='store', required=True,  type=str,   dest='fileformat',    help='file format' )
 parser.add_argument( '-linthesh',   action='store', required=True,  type=float, dest='linthesh',      help='linear threshold' )
 parser.add_argument( '-normalconst',action='store', required=True,  type=float, dest='normalconst',   help='nomalized constant' )
-parser.add_argument( '-freq'    ,action='store', required=False,  type=float, dest='freq',      help='frequency (keV)' )
+parser.add_argument( '-Offset',action='store', required=True,  type=str, dest='Offset',   help='Offset' )
+parser.add_argument( '-freq'    ,action='store', required=False,  type=str, dest='freq',      help='frequency (keV)' )
 parser.add_argument( '-emission',action='store', required=False,  type=str,   dest='emission',  help='emission type' )
 
 args=parser.parse_args()
@@ -47,6 +53,11 @@ args=parser.parse_args()
 
 field       = args.field
 cut_axis    = args.cut_axis
+axis        = args.axis
+cbr         = args.cbr
+timestamp   = args.timestamp
+usertime    = args.usertime
+timeunit    = args.timeunit
 start_cut   = args.start_cut
 end_cut     = args.end_cut
 N_cut       = args.N_cut
@@ -67,6 +78,8 @@ linthesh    = args.linthesh
 normalconst = args.normalconst
 freq        = args.freq
 emission    = args.emission
+Offset      = args.Offset
+
 
 colormap    = 'arbre'
 
@@ -224,7 +237,14 @@ for df.ds in ts.piter():
 #   else:
 #     cr=ad.clone()
 
-#   center[0] = 200.0
+   Offset1 = Offset.split(',')
+   Offset1 = np.asarray(Offset1)
+   Offset1 = Offset1.astype(np.float)                 
+
+   center[0] += Offset1[0] * df.ds.length_unit
+   center[1] += Offset1[1] * df.ds.length_unit
+   center[2] += Offset1[2] * df.ds.length_unit
+
    sz = yt.SlicePlot( df.ds, cut_axis, field, center=center, origin='native', data_source=ad )
 
 #   ! set the width of plot window
@@ -256,6 +276,13 @@ for df.ds in ts.piter():
    else:
      sz.set_zlim( field, minlim, maxlim)
 
+#  ! hide axis
+   if ( axis == 0 ):
+     sz.hide_axes()
+
+#  ! hide color bar 
+   if ( cbr == 0 ):
+     sz.hide_colorbar()
 
 #   ! set figure size
 #   sz.set_figure_size(150)
@@ -290,12 +317,12 @@ for df.ds in ts.piter():
      pwd = os.getcwd()
      pwd = pwd.split('/')
      sz.annotate_title('slice (' + cut_plane + ') ' + pwd[-1])
-   else:
+   elif ( title != "nan" ):
      sz.annotate_title(title)
  
 
 
-   sz.set_font({'weight':'bold', 'size':'22'})
+   sz.set_font({'weight':'bold', 'size':'30'})
 
 #  ! annote velocity vectors
 #   sz.annotate_velocity(factor = 16, normalize=False)
@@ -310,7 +337,13 @@ for df.ds in ts.piter():
    UNIT_T = df.ds["Unit_T"]*df.ds.time_unit
 
 
-   sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = {time:.4f} '+ axunit +'/$c$', text_args={'color':'black'})
+   if ( timestamp ):
+     if ( usertime == 0 ):
+       sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = {time:.4f} '+ axunit +'/$c$', text_args={'color':'black'})
+     else:
+       NormalizedTime = df.ds["Time"][0] * zoom / np.amax(df.ds["BoxSize"])
+       sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = ' + str( "%.2f" % (NormalizedTime)) + " " + timeunit, text_args={'color':'white'})
+
    sz.set_cmap( field, colormap )
    sz.set_unit( field, unit )
    sz.set_axes_unit( axunit )

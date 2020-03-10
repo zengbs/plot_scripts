@@ -27,8 +27,10 @@ parser.add_argument( '-dt'    , action='store', required=False, type=int,   dest
 parser.add_argument( '-i'     , action='store', required=False, type=str,   dest='prefix',     help='data path prefix [%(default)s]', default='./' )
 parser.add_argument( '-max'   , action='store', required=False, type=float, dest='maxlim',     help='max lim', default=float('nan') )
 parser.add_argument( '-min'   , action='store', required=False, type=float, dest='minlim',     help='min lim', default=float('nan') )
+parser.add_argument( '-radius', action='store', required=False, type=float, dest='radius',     help='radius of projected sphere' )
 parser.add_argument( '-z'     , action='store', required=True,  type=int,   dest='zoom',       help='zoom in' )
 parser.add_argument( '-l'     , action='store', required=True,  type=int,   dest='log',        help='log scale' )
+parser.add_argument( '-axunit',  action='store', required=True,  type=str,   dest='axunit',    help='unit for axis' )
 parser.add_argument( '-freq'    ,action='store', required=False,  type=str, dest='freq',      help='frequency (keV)' )
 parser.add_argument( '-emission',action='store', required=False,  type=str,  dest='emission',  help='emission type' )
 
@@ -54,6 +56,8 @@ didx        = args.didx
 prefix      = args.prefix
 zoom        = args.zoom
 log         = args.log
+axunit      = args.axunit
+radius      = args.radius
 maxlim      = args.maxlim
 minlim      = args.minlim
 freq        = args.freq
@@ -194,7 +198,8 @@ for df.ds in ts.piter():
      sys.exit(0)
    
   
-   ad = df.ds.all_data()
+   #ad = df.ds.all_data()
+   ad = df.ds.sphere('c',(radius, axunit))
   
    angle = head_angle
 
@@ -238,7 +243,7 @@ for df.ds in ts.piter():
 #       sz.set_figure_size(150)
 
 #      ! set linear scale around zero
-#       sz.set_log( field, log, linthresh=1e-5 )
+#       sz.set_log( field, log, linthresh=1e-24 )
        sz.set_log( field, log )
 
 #      ! zoom in
@@ -266,7 +271,7 @@ for df.ds in ts.piter():
        sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = {time:.2f} pc$/c$', text_args={'color':'black'})
        sz.set_cmap( field, colormap )
        sz.set_unit( field, 'cm*'+unit )
-       sz.set_axes_unit( 'pc' )
+       sz.set_axes_unit( axunit )
 
 #      ! save picture
        filename = title + '_theta=%.2f_phi=%.2f' %(df.theta, df.phi)
