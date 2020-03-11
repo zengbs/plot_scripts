@@ -38,6 +38,7 @@ parser.add_argument( '-fileformat', action='store', required=True,  type=str,   
 parser.add_argument( '-linthesh',   action='store', required=True,  type=float, dest='linthesh',      help='linear threshold' )
 parser.add_argument( '-normalconst',action='store', required=True,  type=float, dest='normalconst',   help='nomalized constant' )
 parser.add_argument( '-Offset',action='store', required=True,  type=str, dest='Offset',   help='Offset' )
+parser.add_argument( '-Width',action='store', required=True,  type=str, dest='Width',   help='width' )
 parser.add_argument( '-freq'    ,action='store', required=False,  type=str, dest='freq',      help='frequency (keV)' )
 parser.add_argument( '-emission',action='store', required=False,  type=str,   dest='emission',  help='emission type' )
 
@@ -79,6 +80,7 @@ normalconst = args.normalconst
 freq        = args.freq
 emission    = args.emission
 Offset      = args.Offset
+width       = args.Width
 
 
 colormap    = 'arbre'
@@ -150,7 +152,7 @@ if field == 'kinetic_energy_density_sr':
       unit= 'g/(cm*s**2)'
       function=df._kinetic_energy_density_sr
 if field == 'Bernoulli_constant':
-      unit= '(cm/s)**2'
+      unit= ''
       function=df._Bernoulli_const
 if field == 'spherical_radial_4velocity':
       unit= 'cm/s'
@@ -245,11 +247,25 @@ for df.ds in ts.piter():
    center[1] += Offset1[1] * df.ds.length_unit
    center[2] += Offset1[2] * df.ds.length_unit
 
-   sz = yt.SlicePlot( df.ds, cut_axis, field, center=center, origin='native', data_source=ad )
+   width1 = width.split(',')
+   width1 = np.asarray(width1)
+   width1 = width1.astype(np.float)                
+ 
 
-#   ! set the width of plot window
-#   center[0] = 300.0
-#   sz = yt.SlicePlot( df.ds, cut_axis, field, center=center, origin='native', data_source=ad, width=(300,120)  )
+   if ( width1[0] == 0.0  and  width1[1] == 0.0 ):
+     if   cut_axis == 'x':
+        width1[0] = df.ds["BoxSize"][1]
+        width1[1] = df.ds["BoxSize"][2]
+     elif cut_axis == 'y':
+        width1[0] = df.ds["BoxSize"][2]
+        width1[1] = df.ds["BoxSize"][0]
+     elif cut_axis == 'z':
+        width1[0] = df.ds["BoxSize"][0]
+        width1[1] = df.ds["BoxSize"][1]
+
+
+   sz = yt.SlicePlot( df.ds, cut_axis, field, center=center, origin='native', data_source=ad, width=width1 )
+ 
 
 #   ! cut cylinder shape region 
 #   ! center: coordinate at the center of cylinder shape region
@@ -300,7 +316,19 @@ for df.ds in ts.piter():
 
 #   ! name of colorbar
    if ( namecbr != "default" ):
-     sz.set_colorbar_label( field, namecbr )
+     namecbr1 = namecbr.split('~')
+     if   ( len(namecbr1) == 2 and '$' not in namecbr1 ):
+       sz.set_colorbar_label( field, namecbr1[0].replace('&',' ') + ' (' + namecbr1[1] + ')' )
+     elif ( len(namecbr1) == 1 ):
+       sz.set_colorbar_label( field, namecbr1[0].replace('&',' ') )
+     elif ( len(namecbr1) == 2  and namecbr1[1] == '$' ):
+       sz.set_colorbar_label( field, '$' + namecbr1[0].replace('&',' ') + '$' )
+     elif ( len(namecbr1) == 3  and namecbr1[1] == '$' and  namecbr1[2] != '$'):
+       sz.set_colorbar_label( field, '$' + namecbr1[0].replace('&',' ') + '$' + ' (' + namecbr1[1] + ')' )
+     elif ( len(namecbr1) == 3 and namecbr1[1] != '$' and namecbr1[2] == '$' ):
+       sz.set_colorbar_label( field, namecbr1[0].replace('&',' ') + ' (' + '$' + namecbr1[1] + '$' + ')' )
+     elif ( len(namecbr1) == 4 and  namecbr1[1] == '$' and namecbr1[3] == '$' ):
+       sz.set_colorbar_label( field, '$' + namecbr1[0].replace('&',' ') + '$' + ' (' + '$' + namecbr1[1] + '$' + ')' )
 
    if cut_axis == 'x':
      x='%0.3f'% center[0]
@@ -341,7 +369,8 @@ for df.ds in ts.piter():
      if ( usertime == 0 ):
        sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = {time:.4f} '+ axunit +'/$c$', text_args={'color':'black'})
      else:
-       NormalizedTime = df.ds["Time"][0] * zoom / np.amax(df.ds["BoxSize"])
+       NormalizedTime = df.ds["Time"][0] * zoom / np.amax( width1 )
+
        sz.annotate_timestamp( time_unit='code_time', corner='upper_right', time_format='t = ' + str( "%.2f" % (NormalizedTime)) + " " + timeunit, text_args={'color':'white'})
 
    sz.set_cmap( field, colormap )

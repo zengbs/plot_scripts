@@ -31,7 +31,7 @@ GeV = 1.0e9*eV
 def _temperature_sr(field, data):
     Temp = data["Temp"]
     Temp *= ( mass_hydrogen_cgs * speed_of_light_cgs**2  )
-    return Temp/normalconst
+    return Temp
 
 def _gravitational_potential(field, data):
     return data["Pote"]
@@ -232,15 +232,14 @@ def _Bernoulli_const( field, data ):
      print ("Your EoS doesn't support yet!")
      sys.exit(0)
 
-   h = h_c2 * speed_of_light_cgs**2
 
    Ux = data["MomX"]/(data["Dens"]*h_c2)
    Uy = data["MomY"]/(data["Dens"]*h_c2)
    Uz = data["MomZ"]/(data["Dens"]*h_c2)
    Lorentz_factor = np.sqrt(1 + (Ux/speed_of_light_cgs)**2 + (Uy/speed_of_light_cgs)**2 + (Uz/speed_of_light_cgs)**2)
 
-   BernpulliConst = Lorentz_factor * h
-   return BernpulliConst/normalconst
+   BernpulliConst = Lorentz_factor * h_c2
+   return BernpulliConst
 
 def _spherical_radial_4velocity(field, data):
    Ux = data["4_velocity_x"] 
