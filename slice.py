@@ -10,13 +10,22 @@ import math
 from PIL.PngImagePlugin import PngImageFile, PngInfo
 import json
 
+
+parser = argparse.ArgumentParser(description='Process some integers.')
+parser.add_argument('-p', type=str, dest='Plot__Paramater', action='store_const',
+                   const=sum, default=max,
+                   help='sum the integers (default: find the max)')
+
+args = parser.parse_args()
+File = args.Plot__Paramater
+
 Plot__Paramater = {}
 Input__TestProb = {}
 
 
 
 FilePtr1 = open('Input__TestProb', "r")
-FilePtr2 = open('Plot__Paramater', "r")
+FilePtr2 = open(File, "r")
 
 
 for line in FilePtr1:
@@ -304,7 +313,7 @@ for df.ds in ts.piter():
             pwd = os.getcwd()
             pwd = pwd.split('/')
             sz.annotate_title('slice (' + CutAxis + ') ' + pwd[-1])
-        else:
+        elif ( Title != 'off' ):
             sz.annotate_title(Title)
 
         # font
@@ -342,7 +351,9 @@ for df.ds in ts.piter():
           MetaData.update( {key: str( Input__TestProb[key] ).replace("\n","")} )
         for key in Plot__Paramater:
           MetaData.update( {key: str( Plot__Paramater[key] ).replace("\n","")} )
-
+   
+ 
+        MetaData.update( {"Pwd":os.getcwd()} )
 
         #  mpl_kwargs: A dict to be passed to 'matplotlib.pyplot.savefig'
         sz.save(name=FileName, suffix=FileFormat,
