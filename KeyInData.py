@@ -6,6 +6,9 @@ ds=yt.load("Data_000002")
 
 for key in ds:
  print (key, ds[key])
+#print (ds["MaxLevel"])
+#print (ds["BoxSize"])
+#print ('Step:', ds["Step"])
 #print ('Step:', ds["Step"])
 #print ('sha1:', ds["GitSha1"])
 #print ('branch:', ds["GitBranch"])
