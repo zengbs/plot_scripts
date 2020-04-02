@@ -206,15 +206,27 @@ def _spherical_radial_4velocity(field, data):
 
 def _cylindrical_radial_4velocity(field, data):
     center = data.get_field_parameter('center')
-    Ux = _4_velocity_x("", data)
-    Uy = _4_velocity_y("", data)
-    Uz = _4_velocity_z("", data)
-    y_uni = data["y"] - center[1]
-    z_uni = data["z"] - center[2]
-    rho = np.sqrt(y_uni**2 + z_uni**2)
-    y_uni /= rho
-    z_uni /= rho
-    return Uy*y_uni + Uz*z_uni
+
+    if ( cylindrical_axis == "x" ):
+      U1   = _4_velocity_y("", data)
+      U2   = _4_velocity_z("", data)
+      uni1 = data["y"] - center[1]
+      uni2 = data["z"] - center[2]
+    if ( cylindrical_axis == "y" ):
+      U1   = _4_velocity_x("", data)
+      U2   = _4_velocity_z("", data)
+      uni1 = data["x"] - center[1]
+      uni2 = data["z"] - center[2]
+    if ( cylindrical_axis == "z" ):
+      U1   = _4_velocity_y("", data)
+      U2   = _4_velocity_x("", data)
+      uni1 = data["y"] - center[1]
+      uni2 = data["x"] - center[2]
+    
+    rho = np.sqrt(uni1**2 + uni2**2)
+    uni1 /= rho
+    uni2 /= rho
+    return U1*uni1 + U2*uni2
 
 def _sound_speed(field, data):
     Cs_sq = _sound_speed_sqr("", data)

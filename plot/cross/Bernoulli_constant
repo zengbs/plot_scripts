@@ -1,0 +1,35 @@
+#  plot parameters
+SliceMax                      49  # [0-]
+SliceMin                      43  # [0-]
+CutAxis                        x  # x/y/z
+ 
+DumpIDMin                     41  # [0-]
+DumpIDMax                     41  # [0-]
+DumpIDDelta                    1  # [1-]
+Zoom                           1  # [0-]
+AxisUnit                     kpc  # AU, pc, kpc, Mpc
+NumSlice                       3  # [1-]
+FileFormat                   eps  # png, eps, ps
+Title                        off  # auto/off/string
+Axis                         off  # on/off
+TimeStamp                    off  # on/off
+TimeUnit                   L/$c$  # code_time/string
+ColorBar                     off  # on/off
+CenterOffset_x                 0  #
+CenterOffset_y                 0  #
+CenterOffset_z                 0  # 
+WindowWidth                  1.5  # auto/[]
+WindowHeight                 1.5  # auto/[]
+
+NormalizedConst_Pres        auto
+NormalizedConst_Dens        auto
+Resolution                   300  # max, auto:150
+FigSize                     auto
+ColorBarMax               26.290
+ColorBarMin               26.245
+NameColorBar       $h\gamma/c^2$  # auto, $<name>$@$<unit>$, $<name>$
+LogScale                     off  # on/off
+LinThresh                     -1  # on: positive number  off:-1
+Grid                         off  # on/off
+
+Field         Bernoulli_constant

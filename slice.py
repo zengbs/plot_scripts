@@ -7,17 +7,14 @@ import yt.visualization.eps_writer as eps
 import time
 import os
 import math
-from PIL.PngImagePlugin import PngImageFile, PngInfo
 import json
 
 
 parser = argparse.ArgumentParser(description='Process some integers.')
-parser.add_argument('-p', type=str, dest='Plot__Paramater', action='store_const',
-                   const=sum, default=max,
-                   help='sum the integers (default: find the max)')
+parser.add_argument( '-p',  action='store', required=True,  type=str, dest='File', help='file' )
 
 args = parser.parse_args()
-File = args.Plot__Paramater
+File = args.File
 
 Plot__Paramater = {}
 Input__TestProb = {}
@@ -52,11 +49,16 @@ FilePtr2.close()
 
 if (Plot__Paramater['NormalizedConst_Dens'] == 'auto'):
     normalconst_rho = Input__TestProb['Jet_SrcDens']
+    #normalconst_rho = Input__TestProb['Blast_Dens_Src']
+    Plot__Paramater['NormalizedConst_Dens'] = 'auto (%s)' % ( str(normalconst_rho) )
 
 if (Plot__Paramater['NormalizedConst_Pres'] == 'auto'):
     normalconst_pres = Input__TestProb['Jet_SrcDens'] * Input__TestProb['Jet_SrcTemp']
+    #normalconst_pres = Input__TestProb['Blast_Dens_Src'] * Input__TestProb['Blast_Temp_Src']
+    Plot__Paramater['NormalizedConst_Pres'] = 'auto (%s)' % ( str(normalconst_pres) )
 
-
+if (Plot__Paramater['Field'] == "cylindrical_radial_4velocity"):
+    cylindrical_axis = Plot__Paramater['cylindrical_axis']
 
 import derived_field as df
 
@@ -96,7 +98,6 @@ FigSize              = Plot__Paramater['FigSize']
 ColorBarMax          = Plot__Paramater['ColorBarMax']                                                                                                        
 ColorBarMin          = Plot__Paramater['ColorBarMin']
 NameColorBar         = Plot__Paramater['NameColorBar']
-ColorBarUnit         = Plot__Paramater['ColorBarUnit']
 LogScale             = Plot__Paramater['LogScale']  
 LinThresh            = Plot__Paramater['LinThresh'] 
 Grid                 = Plot__Paramater['Grid'] 
@@ -205,13 +206,13 @@ for df.ds in ts.piter():
 
     #  the dimension of window
     if (WindowWidth == 'auto' or WindowHeight == 'auto'):
-        if   CutAxis == 'x':
+        if   Plot__Paramater['CutAxis'] == 'x':
             WindowWidth  = df.ds["BoxSize"][1]
             WindowHeight = df.ds["BoxSize"][2]
-        elif CutAxis == 'y':
+        elif Plot__Paramater['CutAxis'] == 'y':
             WindowWidth  = df.ds["BoxSize"][2]
             WindowHeight = df.ds["BoxSize"][0]
-        elif CutAxis == 'z':
+        elif Plot__Paramater['CutAxis'] == 'z':
             WindowWidth  = df.ds["BoxSize"][0]
             WindowHeight = df.ds["BoxSize"][1]
 
@@ -245,18 +246,18 @@ for df.ds in ts.piter():
     while origin <= SliceMax:
  
         # center coordinate of window
-        if CutAxis == 'x':
+        if Plot__Paramater['CutAxis'] == 'x':
             center[0] = origin
-        elif CutAxis == 'y':
+        elif Plot__Paramater['CutAxis'] == 'y':
             center[1] = origin
-        elif CutAxis == 'z':
+        elif Plot__Paramater['CutAxis'] == 'z':
             center[2] = origin
         else:
             print("CutAxis should be x, y or z!\n")
             sys.exit(0)
 
 
-        sz = yt.SlicePlot(df.ds, CutAxis, Field, center=center, origin='native', data_source=ad, width=(WindowWidth, WindowHeight))
+        sz = yt.SlicePlot(df.ds, Plot__Paramater['CutAxis'], Field, center=center, origin='native', data_source=ad, width=(WindowWidth, WindowHeight))
 
 
         # set the range of color bar
@@ -283,9 +284,12 @@ for df.ds in ts.piter():
 
         # set linear scale around zero
         if (LinThresh > 0  and LogScale == 'on'):
-            sz.set_log(Field, LogScale, LinThresh)
-        elif (LinThresh <= 0):
-            sz.set_log(Field, LogScale)
+            sz.set_log(Field, True, LinThresh)
+        elif (LinThresh <= 0 and LogScale == 'on' ):
+            sz.set_log(Field, True)
+        elif ( LogScale == 'off' ):
+            sz.set_log(Field, False)
+            
 
         # zoom in
         sz.zoom(Zoom)
@@ -298,13 +302,13 @@ for df.ds in ts.piter():
           sz.set_colorbar_label( Field, NameColorBar )
     
 
-        if CutAxis == 'x':
+        if Plot__Paramater['CutAxis'] == 'x':
             x = '%0.3f' % center[0]
             CutAxis = 'x='+x.zfill(8)
-        elif CutAxis == 'y':
+        elif Plot__Paramater['CutAxis'] == 'y':
             y = '%0.3f' % center[1]
             CutAxis = 'y='+y.zfill(8)
-        elif CutAxis == 'z':
+        elif Plot__Paramater['CutAxis'] == 'z':
             z = '%0.3f' % center[2]
             CutAxis = 'z='+z.zfill(8)
 
@@ -312,12 +316,14 @@ for df.ds in ts.piter():
         if (Title == 'auto'):
             pwd = os.getcwd()
             pwd = pwd.split('/')
+            Title = 'slice (' + CutAxis + ') ' + pwd[-1]
             sz.annotate_title('slice (' + CutAxis + ') ' + pwd[-1])
+            Plot__Paramater['Title'] = Title
         elif ( Title != 'off' ):
             sz.annotate_title(Title)
 
         # font
-        sz.set_font({'weight': 'bold', 'size': '30'})
+        sz.set_font({'weight': 'bold', 'size': '40'})
 
         # time stamp
         if (TimeStamp == 'on'):

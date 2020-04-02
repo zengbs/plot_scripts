@@ -1,17 +1,17 @@
 #  plot parameters
 SliceMax                      50  # [0-]
 SliceMin                      50  # [0-]
-CutAxis                        x  # x/y/z
+CutAxis                        z  # x/y/z
  
-DumpIDMin                      1  # [0-]
-DumpIDMax                      1  # [0-]
+DumpIDMin                     41  # [0-]
+DumpIDMax                     41  # [0-]
 DumpIDDelta                    1  # [1-]
 Zoom                           1  # [0-]
 AxisUnit                     kpc  # AU, pc, kpc, Mpc
 NumSlice                       1  # [1-]
 FileFormat                   eps  # png, eps, ps
-Title                       auto  # auto/string
-Axis                          on  # on/off
+Title                        off  # auto/off/string
+Axis                         off  # on/off
 TimeStamp                     on  # on/off
 TimeUnit                   L/$c$  # code_time/string
 ColorBar                      on  # on/off
@@ -23,12 +23,11 @@ WindowHeight                16.5  # auto/[]
 
 NormalizedConst_Pres        auto
 NormalizedConst_Dens        auto
-Resolution                  auto  # max, auto:150
+Resolution                   300  # max, auto:150
 FigSize                     auto
-ColorBarMax                 auto
-ColorBarMin                 auto
-NameColorBar     $k_{B}T/mc^{2}$  # auto, $<name>$@$<unit>$
-ColorBarUnit                auto  # auto, blank, <user-defined>
+ColorBarMax                 1.58
+ColorBarMin                 5e-4
+NameColorBar           $P/P_{j}$  # auto, $<name>$@$<unit>$, $<name>$
 LogScale                      on  # on/off
 LinThresh                     -1  # on: positive number  off:-1
 Grid                         off  # on/off
