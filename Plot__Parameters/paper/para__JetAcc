@@ -1,0 +1,62 @@
+#
+
+FileName              Data_000000
+
+Field0                Lorentz_factor
+Field1                temperature_sr
+Field2                pressure_sr
+Field3                proper_mass_density
+Field4                Bernoulli_constant
+
+ColorBarLabel0        $\gamma$
+ColorBarLabel1        $k_{B}T/mc^{2}$
+ColorBarLabel2        $P/P_{j}$
+ColorBarLabel3        $\rho/\rho_{j}$
+ColorBarLabel4        $h\gamma/c^{2}$
+
+ColorBarMax0          auto 
+ColorBarMax1          auto
+ColorBarMax2          auto
+ColorBarMax3          auto
+ColorBarMax4          26.6
+
+ColorBarMin0          auto 
+ColorBarMin1          auto
+ColorBarMin2          auto
+ColorBarMin3          auto
+ColorBarMin4         26.45
+
+# 0/1: linear/log
+norm0                 0         
+norm1                 1
+norm2                 1
+norm3                 1
+norm4                 0
+
+
+CutAxis0              z
+Coord0                50
+Xmin0                 22.5
+Xmax0                 77.5
+Ymin0                 42
+Ymax0                 58
+
+CutAxis1              x
+Coord1                34
+Coord2                39
+Coord3                44
+Coord4                48
+Xmin                  48.7
+Xmax                  51.3
+Ymin                  48.7
+Ymax                  51.3
+NormalizedConst_Pres  auto
+NormalizedConst_Dens  auto 
+Resolution            1000  # number of pixels in horizontal direction
+aspect                equal
+FigSize               1
+CMap                  arbre
+
+cylindrical_axis      x 
+wspace                0.02
+hspace                0.06

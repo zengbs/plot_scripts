@@ -1,0 +1,36 @@
+#  plot parameters
+SliceMax                      48  # [0-]
+SliceMin                      48  # [0-]
+CutAxis                        x  # x/y/z
+ 
+DumpIDMin                      8  # [0-]
+DumpIDMax                      8  # [0-]
+DumpIDDelta                    1  # [1-]
+Zoom                          40  # [0-]
+AxisUnit                     kpc  # AU, pc, kpc, Mpc
+NumSlice                       1  # [1-]
+FileFormat                   eps  # png, eps, ps
+Title                        off  # auto/off/string
+Axis                         off  # on/off
+TimeStamp                    off  # on/off
+TimeUnit                   L/$c$  # code_time/string
+ColorBar                      on  # on/off
+CenterOffset_x                 0  #
+CenterOffset_y                 0  #
+CenterOffset_z                 0  # 
+WindowWidth                 auto  # auto/[]
+WindowHeight                auto  # auto/[]
+
+NormalizedConst_Pres        auto
+NormalizedConst_Dens        auto
+Resolution                   150  # max, auto:150
+FigSize                     auto
+ColorBarMax                  1.6
+ColorBarMin                 -0.6
+NameColorBar          $U_{\rho}$  # auto, $<name>$@$<unit>$, $<name>$
+LogScale                     off  # on/off
+LinThresh                     -1  # on: positive number  off:-1
+Grid                         off  # on/off
+cylindrical_axis               x
+
+Field    cylindrical_radial_4velocity

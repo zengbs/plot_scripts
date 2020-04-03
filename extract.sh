@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# This program is used to which files are missed
+# This program is used to find which files are missed
 ###################################################
 
 for idx in {0..56}

@@ -8,7 +8,6 @@ from yt.units import gravitational_constant_cgs,\
     boltzmann_constant_cgs,    \
     mass_hydrogen_cgs,         \
     planck_constant_cgs
-from __main__ import *
 
 
 eV = 1.6021766208e-12
@@ -48,16 +47,18 @@ def _gravitational_potential(field, data):
 
 
 def _pressure_sr(field, data):
+    from read_parameters import NormalizedConst_Dens, NormalizedConst_Pres
     eta = data["Temp"]
-    rho = _proper_mass_density("", data)*normalconst_rho
+    rho = _proper_mass_density("", data)*NormalizedConst_Dens
     pres = rho * eta
-    return pres/normalconst_pres
+    return pres/NormalizedConst_Pres
 
 
 def _proper_mass_density(field, data):
+    from read_parameters import NormalizedConst_Dens, NormalizedConst_Pres
     Lorentz_factor = _lorentz_factor("", data)
     rho = data["Dens"]/Lorentz_factor
-    return rho/normalconst_rho
+    return rho/NormalizedConst_Dens
 
 
 def _lorentz_factor(field, data):
