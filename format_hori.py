@@ -5,14 +5,23 @@ import yt.visualization.eps_writer as eps
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
-from mpl_toolkits.axes_grid1 import ImageGrid
+import matplotlib.gridspec as gridspec
+from string import ascii_uppercase
 
 
 #################################################
 
-FileName             = 'Data_000008'
-Field                = 'Bernoulli_constant'
-CutAxis              = 'x'
+FileName             = 'Data_000000'
+Field                = 'temperature_sr'
+
+CutAxis0             = 'z'
+Coord0               = 50
+Xmin0                = 22.5
+Xmax0                = 77.5
+Ymin0                = 42
+Ymax0                = 58
+
+CutAxis1             = 'x'
 Coord1               = 34
 Coord2               = 39
 Coord3               = 44
@@ -23,11 +32,12 @@ Ymin                 = 48.7
 Ymax                 = 51.3
 NormalizedConst_Pres = 1
 NormalizedConst_Dens = 1
-Resolution           = 800  # number of pixels in horizontal direction
+Resolution           = 1000  # number of pixels in horizontal direction
 CMap                 = 'arbre'
-ColorBarMax          = 26.600
-ColorBarMin          = 26.245 
-ColorBarLabel        = '$h\gamma/c^{2}$'
+ColorBarLabel        = r'$U_{R}/c$'
+norm = LogNorm()
+aspect='equal'
+FigSize              = 1
 
 #################################################
 
@@ -37,12 +47,23 @@ cylindrical_axis = 'x'
 
 import derived_field as df
 
+WindowHeight0         = abs(Ymax0-Ymin0)
+WindowWidth0          = abs(Xmax0-Xmin0)
+BufferSize0           = [ int(Resolution), int(Resolution*WindowHeight0/WindowWidth0) ]
 
-WindowHeight         = abs(Xmax-Xmin)
-WindowWidth          = abs(Ymax-Ymin)
-BufferSize           = [ Resolution, int(Resolution*(WindowHeight/WindowWidth)) ]
+WindowHeight         = abs(Ymax-Ymin)
+WindowWidth          = abs(Xmax-Xmin)
+BufferSize1          = [ int(BufferSize0[0]*0.25), int(BufferSize0[0]*0.25*WindowHeight/WindowWidth)  ]
 
 FileOut              = FileName + '_' + Field
+
+Coord      = [ Coord0, Coord1, Coord2, Coord3, Coord4 ]
+CutAxis    = [ CutAxis0, CutAxis1, CutAxis1, CutAxis1, CutAxis1 ]
+Extent0    = [Xmin0, Xmax0, Ymin0, Ymax0]
+Extent1    = [Xmin , Xmax , Ymin , Ymax ]
+
+Extent     = [     Extent0,     Extent1,     Extent1,     Extent1,     Extent1 ]
+BufferSize = [ BufferSize0, BufferSize1, BufferSize1, BufferSize1, BufferSize1 ]
 
 # choose proper unit for field
 ########################################
@@ -137,25 +158,17 @@ if Field not in ('total_energy_per_volume', 'momentum_x', 'momentum_y', 'momentu
 
 ad = df.ds.all_data()
 
-sl1  = df.ds.slice(CutAxis, Coord1, data_source=ad  )
-frb1 = yt.FixedResolutionBuffer(sl1, (Xmin, Xmax, Ymin, Ymax), BufferSize )
-frb1 = np.array(frb1[Field])
+sl  = [None]*5
+frb = [None]*5
+
+for i in range(0,5):
+  sl[i]  =  df.ds.slice(CutAxis[i], Coord[i], data_source=ad  ) 
+  frb[i] = yt.FixedResolutionBuffer(sl[i], Extent[i],  BufferSize[i] )
+  frb[i] = np.array(frb[i][Field])
 
 
-sl2  = df.ds.slice(CutAxis, Coord2, data_source=ad )
-frb2 = yt.FixedResolutionBuffer(sl2, (Xmin, Xmax, Ymin, Ymax), BufferSize)
-frb2 = np.array(frb2[Field])
-
-sl3  = df.ds.slice(CutAxis, Coord3, data_source=ad  )
-frb3 = yt.FixedResolutionBuffer(sl3, (Xmin, Xmax, Ymin, Ymax), BufferSize )
-frb3 = np.array(frb3[Field])
-
-sl4  = df.ds.slice(CutAxis, Coord4, data_source=ad  )
-frb4 = yt.FixedResolutionBuffer(sl4, (Xmin, Xmax, Ymin, Ymax), BufferSize )
-frb4 = np.array(frb4[Field])
-
-#ColorBarMax = max(np.amax(frb1), np.amax(frb2), np.amax(frb3), np.amax(frb4))
-#ColorBarMin = min(np.amin(frb1), np.amin(frb2), np.amin(frb3), np.amin(frb4))
+ColorBarMax = max(np.amax(frb[0]), np.amax(frb[1]), np.amax(frb[2]), np.amax(frb[3]), np.amax(frb[4]))
+ColorBarMin = min(np.amin(frb[0]), np.amin(frb[1]), np.amin(frb[2]), np.amin(frb[3]), np.amin(frb[4]))
 
 
 # Matplolib
@@ -163,56 +176,51 @@ frb4 = np.array(frb4[Field])
 
 font = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 30}
 
-fig = plt.figure(figsize=(20, 5))
-#fig, axs = plt.subplots(nrows=1, ncols=4, sharex=True)
+WidthRatio0 = WindowWidth0*WindowWidth/WindowHeight0 
+WidthRatio1 = WindowWidth
+WidthRatio2 = WindowWidth
+WidthRatio3 = WindowWidth
+WidthRatio4 = WindowWidth
+WidthRatio5 = 0.2*WindowWidth
 
-# Remove horizontal space between axes
-#fig.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.1, hspace=None)
+# The amount of width/height reserved for space between subplots,
+# expressed as a fraction of the average axis width/height
+wspace = 0.05
+hspace = 0.05
 
+WithRatio=[WidthRatio0, WidthRatio1, WidthRatio2, WidthRatio3, WidthRatio4, WidthRatio5]
 
-grid = ImageGrid(fig, 111,          # as in plt.subplot(111)
-                 nrows_ncols=(1,4),
-                 axes_pad=0.15, 
-                 share_all=False, 
-                 cbar_location="right", 
-                 cbar_mode="single", 
-                 cbar_size="7%", 
-                 cbar_pad=0.15, )
+Sum_wspace = 5*wspace*sum(WithRatio)/6
+Sum_hspace = 4*hspace
 
+FigSize_X = sum(WithRatio)*FigSize + Sum_wspace
+FigSize_Y = WindowHeight*FigSize + Sum_hspace
 
-#im = grid[0].imshow(frb1, cmap=CMap , norm=LogNorm(), extent=[Xmin, Xmax, Ymin, Ymax])
-im = grid[0].imshow(frb1, cmap=CMap , extent=[Xmin, Xmax, Ymin, Ymax], vmax=ColorBarMax, vmin=ColorBarMin )
-grid[0].get_xaxis().set_ticks([])
-grid[0].get_yaxis().set_ticks([])
-
-#im = grid[1].imshow(frb2, cmap=CMap , norm=LogNorm(), extent=[Xmin, Xmax, Ymin, Ymax])
-im = grid[1].imshow(frb2, cmap=CMap , extent=[Xmin, Xmax, Ymin, Ymax], vmax=ColorBarMax, vmin=ColorBarMin )
-grid[1].get_xaxis().set_ticks([])
-grid[1].get_yaxis().set_ticks([])
-
-#im = grid[2].imshow(frb3, cmap=CMap , norm=LogNorm(), extent=[Xmin, Xmax, Ymin, Ymax])
-im = grid[2].imshow(frb3, cmap=CMap , extent=[Xmin, Xmax, Ymin, Ymax], vmax=ColorBarMax, vmin=ColorBarMin )
-grid[2].get_xaxis().set_ticks([])
-grid[2].get_yaxis().set_ticks([])
-
-#im = grid[3].imshow(frb4, cmap=CMap , norm=LogNorm(), extent=[Xmin, Xmax, Ymin, Ymax])
-im = grid[3].imshow(frb4, cmap=CMap , extent=[Xmin, Xmax, Ymin, Ymax], vmax=ColorBarMax, vmin=ColorBarMin )
-grid[3].get_xaxis().set_ticks([])
-grid[3].get_yaxis().set_ticks([])
+fig = plt.figure(figsize=( FigSize_X , FigSize_Y ), constrained_layout=False)
 
 
-grid[0].text(0.05,0.85,"A",transform=grid[0].transAxes,fontdict=font, bbox=dict(facecolor='white', alpha=0.5) )
-grid[1].text(0.05,0.85,"B",transform=grid[1].transAxes,fontdict=font, bbox=dict(facecolor='white', alpha=0.5) )
-grid[2].text(0.05,0.85,"C",transform=grid[2].transAxes,fontdict=font, bbox=dict(facecolor='white', alpha=0.5) )
-grid[3].text(0.05,0.85,"D",transform=grid[3].transAxes,fontdict=font, bbox=dict(facecolor='white', alpha=0.5) )
+gs = fig.add_gridspec(1,6,wspace=wspace, hspace=hspace, width_ratios=WithRatio)
 
 
+ax = fig.add_subplot(gs[0, 0])
+im = ax.imshow(frb[0], cmap=CMap, norm=norm, aspect=aspect, extent=Extent[0], vmax=ColorBarMax, vmin=ColorBarMin )
+ax.get_xaxis().set_ticks([])
+ax.get_yaxis().set_ticks([])
+
+for i,a in zip(range(1,5),ascii_uppercase):
+  ax = fig.add_subplot(gs[0,i])
+  im = ax.imshow(frb[i], cmap=CMap, norm=norm, aspect=aspect,  extent=Extent[i], vmax=ColorBarMax, vmin=ColorBarMin )
+  ax.get_xaxis().set_ticks([])
+  ax.get_yaxis().set_ticks([])
+  ax.text(0.05,0.95,a,horizontalalignment='left',verticalalignment='top',transform=ax.transAxes,fontdict=font, bbox=dict(facecolor='white', alpha=0.5) )
+
+
+ 
 # Colorbar
-cbar = grid[3].cax.colorbar(im)
-cbar.ax.tick_params(labelsize=30, color='k', direction='in')
-cax = grid.cbar_axes[0]
-axis = cax.axis[cax.orientation]
-axis.label.set_text(ColorBarLabel)
-axis.label.set_size(30)
+ax5 = fig.add_subplot(gs[0, 5])
+cbar = fig.colorbar(im,cax=ax5, use_gridspec=True)
+cbar.ax.tick_params(labelsize=30, color='k', direction='in', which='both')
 
+
+#plt.show()
 plt.savefig( FileOut+".eps", bbox_inches='tight', pad_inches=0.05, format='eps',dpi=800 )
