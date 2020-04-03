@@ -1,6 +1,8 @@
 #
 
-FileName              Data_000000
+DataName              Data_000008
+FileName              Figu_000008
+FileFormat            eps
 
 Field0                Lorentz_factor
 Field1                temperature_sr

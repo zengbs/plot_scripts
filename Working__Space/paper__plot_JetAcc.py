@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 import matplotlib.gridspec as gridspec
 import sys
+import os
 
 
 
@@ -14,6 +15,8 @@ import unit
 
 def _Plot(Plot__Paramater, Input__TestProb):   
    FileName             = Plot__Paramater['FileName'] 
+   DataName             = Plot__Paramater['DataName'] 
+   FileFormat           = Plot__Paramater['FileFormat'] 
                                            
    Field0               = Plot__Paramater['Field0'] 
    Field1               = Plot__Paramater['Field1'] 
@@ -103,7 +106,6 @@ def _Plot(Plot__Paramater, Input__TestProb):
    WindowWidth          = abs(Xmax-Xmin)
    BufferSize1          = [ int(BufferSize0[0]*0.25), int(BufferSize0[0]*0.25*WindowHeight/WindowWidth)  ]
    
-   FileOut              = FileName
    
    Coord      = [ Coord0, Coord1, Coord2, Coord3, Coord4 ]
    CutAxis    = [ CutAxis0, CutAxis1, CutAxis1, CutAxis1, CutAxis1 ]
@@ -116,7 +118,7 @@ def _Plot(Plot__Paramater, Input__TestProb):
    
    
    
-   df.ds = yt.load(FileName)
+   df.ds = yt.load(DataName)
    
    
    #   add derived field
@@ -197,5 +199,32 @@ def _Plot(Plot__Paramater, Input__TestProb):
      cbar.set_label(ColorBarLabel[i], size=20)
      cbar.ax.tick_params(labelsize=20, color='k', direction='in', which='both')
    
+   MetaData = {} 
    
-   plt.savefig( FileOut+".png", bbox_inches='tight', pad_inches=0.05, format='png',dpi=800 )
+   for key in df.ds:
+     MetaData.update( {key: str( df.ds[key] ).replace("\n","")} )
+   for key in Input__TestProb:
+     MetaData.update( {key: str( Input__TestProb[key] ).replace("\n","")} )
+   for key in Plot__Paramater:
+     MetaData.update( {key: str( Plot__Paramater[key] ).replace("\n","")} )
+   
+   
+   MetaData.update( {"Pwd":os.getcwd()} )
+  
+   FileOut = FileName+"."+FileFormat
+ 
+   plt.savefig( FileOut, bbox_inches='tight', pad_inches=0.05, format=FileFormat, dpi=800, metadata=MetaData )
+
+
+   # recoed all parameters in eps format 
+   if FileFormat == 'eps':
+      with open(FileOut, "r+") as f2:
+             for x in range(6):
+                f2.readline()            # skip past early lines
+             pos = f2.tell()             # remember insertion position
+             f2_remainder = f2.read()    # cache the rest of f2
+             f2.seek(pos)
+             for key in MetaData:
+               string = '%%{:<12}  {:12}\n'.format(key, MetaData[key])
+               f2.write(string)
+             f2.write(f2_remainder)
