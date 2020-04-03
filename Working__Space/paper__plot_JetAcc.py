@@ -190,7 +190,7 @@ def _Plot(Plot__Paramater, Input__TestProb):
        ax[i][j].text(0.05,0.95,a,horizontalalignment='left',verticalalignment='top',transform=ax[i][j].transAxes,fontdict=font, bbox=dict(facecolor='white', alpha=0.5) )
    
      for k,s in zip(range(1,len(Coord)),["A","B","C","D"]):
-       ax[i][0].annotate( s, xy=(Coord[k],51), xytext=(Coord[k],52.5),color=annotate_color[i],fontweight='bold',fontsize='10', horizontalalignment="center", arrowprops=dict( facecolor='black', arrowstyle="-", color=annotate_color[i])  )
+       ax[i][0].annotate( s, xy=(Coord[k],51), xytext=(Coord[k],52.5),color=annotate_color[i],fontweight='bold',fontsize='10', horizontalalignment="center", arrowprops=dict( facecolor='black', arrowstyle="-", edgecolor=annotate_color[i])  )
    
      cax = fig.add_subplot(gs[i, 5])
      cbar = fig.colorbar(im,cax=cax, use_gridspec=True)

@@ -3,8 +3,8 @@ SliceMax                      50  # [0-]
 SliceMin                      50  # [0-]
 CutAxis                        z  # x/y/z
  
-DumpIDMin                      8  # [0-]
-DumpIDMax                      8  # [0-]
+DumpIDMin                     12  # [0-]
+DumpIDMax                     12  # [0-]
 DumpIDDelta                    1  # [1-]
 Zoom                           3  # [0-]
 AxisUnit                     kpc  # AU, pc, kpc, Mpc

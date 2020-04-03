@@ -1,3 +1,7 @@
+import sys
+# insert at 1, 0 is the script path (or '' in REPL)
+sys.path.insert(1, '/projectY/tseng/gamer/bin/plot_scripts/Working__Space')
+
 import argparse
 from paper__plot_JetAcc import _Plot
 
