@@ -27,7 +27,7 @@ def _mass_density_sr(field, data):
 def _specific_enthalpy_sr(field, data):
     eta = data["Temp"]
     if data.ds["EoS"] == 2:
-        h_c2 = 1.0 + data["Gamma"] * eta / (data["Gamma"] - 1.0)
+        h_c2 = 1.0 + data.ds["Gamma"] * eta / (data.ds["Gamma"] - 1.0)
     elif data.ds["EoS"] == 1:
         h_c2 = 2.5*eta+np.sqrt(2.25*eta**2+1.0)
     else:
@@ -240,7 +240,7 @@ def _sound_speed_sqr(field, data):
     ratio = eta / h_c2
 
     if data.ds["EoS"] == 2:
-        Cs_sq = data["Gamma"] * ratio
+        Cs_sq = data.ds["Gamma"] * ratio
     elif data.ds["EoS"] == 1:
         Cs_sq = (ratio / 3.0) * ((5.0 - 8.0 * ratio) / (1.0 - ratio))
     else:
@@ -307,7 +307,7 @@ def _Cp_per_particle(field, data):
     print("doesn't support yet!")
     sys.exit(0)
     if data.ds["EoS"] == 2:
-        Cp = data["Gamma"] / (data["Gamma"] - 1.0)
+        Cp = data.ds["Gamma"] / (data.ds["Gamma"] - 1.0)
     elif data.ds["EoS"] == 1:
         temp = data["Temp"]
         Cp = 2.50 + 2.25 * data["Temp"] / np.sqrt(2.25 * data["Temp"]**2 + 1.0)
@@ -322,7 +322,7 @@ def _Cv_per_particle(field, data):
     print("doesn't support yet!")
     sys.exit(0)
     if data.ds["EoS"] == 2:
-        Cv = 1.0 / (data["Gamma"] - 1.0)
+        Cv = 1.0 / (data.ds["Gamma"] - 1.0)
     elif data.ds["EoS"] == 1:
         temp = data["Temp"]
         Cv = 1.50 + 2.25 * data["Temp"] / np.sqrt(2.25 * data["Temp"]**2 + 1.0)

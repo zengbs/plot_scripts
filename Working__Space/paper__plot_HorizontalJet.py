@@ -54,8 +54,8 @@ def _Plot(Plot__Paramater, Input__TestProb):
    NormalizedConst_Dens = Plot__Paramater['NormalizedConst_Dens'] 
    Resolution           = Plot__Paramater['Resolution'] 
    aspect               = Plot__Paramater['aspect'] 
-   FigSize              = Plot__Paramater['FigSize'] 
    CMap                 = Plot__Paramater['CMap'] 
+   FigWidth             = Plot__Paramater['FigWidth']
                                            
    wspace               = Plot__Paramater['wspace'] 
    hspace               = Plot__Paramater['hspace'] 
@@ -104,62 +104,64 @@ def _Plot(Plot__Paramater, Input__TestProb):
    df.ds1 = yt.load(DataName1)
    
    DataName = [ DataName0, DataName1 ]
-   DataSet  = [ df.ds0, df.ds1 ]  
- 
-   #   add derived field
-   for field in Field:
-       function, units = unit.ChooseUnit(field)
-       for i in range(len(DataSet)):
-           DataSet[i] = yt.load(DataName[i])
-           DataSet[i].add_field(("gamer", field), function=function, sampling_type="cell", units=units)
-   
+   DataSet  = [ None ]*len(DataName)
+
    sl  = []
    frb = []
-   
-   
+
+   # !!! The second added derived field will overwrite the first one !!
+ 
+   #   add derived field
    for i in range(len(Field)):
-     sl.append([])
-     frb.append([])
-     ColorBarMax_Row = sys.float_info.min
-     ColorBarMin_Row = sys.float_info.max
-   
-     for j in range(len(DataSet)):
-       sl[i].append(  DataSet[j].slice(CutAxis[j], Coord[j], data_source=DataSet[j].all_data()  )  )
-       frb[i].append( yt.FixedResolutionBuffer(sl[i][j], Extent[j],  BufferSize[j] ) )
-       frb[i][j] = np.array(frb[i][j][Field[i]])
-       ColorBarMax_Row = max( ColorBarMax_Row, np.amax(frb[i][j]) )
-       ColorBarMin_Row = min( ColorBarMin_Row, np.amin(frb[i][j]) )
-   
-     if ( ColorBarMax[i] == 'auto' ):
-       ColorBarMax[i] = ColorBarMax_Row
-     if ( ColorBarMin[i] == 'auto' ):
-       ColorBarMin[i] = ColorBarMin_Row
-   
-   
+       function, units = unit.ChooseUnit(Field[i])
+       for j in range(len(DataSet)):
+           sl.append([])
+           frb.append([])
+
+           DataSet[j] = yt.load(DataName[j])
+           DataSet[j].add_field(("gamer", Field[i]), function=function, sampling_type="cell", units=units)
+
+           ColorBarMax_Row = sys.float_info.min
+           ColorBarMin_Row = sys.float_info.max
+  
+           sl[i].append(  DataSet[j].slice(CutAxis[j], Coord[j], data_source=DataSet[j].all_data()  )  )
+           frb[i].append( yt.FixedResolutionBuffer(sl[i][j], Extent[j],  BufferSize[j] ) )
+
+           frb[i][j] = np.array(frb[i][j][Field[i]])
+
+           ColorBarMax_Row = max( ColorBarMax_Row, np.amax(frb[i][j]) )
+           ColorBarMin_Row = min( ColorBarMin_Row, np.amin(frb[i][j]) )
+
+       if ( ColorBarMax[i] == 'auto' ):
+         ColorBarMax[i] = ColorBarMax_Row
+       if ( ColorBarMin[i] == 'auto' ):
+         ColorBarMin[i] = ColorBarMin_Row
+
    # Matplolib
    ######################################################
    
    font = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 20}
    
-   WidthRatio0 = WindowWidth0*WindowWidth/WindowHeight0 
+   WidthRatio0 = WindowWidth0
    WidthRatio1 = WindowWidth
-   WidthRatio2 = 0.2*WindowWidth
+   WidthRatio2 = 0.05*WindowWidth
    
    # The amount of width/height reserved for space between subplots,
    # expressed as a fraction of the average axis width/height
    
-   WithRatio = [ WidthRatio0, WidthRatio1, WidthRatio2 ]
+   WidthRatio = [ WidthRatio0, WidthRatio1, WidthRatio2 ]
    
-   Sum_wspace = wspace*sum(WithRatio)/3
-   Sum_hspace = hspace
+   Sum_wspace = wspace*sum(WidthRatio)/len(WidthRatio)
+   Sum_hspace = hspace*WindowHeight
    
-   FigSize_X = sum(WithRatio)*FigSize + Sum_wspace
-   FigSize_Y = WindowHeight*FigSize*5 + Sum_hspace
+   FigSize_X = sum(WidthRatio) + Sum_wspace
+   FigSize_Y = WindowHeight*len(Field) + Sum_hspace
+  
+   Ratio = FigWidth/FigSize_X
+ 
+   fig = plt.figure(figsize=( FigSize_X*Ratio , FigSize_Y*Ratio ), constrained_layout=False)
    
-   fig = plt.figure(figsize=( FigSize_X , FigSize_Y ), constrained_layout=False)
-   
-   
-   gs = fig.add_gridspec(2,3,wspace=wspace, hspace=hspace, width_ratios=WithRatio)
+   gs = fig.add_gridspec(len(Field),len(DataName)+1,wspace=wspace, hspace=hspace, width_ratios=WidthRatio)
    
    ax = [[None]*len(Field)]*len(Coord)
    
@@ -172,14 +174,23 @@ def _Plot(Plot__Paramater, Input__TestProb):
        ax[i][j].get_yaxis().set_ticks([])
    
      cax = fig.add_subplot(gs[i, 2])
-     cbar = fig.colorbar(im,cax=cax, use_gridspec=True)
+
+     if i==0:
+       cbar = fig.colorbar(im,cax=cax, use_gridspec=True, ticks=[1e1,1e2,1e3,1e4,1e5,1e6])
+       cbar.ax.tick_params(which='minor', length=0)
+     if i==1:
+       cbar = fig.colorbar(im,cax=cax, use_gridspec=True)
+       cbar.ax.tick_params(which='minor', length=0)
+
      cbar.set_label(ColorBarLabel[i], size=20)
-     cbar.ax.tick_params(labelsize=20, color='k', direction='in', which='both')
+     cbar.ax.tick_params(labelsize=20, color='k', direction='in', which='major')
    
    MetaData = {} 
    
-   for key in df.ds:
-     MetaData.update( {key: str( df.ds[key] ).replace("\n","")} )
+   for key in DataSet[0]:
+     MetaData.update( {key: str( DataSet[0][key] ).replace("\n","")} )
+   for key in DataSet[1]:
+     MetaData.update( {key: str( DataSet[1][key] ).replace("\n","")} )
    for key in Input__TestProb:
      MetaData.update( {key: str( Input__TestProb[key] ).replace("\n","")} )
    for key in Plot__Paramater:

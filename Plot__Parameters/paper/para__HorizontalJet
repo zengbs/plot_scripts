@@ -1,8 +1,8 @@
 #
-DataName0            Data_000000
-DataName1            Data_000001
+DataName0            /projectZ/tseng/product__HorizontalJet/Data_000004
+DataName1            /projectZ/tseng/product__ObliqueJet/Data_000002
 
-FileName             Figu_000000
+FileName              Fig_000004
 FileFormat                   eps
                      
 Field0            Lorentz_factor
@@ -11,35 +11,37 @@ Field1            temperature_sr
 ColorBarLabel0          $\gamma$
 ColorBarLabel1   $k_{B}T/mc^{2}$ 
                      
-ColorBarMax0                auto      
-ColorBarMax1                auto
+ColorBarMax0                 1e6
+ColorBarMin0                auto
                      
-ColorBarMin0                auto 
+ColorBarMax1                auto
 ColorBarMin1                auto
                      
 # 0/1: linear/log
-norm0                          0
+norm0                          1
 norm1                          1
                      
                      
 CutAxis0                       z
 Coord0                        50
-Xmin0                   5.001e-2 #dddd
-Xmax0                   4.991e-2 
-Ymin0                   5.001e-2
-                    s
+Xmax0                      50.02
+Xmin0                      49.98 
+Ymax0                      50.02
+Ymin0                      49.98 
+
 CutAxis1                       z 
 Coord1                        50
-Xmin                    5.001e-2
-Xmax                    4.991e-2
-Ymin                    5.001e-2
-Ymax                    4.991e-2
+Xmax                       50.02
+Xmin                       49.98
+Ymax                       50.02
+Ymin                       49.98
 NormalizedConst_Pres        auto
 NormalizedConst_Dens        auto
 Resolution                   500
 aspect                     equal
-FigSize                       10
 CMap                       arbre 
                      
-wspace                       0.1
-hspace                       0.1
+FigWidth                      10
+
+wspace                      0.04
+hspace                      0.02
