@@ -14,12 +14,11 @@ eV = 1.6021766208e-12
 keV = 1.0e3*eV
 GeV = 1.0e9*eV
 
-#UNIT_L = ds["Unit_L"]*ds.length_unit
-#UNIT_V = ds["Unit_V"]*ds.length_unit/ds.time_unit
-#UNIT_M = ds["Unit_M"]*ds.mass_unit
-#UNIT_D = ds["Unit_D"]*ds.mass_unit*ds.length_unit**-3
-#UNIT_T = ds["Unit_T"]*ds.time_unit
-
+#UNIT_L =data.ds["Unit_L"]*data.ds.length_unit
+#UNIT_V =data.ds["Unit_V"]*data.ds.length_unit/data.ds.time_unit
+#UNIT_M =data.ds["Unit_M"]*data.ds.mass_unit
+#UNIT_D =data.ds["Unit_D"]*data.ds.mass_unit*data.ds.length_unit**-3
+#UNIT_T =data.ds["Unit_T"]*data.ds.time_unit
 
 def _mass_density_sr(field, data):
     return data["Dens"]
@@ -27,9 +26,9 @@ def _mass_density_sr(field, data):
 
 def _specific_enthalpy_sr(field, data):
     eta = data["Temp"]
-    if ds["EoS"] == 2:
+    if data.ds["EoS"] == 2:
         h_c2 = 1.0 + data["Gamma"] * eta / (data["Gamma"] - 1.0)
-    elif ds["EoS"] == 1:
+    elif data.ds["EoS"] == 1:
         h_c2 = 2.5*eta+np.sqrt(2.25*eta**2+1.0)
     else:
         print("Your EoS doesn't support yet!")
@@ -47,7 +46,7 @@ def _gravitational_potential(field, data):
 
 
 def _pressure_sr(field, data):
-    from read_parameters import NormalizedConst_Dens, NormalizedConst_Pres
+    from __main__ import NormalizedConst_Dens, NormalizedConst_Pres
     eta = data["Temp"]
     rho = _proper_mass_density("", data)*NormalizedConst_Dens
     pres = rho * eta
@@ -55,7 +54,7 @@ def _pressure_sr(field, data):
 
 
 def _proper_mass_density(field, data):
-    from read_parameters import NormalizedConst_Dens, NormalizedConst_Pres
+    from __main__ import NormalizedConst_Dens, NormalizedConst_Pres
     Lorentz_factor = _lorentz_factor("", data)
     rho = data["Dens"]/Lorentz_factor
     return rho/NormalizedConst_Dens
@@ -118,7 +117,7 @@ def _emissivity(field, data):
         pres = _pressure_sr("", data)
         j = pres**2
         j *= np.tanh(eta/Gamma_Src_1)**2
-        j *= ds.length_unit * ds.time_unit / ds.mass_unit
+        j *= data.ds.length_unit * data.ds.time_unit / data.ds.mass_unit
 #  Bremsstrahlung per frequency
     if (emission == "NR_thermal_Bremss_per_freq"):
         rho = data["Dens"]/Lorentz_factor
@@ -240,9 +239,9 @@ def _sound_speed_sqr(field, data):
     eta = data["Temp"]
     ratio = eta / h_c2
 
-    if ds["EoS"] == 2:
+    if data.ds["EoS"] == 2:
         Cs_sq = data["Gamma"] * ratio
-    elif ds["EoS"] == 1:
+    elif data.ds["EoS"] == 1:
         Cs_sq = (ratio / 3.0) * ((5.0 - 8.0 * ratio) / (1.0 - ratio))
     else:
         print("Your EoS doesn't support yet!")
@@ -307,9 +306,9 @@ def _kinetic_energy_density_sr(field, data):
 def _Cp_per_particle(field, data):
     print("doesn't support yet!")
     sys.exit(0)
-    if ds["EoS"] == 2:
+    if data.ds["EoS"] == 2:
         Cp = data["Gamma"] / (data["Gamma"] - 1.0)
-    elif ds["EoS"] == 1:
+    elif data.ds["EoS"] == 1:
         temp = data["Temp"]
         Cp = 2.50 + 2.25 * data["Temp"] / np.sqrt(2.25 * data["Temp"]**2 + 1.0)
     else:
@@ -322,9 +321,9 @@ def _Cp_per_particle(field, data):
 def _Cv_per_particle(field, data):
     print("doesn't support yet!")
     sys.exit(0)
-    if ds["EoS"] == 2:
+    if data.ds["EoS"] == 2:
         Cv = 1.0 / (data["Gamma"] - 1.0)
-    elif ds["EoS"] == 1:
+    elif data.ds["EoS"] == 1:
         temp = data["Temp"]
         Cv = 1.50 + 2.25 * data["Temp"] / np.sqrt(2.25 * data["Temp"]**2 + 1.0)
     else:
@@ -363,17 +362,17 @@ def _Adiabatic_Index(field, data):
 def _entropy_per_particle(field, data):
     print("doesn't support yet!")
     sys.exit(0)
-    if ds["EoS"] == 2:
+    if data.ds["EoS"] == 2:
         print("Your EoS doesn't support yet!")
         sys.exit(0)
-    elif ds["EoS"] == 1:
+    elif data.ds["EoS"] == 1:
         print("Your EoS doesn't support yet!")
         sys.exit(0)
         T1 = 1.0
         n1 = 2.0
         A1 = 1.5*T1+np.sqrt(2.25*T1**2+1.0)
         T2 = data["Temp"]
-        n2 = data["proper_mass_density"] * ds.length_unit**3
+        n2 = data["proper_mass_density"] * data.ds.length_unit**3
         A2 = 1.5*T2+np.sqrt(2.25*T2**2+1.0)
         delta_s = 1.5*np.log(T2/T1) + 1.5*np.log(A2/A1) - np.log(n2/n1)
     else:

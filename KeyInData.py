@@ -2,7 +2,7 @@ import yt
 from yt.units import G, kboltz, c, mp, qp
 
 #ds=yt.load("RESTART")
-ds=yt.load("Data_000002")
+ds=yt.load("Data_000000")
 
 for key in ds:
  print (key, ds[key])

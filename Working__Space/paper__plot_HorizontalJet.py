@@ -15,39 +15,26 @@ import unit
 
 def _Plot(Plot__Paramater, Input__TestProb):   
    FileName             = Plot__Paramater['FileName'] 
-   DataName             = Plot__Paramater['DataName'] 
+   DataName0            = Plot__Paramater['DataName0'] 
+   DataName1            = Plot__Paramater['DataName1'] 
+
    FileFormat           = Plot__Paramater['FileFormat'] 
                                            
    Field0               = Plot__Paramater['Field0'] 
    Field1               = Plot__Paramater['Field1'] 
-   Field2               = Plot__Paramater['Field2'] 
-   Field3               = Plot__Paramater['Field3'] 
-   Field4               = Plot__Paramater['Field4'] 
                                            
    ColorBarLabel0       = Plot__Paramater['ColorBarLabel0'] 
    ColorBarLabel1       = Plot__Paramater['ColorBarLabel1'] 
-   ColorBarLabel2       = Plot__Paramater['ColorBarLabel2'] 
-   ColorBarLabel3       = Plot__Paramater['ColorBarLabel3'] 
-   ColorBarLabel4       = Plot__Paramater['ColorBarLabel4'] 
                                            
    ColorBarMax0         = Plot__Paramater['ColorBarMax0'] 
    ColorBarMax1         = Plot__Paramater['ColorBarMax1'] 
-   ColorBarMax2         = Plot__Paramater['ColorBarMax2'] 
-   ColorBarMax3         = Plot__Paramater['ColorBarMax3'] 
-   ColorBarMax4         = Plot__Paramater['ColorBarMax4'] 
                                            
    ColorBarMin0         = Plot__Paramater['ColorBarMin0'] 
    ColorBarMin1         = Plot__Paramater['ColorBarMin1'] 
-   ColorBarMin2         = Plot__Paramater['ColorBarMin2'] 
-   ColorBarMin3         = Plot__Paramater['ColorBarMin3'] 
-   ColorBarMin4         = Plot__Paramater['ColorBarMin4']
                                            
    # 0/1: linear/log
    norm0                = Plot__Paramater['norm0'] 
    norm1                = Plot__Paramater['norm1'] 
-   norm2                = Plot__Paramater['norm2'] 
-   norm3                = Plot__Paramater['norm3'] 
-   norm4                = Plot__Paramater['norm4'] 
                                            
                                            
    CutAxis0             = Plot__Paramater['CutAxis0'] 
@@ -59,9 +46,6 @@ def _Plot(Plot__Paramater, Input__TestProb):
                                            
    CutAxis1             = Plot__Paramater['CutAxis1'] 
    Coord1               = Plot__Paramater['Coord1'] 
-   Coord2               = Plot__Paramater['Coord2'] 
-   Coord3               = Plot__Paramater['Coord3'] 
-   Coord4               = Plot__Paramater['Coord4'] 
    Xmin                 = Plot__Paramater['Xmin'] 
    Xmax                 = Plot__Paramater['Xmax'] 
    Ymin                 = Plot__Paramater['Ymin'] 
@@ -73,22 +57,20 @@ def _Plot(Plot__Paramater, Input__TestProb):
    FigSize              = Plot__Paramater['FigSize'] 
    CMap                 = Plot__Paramater['CMap'] 
                                            
-   cylindrical_axis     = Plot__Paramater['cylindrical_axis'] 
    wspace               = Plot__Paramater['wspace'] 
    hspace               = Plot__Paramater['hspace'] 
   
    #################################################################
 
-   norm = [ norm0, norm1, norm2, norm3, norm4  ]
-   ColorBarMax = [ ColorBarMax0, ColorBarMax1, ColorBarMax2, ColorBarMax3, ColorBarMax4  ]
-   ColorBarMin = [ ColorBarMin0, ColorBarMin1, ColorBarMin2, ColorBarMin3, ColorBarMin4  ]
-   ColorBarLabel = [ ColorBarLabel0, ColorBarLabel1, ColorBarLabel2, ColorBarLabel3, ColorBarLabel4  ]
-   Field = [ Field0, Field1, Field2, Field3, Field4  ]
-   annotate_color = [ 'white' , 'black' , 'black' , 'black', 'white'  ]
+   norm = [ norm0, norm1 ]
+   ColorBarMax = [ ColorBarMax0, ColorBarMax1 ]
+   ColorBarMin = [ ColorBarMin0, ColorBarMin1 ]
+   ColorBarLabel = [ ColorBarLabel0, ColorBarLabel1  ]
+   Field = [ Field0, Field1 ]
  
    #################################################################
    
-   for i in range(0,len(norm)):
+   for i in range(len(norm)):
      if norm[i] == 1:
        norm[i] = LogNorm()
      else:
@@ -98,49 +80,51 @@ def _Plot(Plot__Paramater, Input__TestProb):
    
    #################################################################
    
-   WindowHeight0         = abs(Ymax0-Ymin0)
-   WindowWidth0          = abs(Xmax0-Xmin0)
-   BufferSize0           = [ int(Resolution), int(Resolution*WindowHeight0/WindowWidth0) ]
+   WindowHeight0        = abs(Ymax0-Ymin0)
+   WindowWidth0         = abs(Xmax0-Xmin0)
+   BufferSize0          = [ int(Resolution), int(Resolution*WindowHeight0/WindowWidth0) ]
    
    WindowHeight         = abs(Ymax-Ymin)
    WindowWidth          = abs(Xmax-Xmin)
-   BufferSize1          = [ int(BufferSize0[0]*0.25), int(BufferSize0[0]*0.25*WindowHeight/WindowWidth)  ]
+   BufferSize1          = [ int(BufferSize0[0]), int(BufferSize0[0]*WindowHeight/WindowWidth)  ]
    
    
-   Coord      = [ Coord0, Coord1, Coord2, Coord3, Coord4 ]
-   CutAxis    = [ CutAxis0, CutAxis1, CutAxis1, CutAxis1, CutAxis1 ]
+   Coord      = [ Coord0, Coord1 ]
+   CutAxis    = [ CutAxis0, CutAxis1 ]
    Extent0    = [Xmin0, Xmax0, Ymin0, Ymax0]
    Extent1    = [Xmin , Xmax , Ymin , Ymax ]
    
-   Extent     = [     Extent0,     Extent1,     Extent1,     Extent1,     Extent1 ]
-   BufferSize = [ BufferSize0, BufferSize1, BufferSize1, BufferSize1, BufferSize1 ]
+   Extent     = [     Extent0,     Extent1 ]
+   BufferSize = [ BufferSize0, BufferSize1 ]
    
    
+     
    
+   df.ds0 = yt.load(DataName0)
+   df.ds1 = yt.load(DataName1)
    
-   df.ds = yt.load(DataName)
-   
-   
+   DataName = [ DataName0, DataName1 ]
+   DataSet  = [ df.ds0, df.ds1 ]  
+ 
    #   add derived field
    for field in Field:
        function, units = unit.ChooseUnit(field)
-       df.ds.add_field(("gamer", field), function=function, sampling_type="cell", units=units)
-   
-   ad = df.ds.all_data()
+       for i in range(len(DataSet)):
+           DataSet[i] = yt.load(DataName[i])
+           DataSet[i].add_field(("gamer", field), function=function, sampling_type="cell", units=units)
    
    sl  = []
    frb = []
    
    
-   
-   for i in range(0,len(Field)):
+   for i in range(len(Field)):
      sl.append([])
      frb.append([])
      ColorBarMax_Row = sys.float_info.min
      ColorBarMin_Row = sys.float_info.max
    
-     for j in range(0,len(Coord)):
-       sl[i].append(  df.ds.slice(CutAxis[j], Coord[j], data_source=ad  )  )
+     for j in range(len(DataSet)):
+       sl[i].append(  DataSet[j].slice(CutAxis[j], Coord[j], data_source=DataSet[j].all_data()  )  )
        frb[i].append( yt.FixedResolutionBuffer(sl[i][j], Extent[j],  BufferSize[j] ) )
        frb[i][j] = np.array(frb[i][j][Field[i]])
        ColorBarMax_Row = max( ColorBarMax_Row, np.amax(frb[i][j]) )
@@ -159,18 +143,15 @@ def _Plot(Plot__Paramater, Input__TestProb):
    
    WidthRatio0 = WindowWidth0*WindowWidth/WindowHeight0 
    WidthRatio1 = WindowWidth
-   WidthRatio2 = WindowWidth
-   WidthRatio3 = WindowWidth
-   WidthRatio4 = WindowWidth
-   WidthRatio5 = 0.2*WindowWidth
+   WidthRatio2 = 0.2*WindowWidth
    
    # The amount of width/height reserved for space between subplots,
    # expressed as a fraction of the average axis width/height
    
-   WithRatio=[WidthRatio0, WidthRatio1, WidthRatio2, WidthRatio3, WidthRatio4, WidthRatio5]
+   WithRatio = [ WidthRatio0, WidthRatio1, WidthRatio2 ]
    
-   Sum_wspace = 5*wspace*sum(WithRatio)/6
-   Sum_hspace = 4*hspace
+   Sum_wspace = wspace*sum(WithRatio)/3
+   Sum_hspace = hspace
    
    FigSize_X = sum(WithRatio)*FigSize + Sum_wspace
    FigSize_Y = WindowHeight*FigSize*5 + Sum_hspace
@@ -178,23 +159,19 @@ def _Plot(Plot__Paramater, Input__TestProb):
    fig = plt.figure(figsize=( FigSize_X , FigSize_Y ), constrained_layout=False)
    
    
-   gs = fig.add_gridspec(5,6,wspace=wspace, hspace=hspace, width_ratios=WithRatio)
+   gs = fig.add_gridspec(2,3,wspace=wspace, hspace=hspace, width_ratios=WithRatio)
    
    ax = [[None]*len(Field)]*len(Coord)
    
    
-   for i in range(0,len(Field)):
-     for j,a in zip(range(0,len(Coord)),[None,"A","B","C","D"]):
+   for i in range(len(Field)):
+     for j in range(len(DataSet)):
        ax[i][j] = fig.add_subplot(gs[i,j])
        im = ax[i][j].imshow(frb[i][j], cmap=CMap, norm=norm[i], aspect=aspect,  extent=Extent[j], vmax=ColorBarMax[i], vmin=ColorBarMin[i] )
        ax[i][j].get_xaxis().set_ticks([])
        ax[i][j].get_yaxis().set_ticks([])
-       ax[i][j].text(0.05,0.95,a,horizontalalignment='left',verticalalignment='top',transform=ax[i][j].transAxes,fontdict=font, bbox=dict(facecolor='white', alpha=0.5) )
    
-     for k,s in zip(range(1,len(Coord)),["A","B","C","D"]):
-       ax[i][0].annotate( s, xy=(Coord[k],51), xytext=(Coord[k],52.5),color=annotate_color[i],fontweight='bold',fontsize='10', horizontalalignment="center", arrowprops=dict( facecolor='black', arrowstyle="-", edgecolor=annotate_color[i])  )
-   
-     cax = fig.add_subplot(gs[i, 5])
+     cax = fig.add_subplot(gs[i, 2])
      cbar = fig.colorbar(im,cax=cax, use_gridspec=True)
      cbar.set_label(ColorBarLabel[i], size=20)
      cbar.ax.tick_params(labelsize=20, color='k', direction='in', which='both')
