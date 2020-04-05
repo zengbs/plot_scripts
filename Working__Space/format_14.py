@@ -25,8 +25,6 @@ NormalizedConst_Pres = 1
 NormalizedConst_Dens = 1
 Resolution           = 800  # number of pixels in horizontal direction
 CMap                 = 'arbre'
-#ColorBarMax          = None
-#ColorBarMin          = None 
 ColorBarLabel        = r'$U_{R}/c$'
 
 
@@ -181,22 +179,18 @@ grid = ImageGrid(fig, 111,          # as in plt.subplot(111)
                  cbar_pad=0.15, )
 
 
-#im = grid[0].imshow(frb1, cmap=CMap , norm=LogNorm(), extent=[Xmin, Xmax, Ymin, Ymax])
 im = grid[0].imshow(frb1, cmap=CMap , extent=[Xmin, Xmax, Ymin, Ymax], vmax=ColorBarMax, vmin=ColorBarMin )
 grid[0].get_xaxis().set_ticks([])
 grid[0].get_yaxis().set_ticks([])
 
-#im = grid[1].imshow(frb2, cmap=CMap , norm=LogNorm(), extent=[Xmin, Xmax, Ymin, Ymax])
 im = grid[1].imshow(frb2, cmap=CMap , extent=[Xmin, Xmax, Ymin, Ymax], vmax=ColorBarMax, vmin=ColorBarMin )
 grid[1].get_xaxis().set_ticks([])
 grid[1].get_yaxis().set_ticks([])
 
-#im = grid[2].imshow(frb3, cmap=CMap , norm=LogNorm(), extent=[Xmin, Xmax, Ymin, Ymax])
 im = grid[2].imshow(frb3, cmap=CMap , extent=[Xmin, Xmax, Ymin, Ymax], vmax=ColorBarMax, vmin=ColorBarMin )
 grid[2].get_xaxis().set_ticks([])
 grid[2].get_yaxis().set_ticks([])
 
-#im = grid[3].imshow(frb4, cmap=CMap , norm=LogNorm(), extent=[Xmin, Xmax, Ymin, Ymax])
 im = grid[3].imshow(frb4, cmap=CMap , extent=[Xmin, Xmax, Ymin, Ymax], vmax=ColorBarMax, vmin=ColorBarMin )
 grid[3].get_xaxis().set_ticks([])
 grid[3].get_yaxis().set_ticks([])

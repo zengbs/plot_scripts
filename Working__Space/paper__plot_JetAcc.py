@@ -162,23 +162,23 @@ def _Plot(Plot__Paramater, Input__TestProb):
    WidthRatio2 = WindowWidth
    WidthRatio3 = WindowWidth
    WidthRatio4 = WindowWidth
-   WidthRatio5 = 0.2*WindowWidth
+   WidthRatio5 = 0.1*WindowWidth
    
    # The amount of width/height reserved for space between subplots,
    # expressed as a fraction of the average axis width/height
    
-   WithRatio=[WidthRatio0, WidthRatio1, WidthRatio2, WidthRatio3, WidthRatio4, WidthRatio5]
+   WidthRatio=[WidthRatio0, WidthRatio1, WidthRatio2, WidthRatio3, WidthRatio4, WidthRatio5]
    
-   Sum_wspace = 5*wspace*sum(WithRatio)/6
+   Sum_wspace = 5*wspace*sum(WidthRatio)/6
    Sum_hspace = 4*hspace
    
-   FigSize_X = sum(WithRatio)*FigSize + Sum_wspace
+   FigSize_X = sum(WidthRatio)*FigSize + Sum_wspace
    FigSize_Y = WindowHeight*FigSize*5 + Sum_hspace
    
    fig = plt.figure(figsize=( FigSize_X , FigSize_Y ), constrained_layout=False)
    
    
-   gs = fig.add_gridspec(5,6,wspace=wspace, hspace=hspace, width_ratios=WithRatio)
+   gs = fig.add_gridspec(5,6,wspace=wspace, hspace=hspace, width_ratios=WidthRatio)
    
    ax = [[None]*len(Field)]*len(Coord)
    

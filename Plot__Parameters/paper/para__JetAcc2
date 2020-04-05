@@ -1,0 +1,28 @@
+#
+DataName              Data_000008
+FileName              Fig_cylindrical_radial_4velocity
+FileFormat            eps
+
+Field                 cylindrical_radial_4velocity
+
+ColorBarLabel         $U_{R}/c$
+ColorBarMax           auto 
+ColorBarMin           auto 
+
+# 0/1: linear/log
+norm                  0         
+CutAxis               x
+Coord1                34
+Coord2                39
+Coord3                44
+Coord4                48
+Xmin                  48.7
+Xmax                  51.3
+Ymin                  48.7
+Ymax                  51.3
+Resolution            1000  # number of pixels in horizontal direction
+aspect                equal
+FigWidth              10
+CMap                  arbre
+cylindrical_axis      x 
+wspace                0.02

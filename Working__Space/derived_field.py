@@ -205,6 +205,8 @@ def _spherical_radial_4velocity(field, data):
 # symmetry axis: x
 
 def _cylindrical_radial_4velocity(field, data):
+    from __main__ import cylindrical_axis
+
     center = data.get_field_parameter('center')
 
     if ( cylindrical_axis == "x" ):
