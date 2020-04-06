@@ -1,0 +1,107 @@
+#      
+#              |-----------|-----------|-----------| |--|
+#              |           |           |           | |  |
+#     Field_00 |           |           |           | |  |
+#              |           |           |           | |  |
+#              |           |           |           | |  |
+#              |-----------|-----------|-----------| |  |
+#              |           |           |           | |  |
+#              |           |           |           | |  |
+#     Field_01 |           |           |           | |  |
+#              |           |           |           | |  |
+#              |-----------|-----------|-----------| |--|
+#                  Coord_00    Coord_01    Coord_02    
+#               DataName_00 DataName_01 DataName_02
+#
+###################################################################
+DataName_00            Data_000001
+DataName_01            Data_000002
+DataName_02            Data_000003
+
+FileName        Figure_temp_pres
+FileFormat                   png
+
+Field_00            Lorentz_factor
+Field_01       proper_mass_density
+ColorBarLabel_00          $\gamma$
+ColorBarLabel_01   $\rho/\rho_{0}$ 
+
+#Field2            temperature_sr
+#Field3               pressure_sr
+#ColorBarLabel2   $k_{B}T/mc^{2}$ 
+#ColorBarLabel3         $P/P_{0}$
+                     
+ColorBarMax_00                auto
+ColorBarMin_00                auto
+                     
+ColorBarMax_01                auto
+ColorBarMin_01                auto
+                     
+#ColorBarMax_02                auto
+#ColorBarMin_03                auto
+                     
+#ColorBarMax2                auto
+#ColorBarMin2                auto
+#                     
+#ColorBarMax3                auto
+#ColorBarMin3                auto
+                     
+# 0/1: linear/log
+norm_00                          0
+norm_01                          1
+#norm3                          1
+                     
+                     
+CutAxis_00                     z
+Coord_00                     0.5
+Xmax_00                      1.0 
+Xmin_00                      0.0
+Ymax_00                      1.0
+Ymin_00                      0.0 
+
+CutAxis_01                     z
+Coord_01                     0.5
+Xmax_01                      1.0 
+Xmin_01                      0.0
+Ymax_01                      1.0
+Ymin_01                      0.0 
+                     
+CutAxis_02                     z
+Coord_02                     0.5
+Xmax_02                      1.0 
+Xmin_02                      0.0
+Ymax_02                      1.0
+Ymin_02                      0.0 
+
+#CutAxis_03                     z
+#Coord_03                     0.5
+#Xmax_03                      1.0 
+#Xmin_03                      0.0
+#Ymax_03                      1.0
+#Ymin_03                      0.0 
+#
+#CutAxis_04                     z
+#Coord_04                     0.5
+#Xmax_04                      1.0 
+#Xmin_04                      0.0
+#Ymax_04                      1.0
+#Ymin_04                      0.0 
+#                     
+#CutAxis_05                     z
+#Coord_05                     0.5
+#Xmax_05                      1.0 
+#Xmin_05                      0.0
+#Ymax_05                      1.0
+#Ymin_05                      0.0 
+
+NormalizedConst_Pres        auto
+NormalizedConst_Dens        auto
+
+Resolution                   500
+aspect                     equal
+CMap                       arbre 
+                     
+FigWidth                      10
+
+wspace                      0.04
+hspace                      0.02
