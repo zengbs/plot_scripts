@@ -64,8 +64,8 @@ def _Plot(Plot__Paramater, Input__TestProb):
   
    #################################################################
 
-   DataName = [ DataName0, DataName1 ]
-   norm = [ norm0, norm1 ]
+   DataName = [ DataName0, DataName1, DataName2 ]
+   norm = [ norm0, norm1, norm1 ]
    ColorBarMax = [ ColorBarMax0, ColorBarMax1 ]
    ColorBarMin = [ ColorBarMin0, ColorBarMin1 ]
    ColorBarLabel = [ ColorBarLabel0, ColorBarLabel1  ]
@@ -88,15 +88,11 @@ def _Plot(Plot__Paramater, Input__TestProb):
    WindowHeight0  = abs(Ymax0-Ymin0)
    WindowWidth0   = abs(Xmax0-Xmin0)
    BufferSize0    = [ int(BufferSize1[0]*WindowWidth0/WindowWidth1), int(BufferSize1[1]*WindowHeight0/WindowHeight1)  ]
-   BufferSize = [BufferSize0, BufferSize1]   
+   BufferSize = [BufferSize0, BufferSize1, BufferSize1]   
    
    Extent0    = [Xmin0, Xmax0, Ymin0, Ymax0]
    Extent1    = [Xmin1, Xmax1, Ymin1, Ymax1]
    Extent     = [Extent0, Extent1, Extent1] 
-   
-   df.ds0 = yt.load(DataName0)
-   df.ds1 = yt.load(DataName1)
-#   df.ds2 = yt.load(DataName2)
    
    DataSet  = [ None ]*len(DataName)
 
@@ -108,6 +104,9 @@ def _Plot(Plot__Paramater, Input__TestProb):
    #   add derived field
    for i in range(len(Field)):
        function, units = unit.ChooseUnit(Field[i])
+       ColorBarMax_Row = sys.float_info.min
+       ColorBarMin_Row = sys.float_info.max
+
        for j in range(len(DataSet)):
            sl.append([])
            frb.append([])
@@ -115,8 +114,6 @@ def _Plot(Plot__Paramater, Input__TestProb):
            DataSet[j] = yt.load(DataName[j])
            DataSet[j].add_field(("gamer", Field[i]), function=function, sampling_type="cell", units=units)
 
-           ColorBarMax_Row = sys.float_info.min
-           ColorBarMin_Row = sys.float_info.max
   
            sl[i].append(  DataSet[j].slice(CutAxis, Coord, data_source=DataSet[j].all_data()  )  )
            frb[i].append( yt.FixedResolutionBuffer(sl[i][j], Extent[j],  BufferSize[j] ) )
@@ -131,6 +128,7 @@ def _Plot(Plot__Paramater, Input__TestProb):
        if ( ColorBarMin[i] == 'auto' ):
          ColorBarMin[i] = ColorBarMin_Row
 
+
    # Matplolib
    ######################################################
    
@@ -140,7 +138,7 @@ def _Plot(Plot__Paramater, Input__TestProb):
    # The amount of width/height reserved for space between subplots,
    # expressed as a fraction of the average axis width/height
    
-   WidthRatio = [ WindowWidth1,WindowWidth1, WindowWidth1*0.05 ]
+   WidthRatio = [WindowWidth1, WindowWidth1,WindowWidth1, WindowWidth1*0.05 ]
    
    Sum_wspace = wspace*sum(WidthRatio)/len(WidthRatio)
    
@@ -153,17 +151,16 @@ def _Plot(Plot__Paramater, Input__TestProb):
    
    gs = fig.add_gridspec(len(Field),len(DataName)+1,wspace=wspace, hspace=hspace, width_ratios=WidthRatio)
    
-   ax = [[None]*len(Field)]*(len(DataName)+1)
-   
-   
+   ax = [[None]*len(DataName)]*(len(Field))
+
    for i in range(len(Field)):
      for j in range(len(DataName)):
        ax[i][j] = fig.add_subplot(gs[i,j])
        im = ax[i][j].imshow(frb[i][j], cmap=CMap, norm=norm[i], aspect=aspect,  extent=Extent[j], vmax=ColorBarMax[i], vmin=ColorBarMin[i] )
        ax[i][j].get_xaxis().set_ticks([])
        ax[i][j].get_yaxis().set_ticks([])
-   
-     cax = fig.add_subplot(gs[i, 2])
+  
+     cax = fig.add_subplot(gs[i, 3])
 
      cbar = fig.colorbar(im,cax=cax, use_gridspec=True)
 

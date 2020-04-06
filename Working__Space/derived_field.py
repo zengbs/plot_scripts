@@ -14,11 +14,23 @@ eV = 1.6021766208e-12
 keV = 1.0e3*eV
 GeV = 1.0e9*eV
 
-#UNIT_L =data.ds["Unit_L"]*data.ds.length_unit
-#UNIT_V =data.ds["Unit_V"]*data.ds.length_unit/data.ds.time_unit
-#UNIT_M =data.ds["Unit_M"]*data.ds.mass_unit
-#UNIT_D =data.ds["Unit_D"]*data.ds.mass_unit*data.ds.length_unit**-3
-#UNIT_T =data.ds["Unit_T"]*data.ds.time_unit
+
+def _unit (data):
+  if data.ds["Opt__Unit"] == 1:
+     unit_l = data.ds.length_unit
+     unit_v = speed_of_light_cgs
+     unit_m = data.ds.mass_unit
+     unit_d = data.ds.mass_unit*data.ds.length_unit**-3
+     unit_t = data.ds.length_unit/speed_of_light_cgs
+  else:
+     unit_l = data.ds.length_unit
+     unit_v = data.ds.length_unit/data.ds.time_unit
+     unit_m = data.ds.mass_unit
+     unit_d = data.ds.mass_unit*data.ds.length_unit**-3
+     unit_t = data.ds.time_unit
+
+  return unit_l, unit_v, unit_m, unit_d, unit_t
+
 
 def _mass_density_sr(field, data):
     return data["Dens"]
@@ -80,19 +92,31 @@ def _lorentz_factor_1(field, data):
 def _4_velocity_x(field, data):
     h_c2 = _specific_enthalpy_sr("", data)
     Ux = data["MomX"]/(data["Dens"]*h_c2)
-    return Ux/speed_of_light_cgs
+    if data.ds["Opt__Unit"] == 0:
+      return Ux*data.ds.time_unit/data.ds.length_unit
+    else:
+      return Ux/speed_of_light_cgs
+    #return Ux/UNIT_V
 
 
 def _4_velocity_y(field, data):
     h_c2 = _specific_enthalpy_sr("", data)
     Uy = data["MomY"]/(data["Dens"]*h_c2)
-    return Uy/speed_of_light_cgs
+    if data.ds["Opt__Unit"] == 0:
+      return Uy*data.ds.time_unit/data.ds.length_unit
+    else:
+      return Uy/speed_of_light_cgs
+    #return Uy/UNIT_V
 
 
 def _4_velocity_z(field, data):
     h_c2 = _specific_enthalpy_sr("", data)
     Uz = data["MomZ"]/(data["Dens"]*h_c2)
-    return Uz/speed_of_light_cgs
+    if data.ds["Opt__Unit"] == 0:
+      return Uz*data.ds.time_unit/data.ds.length_unit
+    else:
+      return Uz/speed_of_light_cgs
+    #return Uz/UNIT_V
 
 
 def _Bernoulli_const(field, data):

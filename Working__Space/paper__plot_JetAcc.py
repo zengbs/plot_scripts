@@ -180,7 +180,7 @@ def _Plot(Plot__Paramater, Input__TestProb):
    
    gs = fig.add_gridspec(5,6,wspace=wspace, hspace=hspace, width_ratios=WidthRatio)
    
-   ax = [[None]*len(Field)]*len(Coord)
+   ax = [[None]*len(Coord)]*len(Field)
    
    
    for i in range(0,len(Field)):

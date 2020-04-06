@@ -114,6 +114,9 @@ def _Plot(Plot__Paramater, Input__TestProb):
    #   add derived field
    for i in range(len(Field)):
        function, units = unit.ChooseUnit(Field[i])
+       ColorBarMax_Row = sys.float_info.min
+       ColorBarMin_Row = sys.float_info.max
+
        for j in range(len(DataSet)):
            sl.append([])
            frb.append([])
@@ -121,8 +124,6 @@ def _Plot(Plot__Paramater, Input__TestProb):
            DataSet[j] = yt.load(DataName[j])
            DataSet[j].add_field(("gamer", Field[i]), function=function, sampling_type="cell", units=units)
 
-           ColorBarMax_Row = sys.float_info.min
-           ColorBarMin_Row = sys.float_info.max
   
            sl[i].append(  DataSet[j].slice(CutAxis[j], Coord[j], data_source=DataSet[j].all_data()  )  )
            frb[i].append( yt.FixedResolutionBuffer(sl[i][j], Extent[j],  BufferSize[j] ) )
@@ -163,7 +164,7 @@ def _Plot(Plot__Paramater, Input__TestProb):
    
    gs = fig.add_gridspec(len(Field),len(DataName)+1,wspace=wspace, hspace=hspace, width_ratios=WidthRatio)
    
-   ax = [[None]*len(Field)]*len(Coord)
+   ax = [[None]*len(Coord)]*len(Field)
    
    
    for i in range(len(Field)):

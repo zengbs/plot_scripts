@@ -1,20 +1,20 @@
 #
 DataName0            Data_000000
-DataName1            Data_000001
-DataName2            Data_000002
+DataName1            Data_000004
+DataName2            Data_000009
 
-FileName                  Figure
+FileName     Figure_temp_pres
 FileFormat                   eps
-                     
-#Field0               pressure_sr
+
+#Field0            Lorentz_factor
 #Field1       proper_mass_density
-#ColorBarLabel0         $P/P_{j}$
-#ColorBarLabel1   $\rho/\rho_{j}$ 
+#ColorBarLabel0          $\gamma$
+#ColorBarLabel1   $\rho/\rho_{0}$ 
 
 Field0            temperature_sr
 Field1               pressure_sr
 ColorBarLabel0   $k_{B}T/mc^{2}$ 
-ColorBarLabel1         $P/P_{j}$
+ColorBarLabel1         $P/P_{0}$
                      
 ColorBarMax0                auto
 ColorBarMin0                auto

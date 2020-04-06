@@ -51,7 +51,7 @@ if (Plot__Paramater['NormalizedConst_Dens'] == 'auto'):
     Plot__Paramater['NormalizedConst_Dens'] = 'auto (%s)' % ( str(NormalizedConst_Dens) )
 
 if (Plot__Paramater['NormalizedConst_Pres'] == 'auto'):
-    NormalizedConst_Pres = Input__TestProb['Blast_Pres_Bg']
+    NormalizedConst_Pres = Input__TestProb['Blast_Temp_Bg']*Input__TestProb['Blast_Dens_Bg']
     Plot__Paramater['NormalizedConst_Pres'] = 'auto (%s)' % ( str(NormalizedConst_Pres) )
 
 
