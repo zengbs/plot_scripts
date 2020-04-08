@@ -3,7 +3,7 @@ import sys
 sys.path.insert(1, '/projectY/tseng/gamer/bin/plot_scripts/Working__Space')
 
 import argparse
-from paper__plot_BlastWave_Ellipsiod import _Plot
+from paper__plot_slice_HorizontalJet import _Plot
 
 
 parser = argparse.ArgumentParser(description='Process some integers.')
@@ -47,11 +47,11 @@ NormalizedConst_Pres = 0
 
 
 if (Plot__Paramater['NormalizedConst_Dens'] == 'auto'):
-    NormalizedConst_Dens = Input__TestProb['Blast_Dens_Bg']
+    NormalizedConst_Dens = Input__TestProb['Jet_SrcDens']
     Plot__Paramater['NormalizedConst_Dens'] = 'auto (%s)' % ( str(NormalizedConst_Dens) )
 
 if (Plot__Paramater['NormalizedConst_Pres'] == 'auto'):
-    NormalizedConst_Pres = Input__TestProb['Blast_Temp_Bg']*Input__TestProb['Blast_Dens_Bg']
+    NormalizedConst_Pres = Input__TestProb['Jet_SrcDens'] * Input__TestProb['Jet_SrcTemp']
     Plot__Paramater['NormalizedConst_Pres'] = 'auto (%s)' % ( str(NormalizedConst_Pres) )
 
 

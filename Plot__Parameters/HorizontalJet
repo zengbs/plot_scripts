@@ -1,0 +1,110 @@
+#      
+#              |-----------|-----------|-----------| |--|
+#              |           |           |           | |c |
+#     Field_00 |           |           |           | |o |
+#              |           |           |           | |l |
+#              |           |           |           | |o |
+#              |-----------|-----------|-----------| |--|
+#              |-----------|-----------|-----------| |--|
+#              |           |           |           | |b |
+#              |           |           |           | |a |
+#     Field_01 |           |           |           | |r |
+#              |           |           |           | |  |
+#              |-----------|-----------|-----------| |--|
+#                  Coord_00    Coord_01    Coord_02    
+#               DataName_00 DataName_01 DataName_02
+#
+###################################################################
+DataName_00            /projectZ/tseng/product__HorizontalJet/Data_000004
+DataName_01            /projectZ/tseng/product__ObliqueJet/Data_000002
+
+FileFormat                     eps
+
+#FileName                   Figure1
+#Field_00            Lorentz_factor
+#Field_01       proper_mass_density
+#ColorBarLabel_00          $\gamma$
+#ColorBarLabel_01   $\rho/\rho_{0}$ 
+#norm_00                          1
+#norm_01                          1
+
+FileName                   Figure2
+Field_00            temperature_sr
+Field_01               pressure_sr
+ColorBarLabel_00   $k_{B}T/mc^{2}$ 
+ColorBarLabel_01         $P/P_{0}$
+norm_00                          1
+norm_01                          1
+                     
+ColorBarMax_00                auto
+ColorBarMin_00                auto
+                     
+ColorBarMax_01                auto
+ColorBarMin_01                auto
+                     
+#ColorBarMax_02                auto
+#ColorBarMin_03                auto
+                     
+#ColorBarMax2                auto
+#ColorBarMin2                auto
+#                     
+#ColorBarMax3                auto
+#ColorBarMin3                auto
+                     
+# 0/1: linear/log
+#norm3                          1
+                     
+                     
+CutAxis_00                     z
+Coord_00                      50
+Xmax_00                    50.02 
+Xmin_00                    49.98
+Ymax_00                    50.02
+Ymin_00                    49.98 
+
+CutAxis_01                     z
+Coord_01                      50
+Xmax_01                    50.02 
+Xmin_01                    49.98
+Ymax_01                    50.02
+Ymin_01                    49.98 
+                     
+#CutAxis_02                     z
+#Coord_02                     0.5
+#Xmax_02                      1.0 
+#Xmin_02                      0.0
+#Ymax_02                      1.0
+#Ymin_02                      0.0 
+#
+#CutAxis_03                     z
+#Coord_03                     0.5
+#Xmax_03                      1.0 
+#Xmin_03                      0.0
+#Ymax_03                      1.0
+#Ymin_03                      0.0 
+#
+#CutAxis_04                     z
+#Coord_04                     0.5
+#Xmax_04                      1.0 
+#Xmin_04                      0.0
+#Ymax_04                      1.0
+#Ymin_04                      0.0 
+#                     
+#CutAxis_05                     z
+#Coord_05                     0.5
+#Xmax_05                      1.0 
+#Xmin_05                      0.0
+#Ymax_05                      1.0
+#Ymin_05                      0.0 
+
+NormalizedConst_Pres        auto
+NormalizedConst_Dens        auto
+
+Resolution                  2048
+aspect                     equal
+CMap                       arbre 
+                     
+FigWidth                      10
+
+wspace                      0.04
+hspace                      0.02

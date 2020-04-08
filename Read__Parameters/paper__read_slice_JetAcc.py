@@ -3,7 +3,7 @@ import sys
 sys.path.insert(1, '/projectY/tseng/gamer/bin/plot_scripts/Working__Space')
 
 import argparse
-from paper__plot_HorizontalJet import _Plot
+from paper__plot_slice_JetAcc import _Plot
 
 
 parser = argparse.ArgumentParser(description='Process some integers.')
@@ -54,6 +54,8 @@ if (Plot__Paramater['NormalizedConst_Pres'] == 'auto'):
     NormalizedConst_Pres = Input__TestProb['Jet_SrcDens'] * Input__TestProb['Jet_SrcTemp']
     Plot__Paramater['NormalizedConst_Pres'] = 'auto (%s)' % ( str(NormalizedConst_Pres) )
 
+#if (Plot__Paramater['Field'] == "cylindrical_radial_4velocity"):
+#    cylindrical_axis = Plot__Paramater['cylindrical_axis']
 
 if __name__ == '__main__':
     _Plot(Plot__Paramater, Input__TestProb)

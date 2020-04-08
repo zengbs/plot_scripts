@@ -15,22 +15,27 @@
 #               DataName_00 DataName_01 DataName_02
 #
 ###################################################################
-DataName_00            Data_000001
-DataName_01            Data_000002
-DataName_02            Data_000003
+DataName_00            Data_000000
+DataName_01            Data_000001
+DataName_02            Data_000002
 
-FileName        Figure_temp_pres
-FileFormat                   png
+FileFormat                     eps
 
+FileName               Figure_test
 Field_00            Lorentz_factor
 Field_01       proper_mass_density
 ColorBarLabel_00          $\gamma$
 ColorBarLabel_01   $\rho/\rho_{0}$ 
+norm_00                          0
+norm_01                          1
 
-#Field2            temperature_sr
-#Field3               pressure_sr
-#ColorBarLabel2   $k_{B}T/mc^{2}$ 
-#ColorBarLabel3         $P/P_{0}$
+#FileName                   Figure2
+#Field_00            temperature_sr
+#Field_01               pressure_sr
+#ColorBarLabel_00   $k_{B}T/mc^{2}$ 
+#ColorBarLabel_01         $P/P_{0}$
+#norm_00                          1
+#norm_01                          1
                      
 ColorBarMax_00                auto
 ColorBarMin_00                auto
@@ -48,8 +53,6 @@ ColorBarMin_01                auto
 #ColorBarMin3                auto
                      
 # 0/1: linear/log
-norm_00                          0
-norm_01                          1
 #norm3                          1
                      
                      
@@ -69,10 +72,10 @@ Ymin_01                      0.0
                      
 CutAxis_02                     z
 Coord_02                     0.5
-Xmax_02                      1.0 
+Xmax_02                      0.7
 Xmin_02                      0.0
-Ymax_02                      1.0
-Ymin_02                      0.0 
+Ymax_02                      0.7
+Ymin_02                      0.3 
 
 #CutAxis_03                     z
 #Coord_03                     0.5
@@ -98,7 +101,7 @@ Ymin_02                      0.0
 NormalizedConst_Pres        auto
 NormalizedConst_Dens        auto
 
-Resolution                   500
+Resolution                  1024
 aspect                     equal
 CMap                       arbre 
                      

@@ -3,7 +3,7 @@ import sys
 sys.path.insert(1, '/projectY/tseng/gamer/bin/plot_scripts/Working__Space')
 
 import argparse
-from paper__plot_JetAcc2 import _Plot
+from paper__plot_slice_BlastWave_Ellipsiod import _Plot
 
 
 parser = argparse.ArgumentParser(description='Process some integers.')
@@ -42,9 +42,18 @@ for line in FilePtr2:
 FilePtr1.close()
 FilePtr2.close()
 
+NormalizedConst_Dens = 0
+NormalizedConst_Pres = 0
 
-if (Plot__Paramater['Field'] == "cylindrical_radial_4velocity"):
-    cylindrical_axis = Plot__Paramater['cylindrical_axis']
+
+if (Plot__Paramater['NormalizedConst_Dens'] == 'auto'):
+    NormalizedConst_Dens = Input__TestProb['Blast_Dens_Src']
+    Plot__Paramater['NormalizedConst_Dens'] = 'auto (%s)' % ( str(NormalizedConst_Dens) )
+
+if (Plot__Paramater['NormalizedConst_Pres'] == 'auto'):
+    NormalizedConst_Pres = Input__TestProb['Blast_Temp_Src']*Input__TestProb['Blast_Dens_Src']
+    Plot__Paramater['NormalizedConst_Pres'] = 'auto (%s)' % ( str(NormalizedConst_Pres) )
+
 
 if __name__ == '__main__':
     _Plot(Plot__Paramater, Input__TestProb)

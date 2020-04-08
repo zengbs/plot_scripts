@@ -1,13 +1,14 @@
 #      
 #              |-----------|-----------|-----------| |--|
-#              |           |           |           | |  |
-#     Field_00 |           |           |           | |  |
-#              |           |           |           | |  |
-#              |           |           |           | |  |
-#              |-----------|-----------|-----------| |  |
-#              |           |           |           | |  |
-#              |           |           |           | |  |
-#     Field_01 |           |           |           | |  |
+#              |           |           |           | |c |
+#     Field_00 |           |           |           | |o |
+#              |           |           |           | |l |
+#              |           |           |           | |o |
+#              |-----------|-----------|-----------| |--|
+#              |-----------|-----------|-----------| |--|
+#              |           |           |           | |b |
+#              |           |           |           | |a |
+#     Field_01 |           |           |           | |r |
 #              |           |           |           | |  |
 #              |-----------|-----------|-----------| |--|
 #                  Coord_00    Coord_01    Coord_02    
@@ -18,8 +19,8 @@ DataName_00            Data_000001
 DataName_01            Data_000002
 DataName_02            Data_000003
 
-FileName        Figure_temp_pres
-FileFormat                   png
+FileName                    Figure
+FileFormat                     eps
 
 Field_00            Lorentz_factor
 Field_01       proper_mass_density
@@ -97,7 +98,7 @@ Ymin_02                      0.0
 NormalizedConst_Pres        auto
 NormalizedConst_Dens        auto
 
-Resolution                   500
+Resolution                  2048
 aspect                     equal
 CMap                       arbre 
                      
