@@ -1,64 +1,120 @@
+#      
+#              ┌-----------┬-----------┐    ┌-----------┐ ┌--┐
+#              | Xmax_00   | Xmax_01   |    | Xmax_0?   | |c |
+#     Field_00 | Xmin_00   | Xmin_01   | ⋯  | Xmin_0?   | |o |
+#              | Ymax_00   | Ymax_01   |    | Ymax_0?   | |l |
+#              | Ymin_00   | Ymin_01   |    | Ymin_0?   | |o |
+#              ┕-----------┷-----------┘    ┕-----------┘ ┕--┘
+#                   ⋮            ⋮              ⋮
+#              ┌-----------┬-----------┐    ┌-----------┐ ┌--┐
+#              | Xmax_00   | Xmax_01   |    | Xmax_0?   | |b |
+#     Field_0? | Xmin_00   | Xmin_01   |    | Xmin_0?   | |a |
+#              | Ymax_00   | Ymax_01   | ⋯  | Ymax_0?   | |r |
+#              | Ymin_00   | Ymin_01   |    | Ymin_0?   | |  |
+#              ┕-----------┷-----------┘    ┕-----------┘ ┕--┘
+#                  Coord_00    Coord_01          Coord_0?
+#               DataName_00 DataName_01       DataName_0?
 #
-
-DataName              Data_000008
-FileName              Fig_000008
-FileFormat            eps
-
-Field0                Lorentz_factor
-Field1                temperature_sr
-Field2                pressure_sr
-Field3                proper_mass_density
-Field4                Bernoulli_constant
-
-ColorBarLabel0        $\gamma$
-ColorBarLabel1        $k_{B}T/mc^{2}$
-ColorBarLabel2        $P/P_{j}$
-ColorBarLabel3        $\rho/\rho_{j}$
-ColorBarLabel4        $h\gamma/c^{2}$
-
-ColorBarMax0          auto 
-ColorBarMax1          auto
-ColorBarMax2          auto
-ColorBarMax3          auto
-ColorBarMax4          26.6
-
-ColorBarMin0          auto 
-ColorBarMin1          auto
-ColorBarMin2          auto
-ColorBarMin3          auto
-ColorBarMin4        26.245
-
-# 0/1: linear/log
-norm0                 0         
-norm1                 1
-norm2                 1
-norm3                 1
-norm4                 0
+#
+#     1. The images in the 1st row can be arbitrary shape. 
+#     2. The images in the same column are limited to the same size.
+#
+###################################################################
+#  norm   0/1: linear/log
 
 
-CutAxis0              z
-Coord0                50
-Xmin0                 22.5
-Xmax0                 77.5
-Ymin0                 42
-Ymax0                 58
+DataName_00            Data_000000 
+DataName_01            Data_000000
+DataName_02            Data_000000
+DataName_03            Data_000000
+DataName_04            Data_000000
 
-CutAxis1              x
-Coord1                34
-Coord2                39
-Coord3                44
-Coord4                48
-Xmin                  48.7
-Xmax                  51.3
-Ymin                  48.7
-Ymax                  51.3
-NormalizedConst_Pres  auto
-NormalizedConst_Dens  auto 
-Resolution            1000  # number of pixels in horizontal direction
-aspect                equal
-FigSize               1
-CMap                  arbre
+FileName                    Figure
+FileFormat                     eps
 
-cylindrical_axis      x 
-wspace                0.02
-hspace                0.06
+Field_00            Lorentz_factor
+ColorBarLabel_00          $\gamma$
+ColorBarMax_00                auto
+ColorBarMin_00                auto
+norm_00                          0
+
+Field_01            temperature_sr
+ColorBarLabel_01   $k_{B}T/mc^{2}$ 
+ColorBarMax_01                auto
+ColorBarMin_01                auto
+norm_01                          1
+
+Field_02               pressure_sr
+ColorBarLabel_02         $P/P_{j}$
+ColorBarMax_02                auto
+ColorBarMin_02                auto
+norm_02                          1
+
+Field_03       proper_mass_density
+ColorBarLabel_03   $\rho/\rho_{j}$ 
+ColorBarMax_03                auto
+ColorBarMin_03                auto
+norm_03                          1
+
+Field_04        Bernoulli_constant 
+ColorBarLabel_04   $h\gamma/c^{2}$ 
+ColorBarMax_04                26.6
+ColorBarMin_04              26.245
+norm_04                          0
+                     
+Field_05          cylindrical_radial_4velocity 
+ColorBarLabel_05         $U_{R}/c$
+ColorBarMax_05                auto
+ColorBarMin_05                auto
+norm_05                          0
+cylindrical_axis                 x
+
+                     
+                     
+CutAxis_00                       z
+Coord_00                        50
+Xmax_00                       77.5 
+Xmin_00                       22.5
+Ymax_00                         58
+Ymin_00                         42 
+
+CutAxis_01                       x
+Coord_01                        34
+Xmax_01                       51.3  
+Xmin_01                       48.7   
+Ymax_01                       51.3   
+Ymin_01                       48.7  
+                     
+CutAxis_02                       z
+Coord_02                        39
+Xmax_02                       51.3
+Xmin_02                       48.7
+Ymax_02                       51.3
+Ymin_02                       48.7
+
+CutAxis_03                       x
+Coord_03                        44
+Xmax_03                       51.3  
+Xmin_03                       48.7   
+Ymax_03                       51.3   
+Ymin_03                       48.7  
+
+CutAxis_04                       x
+Coord_04                        48
+Xmax_04                       51.3  
+Xmin_04                       48.7   
+Ymax_04                       51.3   
+Ymin_04                       48.7  
+                     
+
+NormalizedConst_Pres          auto
+NormalizedConst_Dens          auto
+
+Resolution                    2048
+aspect                       equal
+CMap                         arbre 
+                     
+FigWidth                        20
+
+wspace                        0.03
+hspace                        0.04
