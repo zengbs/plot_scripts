@@ -106,8 +106,12 @@ def _Plot(Plot__Paramater, Input__TestProb):
 
            frb[i][j] = np.array(frb[i][j][Field[i]])
 
-           ColorBarMax_Row = max( ColorBarMax_Row, np.amax(frb[i][j]) )
-           ColorBarMin_Row = min( ColorBarMin_Row, np.amin(frb[i][j]) )
+           if Field[i] == "cylindrical_radial_4velocity" and j != 0:
+              ColorBarMax_Row = max( ColorBarMax_Row, np.amax(frb[i][j]) )
+              ColorBarMin_Row = min( ColorBarMin_Row, np.amin(frb[i][j]) )
+           elif Field[i] != "cylindrical_radial_4velocity":
+              ColorBarMax_Row = max( ColorBarMax_Row, np.amax(frb[i][j]) )
+              ColorBarMin_Row = min( ColorBarMin_Row, np.amin(frb[i][j]) )
 
        if ( ColorBarMax[i] == 'auto' ):
          ColorBarMax[i] = ColorBarMax_Row

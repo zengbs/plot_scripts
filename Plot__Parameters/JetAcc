@@ -23,11 +23,11 @@
 #  norm   0/1: linear/log
 
 
-DataName_00            Data_000000 
-DataName_01            Data_000000
-DataName_02            Data_000000
-DataName_03            Data_000000
-DataName_04            Data_000000
+DataName_00            Data_000008 
+DataName_01            Data_000008
+DataName_02            Data_000008
+DataName_03            Data_000008
+DataName_04            Data_000008
 
 FileName                    Figure
 FileFormat                     eps
