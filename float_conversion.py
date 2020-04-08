@@ -17,7 +17,7 @@ def my_create_grps(name):
 #fs.copy('/Info'    ,fd['/Info']    )
 #fs.copy('/Tree'    ,fd['/Tree']    )
 
-ID = 35
+ID = 0
 
 for idx in range(ID,ID+1):
 
@@ -92,6 +92,3 @@ for idx in range(ID,ID+1):
    #After you are done
    fs.close()
    fd.close()
-
-  # os.remove(filename)
-  # os.rename(filename+"_single", filename)

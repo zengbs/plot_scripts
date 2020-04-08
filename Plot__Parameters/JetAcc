@@ -30,12 +30,12 @@ DataName_03            Data_000008
 DataName_04            Data_000008
 
 FileName                    Figure
-FileFormat                     eps
+FileFormat                     svg
 
 Field_00            Lorentz_factor
 ColorBarLabel_00          $\gamma$
-ColorBarMax_00                auto
-ColorBarMin_00                auto
+ColorBarMax_00               25.86
+ColorBarMin_00                   1
 norm_00                          0
 
 Field_01            temperature_sr
@@ -85,7 +85,7 @@ Xmin_01                       48.7
 Ymax_01                       51.3   
 Ymin_01                       48.7  
                      
-CutAxis_02                       z
+CutAxis_02                       x
 Coord_02                        39
 Xmax_02                       51.3
 Xmin_02                       48.7

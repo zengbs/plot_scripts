@@ -80,38 +80,33 @@ def _Plot(Plot__Paramater, Input__TestProb):
 
    #################################################################
    
-   DataSet  = [ None ]*len(DataName)
-
    sl  = []
    frb = []
 
    # !!! The second added derived field will overwrite the first one !!
  
+   DataSet = yt.load(DataName[0])
+
    #   add derived field
    for i in range(len(Field)):
        function, units = unit.ChooseUnit(Field[i])
        ColorBarMax_Row = sys.float_info.min
        ColorBarMin_Row = sys.float_info.max
 
-       for j in range(len(DataSet)):
+       for j in range(len(Coord)):
            sl.append([])
            frb.append([])
 
-           DataSet[j] = yt.load(DataName[j])
-           DataSet[j].add_field(("gamer", Field[i]), function=function, sampling_type="cell", units=units)
+           DataSet.add_field(("gamer", Field[i]), function=function, sampling_type="cell", units=units)
 
   
-           sl[i].append(  DataSet[j].slice(CutAxis[j], Coord[j], data_source=DataSet[j].all_data()  )  )
+           sl[i].append(  DataSet.slice(CutAxis[j], Coord[j], data_source=DataSet.all_data()  )  )
            frb[i].append( yt.FixedResolutionBuffer(sl[i][j], Extent[j],  BufferSize[j] ) )
 
            frb[i][j] = np.array(frb[i][j][Field[i]])
 
-           if Field[i] == "cylindrical_radial_4velocity" and j != 0:
-              ColorBarMax_Row = max( ColorBarMax_Row, np.amax(frb[i][j]) )
-              ColorBarMin_Row = min( ColorBarMin_Row, np.amin(frb[i][j]) )
-           elif Field[i] != "cylindrical_radial_4velocity":
-              ColorBarMax_Row = max( ColorBarMax_Row, np.amax(frb[i][j]) )
-              ColorBarMin_Row = min( ColorBarMin_Row, np.amin(frb[i][j]) )
+           ColorBarMax_Row = max( ColorBarMax_Row, np.amax(frb[i][j]) )
+           ColorBarMin_Row = min( ColorBarMin_Row, np.amin(frb[i][j]) )
 
        if ( ColorBarMax[i] == 'auto' ):
          ColorBarMax[i] = ColorBarMax_Row
@@ -177,8 +172,8 @@ def _Plot(Plot__Paramater, Input__TestProb):
    
    MetaData = {} 
    
-   for key in DataSet[0]:
-     MetaData.update( {key: str( DataSet[0][key] ).replace("\n","")} )
+   for key in DataSet:
+     MetaData.update( {key: str( DataSet[key] ).replace("\n","")} )
    for key in Input__TestProb:
      MetaData.update( {key: str( Input__TestProb[key] ).replace("\n","")} )
    for key in Plot__Paramater:
