@@ -110,7 +110,7 @@ Ymin_04                       48.7
 NormalizedConst_Pres          auto
 NormalizedConst_Dens          auto
 
-Resolution                    2048
+Resolution                   20000
 aspect                       equal
 CMap                         arbre 
                      

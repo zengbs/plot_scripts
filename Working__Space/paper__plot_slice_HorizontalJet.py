@@ -70,8 +70,8 @@ def _Plot(Plot__Paramater, Input__TestProb):
 
 
    for i in range(len(Coord)):
-       BufferSize[i]   = [  int(n.Resolution*dX[i]/dX_max), int(n.Resolution*dY[i]/dY_max)  ]
-       WindowWidth[i]  = dX_max * BufferSize[i][0] / BufferSize[i][1]
+       BufferSize[i]   = [  int(n.Resolution*dX[i]/dX_max), int(n.Resolution*dY[i]/dX_max)  ]
+       WindowWidth[i]  = dY_max * BufferSize[i][0] / BufferSize[i][1]
        Extent[i]       = [ Xmin[i], Xmax[i], Ymin[i], Ymax[i] ]
 
    for i in range(len(Field)):
@@ -167,7 +167,6 @@ def _Plot(Plot__Paramater, Input__TestProb):
        cbar = fig.colorbar(im,cax=cax, use_gridspec=True)
        cbar.ax.tick_params(which='minor', length=0)
 
-     cbar.ax.tick_params(which='minor', length=0)
      cbar.set_label(ColorBarLabel[i], size=20)
      cbar.ax.tick_params(labelsize=20, color='k', direction='in', which='major')
    

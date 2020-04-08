@@ -52,23 +52,32 @@ def _Plot(Plot__Paramater, Input__TestProb):
        norm[i] = None
        
    #################################################################
-   WindowHeight = [None]*len(Coord)
+   WindowHeight = [None]*len(Field)
    WindowWidth  = [None]*len(Coord)
    BufferSize   = [None]*len(Coord)
    Extent       = [None]*len(Coord)
+   dX           = [None]*len(Coord)
+   dY           = [None]*len(Coord)
+
+   dX_max = 0
+   dY_max = 0
 
    for i in range(len(Coord)):
-       WindowHeight[i] = abs(Ymax[i]-Ymin[i])
-       WindowWidth[i]  = abs(Xmax[i]-Xmin[i])
-       BufferSize[i]   = [ int(n.Resolution), int(n.Resolution*WindowHeight[i]/WindowWidth[i]) ]
+       dX[i]           = abs(Xmax[i]-Xmin[i])
+       dY[i]           = abs(Ymax[i]-Ymin[i])
+       dX_max          = max ( dX_max, dX[i] )
+       dY_max          = max ( dY_max, dY[i] )
+
+
+   for i in range(len(Coord)):
+       BufferSize[i]   = [  int(n.Resolution*dX[i]/dX_max), int(n.Resolution*dY[i]/dX_max)  ]
+       WindowWidth[i]  = dY_max * BufferSize[i][0] / BufferSize[i][1]
        Extent[i]       = [ Xmin[i], Xmax[i], Ymin[i], Ymax[i] ]
 
-   ################################################################
+   for i in range(len(Field)):
+       WindowHeight[i] = dY_max
 
-   WindowHeight = [max(WindowHeight)] * len(Coord)
-   WindowWidth  = [max(WindowWidth)]  * len(Coord)
-
-   ################################################################
+   #################################################################
    
    DataSet  = [ None ]*len(DataName)
 

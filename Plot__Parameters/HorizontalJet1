@@ -33,7 +33,7 @@ Field_00            Lorentz_factor
 ColorBarLabel_00          $\gamma$
 ColorBarMax_00                auto
 ColorBarMin_00                auto
-norm_00                          0
+norm_00                          1
 
 Field_01            temperature_sr
 ColorBarLabel_01   $k_{B}T/mc^{2}$ 
