@@ -1,18 +1,24 @@
 #      
 #              |-----------|-----------|-----------| |--|
-#              |           |           |           | |c |
-#     Field_00 |           |           |           | |o |
-#              |           |           |           | |l |
-#              |           |           |           | |o |
+#              | Xmax_00   | Xmax_01   | Xmax_02   | |c |
+#     Field_00 | Xmin_00   | Xmin_01   | Xmin_02   | |o |
+#              | Ymax_00   | Ymax_01   | Ymax_02   | |l |
+#              | Ymin_00   | Ymin_01   | Ymin_02   | |o |
 #              |-----------|-----------|-----------| |--|
 #              |-----------|-----------|-----------| |--|
-#              |           |           |           | |b |
-#              |           |           |           | |a |
-#     Field_01 |           |           |           | |r |
-#              |           |           |           | |  |
+#              | Xmax_00   | Xmax_01   | Xmax_02   | |b |
+#              | Xmin_00   | Xmin_01   | Xmin_02   | |a |
+#     Field_01 | Ymax_00   | Ymax_01   | Ymax_02   | |r |
+#              | Ymin_00   | Ymin_01   | Ymin_02   | |  |
 #              |-----------|-----------|-----------| |--|
 #                  Coord_00    Coord_01    Coord_02    
 #               DataName_00 DataName_01 DataName_02
+#
+#
+#     1. The images in the 1st row can be arbitrary shape. 
+#     2. The images in the same column are limited to the same size.
+#
+#
 #
 ###################################################################
 DataName_00            Data_000001
