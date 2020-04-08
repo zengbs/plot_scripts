@@ -3,7 +3,7 @@ import sys
 sys.path.insert(1, '/projectY/tseng/gamer/bin/plot_scripts/Working__Space')
 
 import argparse
-from slice_multiple import _Plot
+from paper__plot_slice_JetAcc3 import _Plot
 
 
 parser = argparse.ArgumentParser(description='Process some integers.')
@@ -62,7 +62,7 @@ if (Plot__Paramater['NormalizedConst_Pres'] == 'auto'):
 
     Plot__Paramater['NormalizedConst_Pres'] = 'auto (%s)' % ( str(NormalizedConst_Pres) )
 
-if "cylindrical_radial_4velocity" in Plot__Paramater.value():
+if "cylindrical_radial_4velocity" in Plot__Paramater.values():
     cylindrical_axis = Plot__Paramater['cylindrical_axis']
 
 if __name__ == '__main__':

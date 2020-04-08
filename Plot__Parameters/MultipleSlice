@@ -1,26 +1,26 @@
 #      
-#              |-----------|-----------|-----------| |--|
-#              | Xmax_00   | Xmax_01   | Xmax_02   | |c |
-#     Field_00 | Xmin_00   | Xmin_01   | Xmin_02   | |o |
-#              | Ymax_00   | Ymax_01   | Ymax_02   | |l |
-#              | Ymin_00   | Ymin_01   | Ymin_02   | |o |
-#              |-----------|-----------|-----------| |--|
-#              |-----------|-----------|-----------| |--|
-#              | Xmax_00   | Xmax_01   | Xmax_02   | |b |
-#              | Xmin_00   | Xmin_01   | Xmin_02   | |a |
-#     Field_01 | Ymax_00   | Ymax_01   | Ymax_02   | |r |
-#              | Ymin_00   | Ymin_01   | Ymin_02   | |  |
-#              |-----------|-----------|-----------| |--|
-#                  Coord_00    Coord_01    Coord_02    
-#               DataName_00 DataName_01 DataName_02
+#              ┌-----------┬-----------┐    ┌-----------┐ ┌--┐
+#              | Xmax_00   | Xmax_01   |    | Xmax_0?   | |c |
+#     Field_00 | Xmin_00   | Xmin_01   | ⋯  | Xmin_0?   | |o |
+#              | Ymax_00   | Ymax_01   |    | Ymax_0?   | |l |
+#              | Ymin_00   | Ymin_01   |    | Ymin_0?   | |o |
+#              ┕-----------┷-----------┘    ┕-----------┘ ┕--┘
+#                   ⋮            ⋮              ⋮
+#              ┌-----------┬-----------┐    ┌-----------┐ ┌--┐
+#              | Xmax_00   | Xmax_01   |    | Xmax_0?   | |b |
+#     Field_0? | Xmin_00   | Xmin_01   |    | Xmin_0?   | |a |
+#              | Ymax_00   | Ymax_01   | ⋯  | Ymax_0?   | |r |
+#              | Ymin_00   | Ymin_01   |    | Ymin_0?   | |  |
+#              ┕-----------┷-----------┘    ┕-----------┘ ┕--┘
+#                  Coord_00    Coord_01          Coord_0?
+#               DataName_00 DataName_01       DataName_0?
 #
 #
 #     1. The images in the 1st row can be arbitrary shape. 
 #     2. The images in the same column are limited to the same size.
 #
-#
-#
 ###################################################################
+
 DataName_00            Data_000001
 DataName_01            Data_000002
 DataName_02            Data_000003
