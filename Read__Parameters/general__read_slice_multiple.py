@@ -54,6 +54,9 @@ if (Plot__Paramater['NormalizedConst_Dens'] == 'auto'):
 
     Plot__Paramater['NormalizedConst_Dens'] = 'auto (%s)' % ( str(NormalizedConst_Dens) )
 
+else:
+    NormalizedConst_Dens = Plot__Paramater['NormalizedConst_Dens']
+
 if (Plot__Paramater['NormalizedConst_Pres'] == 'auto'):
     if "Jet_SrcTemp" in Input__TestProb:
       NormalizedConst_Pres = Input__TestProb['Jet_SrcDens'] * Input__TestProb['Jet_SrcTemp']
@@ -61,6 +64,9 @@ if (Plot__Paramater['NormalizedConst_Pres'] == 'auto'):
       NormalizedConst_Pres = Input__TestProb['Blast_Dens_Src'] * Input__TestProb['Blast_Temp_Src']
 
     Plot__Paramater['NormalizedConst_Pres'] = 'auto (%s)' % ( str(NormalizedConst_Pres) )
+
+else:
+    NormalizedConst_Pres = Plot__Paramater['NormalizedConst_Pres']
 
 if "cylindrical_radial_4velocity" in Plot__Paramater.values():
     cylindrical_axis = Plot__Paramater['cylindrical_axis']
