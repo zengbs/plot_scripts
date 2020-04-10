@@ -185,7 +185,7 @@ def _Plot(Plot__Paramater, Input__TestProb):
                  pwd = os.getcwd()
                  pwd = pwd.split('/')
                  Title = 'slice (' + CutAxis + ') ' + pwd[-1]
-                 sz.annotate_title('slice (' + CutAxis + ') ' + pwd[-1])
+                 sz.annotate_title(Title)
                  Plot__Paramater['Title'] = Title
              elif ( Title != 'off' ):
                  sz.annotate_title(Title)

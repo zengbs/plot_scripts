@@ -30,9 +30,10 @@ def _Plot(Plot__Paramater, Input__TestProb):
    Xmax = []
    Ymin = []
    Ymax = []
+   Title = []
 
-   List     = [   DataName,   Field,   ColorBarLabel,   ColorBarMax,   ColorBarMin,   norm,   CutAxis,   Coord,   Xmin,   Xmax,   Ymin,   Ymax ]
-   ListName = [ "DataName", "Field", "ColorBarLabel", "ColorBarMax", "ColorBarMin", "norm", "CutAxis", "Coord", "Xmin", "Xmax", "Ymin", "Ymax" ]
+   List     = [   DataName,   Field,   ColorBarLabel,   ColorBarMax,   ColorBarMin,   norm,   CutAxis,   Coord,   Xmin,   Xmax,   Ymin,   Ymax, Title ]
+   ListName = [ "DataName", "Field", "ColorBarLabel", "ColorBarMax", "ColorBarMin", "norm", "CutAxis", "Coord", "Xmin", "Xmax", "Ymin", "Ymax", "Title" ]
 
    for lstname, lst in zip(ListName, List):
      for idx in range(100):
@@ -158,6 +159,12 @@ def _Plot(Plot__Paramater, Input__TestProb):
        ax[i][j].get_xaxis().set_ticks([])
        ax[i][j].get_yaxis().set_ticks([])
 
+       if i == 0:
+         if ( Title[j] != 'off' ):
+           if (Title[j] == 'auto'):
+               Title[j] = DataName[j]
+           ax[i][j].set_title( Title[j], fontdict=font )
+
      cax = fig.add_subplot(gs[i, len(Coord)])
 
      cbar = fig.colorbar(im,cax=cax, use_gridspec=True)
@@ -165,7 +172,8 @@ def _Plot(Plot__Paramater, Input__TestProb):
      cbar.ax.tick_params(which='minor', length=0)
      cbar.set_label(ColorBarLabel[i], size=20)
      cbar.ax.tick_params(labelsize=20, color='k', direction='in', which='major')
-   
+  
+ 
    MetaData = {} 
    
    for key in DataSet[0]:
