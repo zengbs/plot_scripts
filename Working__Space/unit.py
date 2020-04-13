@@ -51,12 +51,18 @@ def ChooseUnit ( Field):
   if Field == 'Bernoulli_constant':
       unit = ''
       function = df._Bernoulli_const
+  if Field == 'Bernoulli_constant_1':
+      unit = ''
+      function = df._Bernoulli_const_1
   if Field == 'spherical_radial_4velocity':
       unit = ''
       function = df._spherical_radial_4velocity
   if Field == 'cylindrical_radial_4velocity':
       unit = ''
       function = df._cylindrical_radial_4velocity
+  if Field == 'cylindrical_radial_Mach_number':
+      unit = ''
+      function = df._cylindrical_radial_Mach_number
   if Field == '3_velocity_x':
       unit = ''
       function = df._3_velocity_x

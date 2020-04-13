@@ -56,19 +56,39 @@ ColorBarMax_03                auto
 ColorBarMin_03                auto
 norm_03                          1
 
-Field_04        Bernoulli_constant 
-ColorBarLabel_04   $h\gamma/c^{2}$ 
-ColorBarMax_04                26.6
-ColorBarMin_04              26.245
-norm_04                          0
+#Field_04        Bernoulli_constant 
+#ColorBarLabel_04     $h\gamma/c^2$ 
+#ColorBarMax_04                26.6
+#ColorBarMin_04              26.245
+#norm_04                          0
                      
-Field_05          cylindrical_radial_4velocity 
-ColorBarLabel_05         $U_{R}/c$
+#Field_05          cylindrical_radial_4velocity 
+#ColorBarLabel_05         $U_{R}/c$
+#ColorBarMax_05                auto
+#ColorBarMin_05                auto
+#norm_05                          0
+#cylindrical_axis                 x
+
+#Field_04        Bernoulli_constant_1
+#ColorBarLabel_04   $h\gamma/(h_{j}\gamma_{j})-1$ 
+#ColorBarMax_04                auto
+#ColorBarMin_04                auto      
+#norm_04                          0
+#NormalizedConst_h_gamma          1
+
+Field_04                    Bernoulli_constant 
+ColorBarLabel_04   $h\gamma/(h_{j}\gamma_{j})$ 
+ColorBarMax_04               1.058719572608441
+ColorBarMin_04               1.044590044477764
+norm_04                          0
+NormalizedConst_h_gamma       auto
+
+Field_05          cylindrical_radial_Mach_number
+ColorBarLabel_05         $U_{R}/U_{s}$
 ColorBarMax_05                auto
 ColorBarMin_05                auto
 norm_05                          0
 cylindrical_axis                 x
-
                      
                      
 CutAxis_00                       z

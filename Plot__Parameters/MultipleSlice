@@ -20,8 +20,8 @@
 #     2. The images in the same column are limited to the same size.
 #
 ###################################################################
-#  norm   0/1: linear/log
-
+#  norm   0/1 linear/log
+#  Title  off/auto/user-defined
 
 DataName_00            Data_000008 
 DataName_01            Data_000008

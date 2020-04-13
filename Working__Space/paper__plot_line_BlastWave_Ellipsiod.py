@@ -3,76 +3,104 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.ticker import MultipleLocator
 import matplotlib.font_manager as font_manager
+from cycler import cycler
 
 import derived_field as df
 import unit
 
-#FileName = 'fig__benchmark_pizdaint'
+
+def Spherical2Cartesian( R, theta, phi ):
+    X = R * np.sin(theta) * np.cos(phi)
+    Y = R * np.sin(theta) * np.sin(phi)
+    Z = R * np.cos(theta)
+    return X, Y, Z   
+
+
 DataName = 'Data_000009'
 font = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 20}
 
-# Start point
-Xs1 = 0.0
-Ys1 = 1.0
-Zs1 = 0.5
-
-Xe1 = 1.0
-Ye1 = 0.0
-Ze1 = 0.5
-
-#End point
-Xs2 = 0.0
-Ys2 = 0.0
-Zs2 = 0.5
-
-Xe2 = 1.0
-Ye2 = 1.0
-Ze2 = 0.5
-
-
-StarCoord1 = [Xs1, Ys1, Zs1]
-EndCoord1  = [Xe1, Ye1, Ze1] 
-NumPts1    = 2048
-Field1 = 'Lorentz_factor'
-
-StarCoord2 = [Xs2, Ys2, Zs2]
-EndCoord2  = [Xe2, Ye2, Ze2] 
-NumPts2    = 2048
-Field2 = 'Lorentz_factor'
-
 f, ax = plt.subplots( 1, 1, sharex=False, sharey=False )
-
 df.ds = yt.load(DataName)
-function, units = unit.ChooseUnit(Field1)
-df.ds.add_field(("gamer", Field1), function=function, sampling_type="cell", units=units)
+NumPts = 4096
+Field  = 'Lorentz_factor'
+function, units = unit.ChooseUnit(Field)
+df.ds.add_field(("gamer", Field), function=function, sampling_type="cell", units=units)
 
-my_ray1 = yt.LineBuffer(df.ds,StarCoord1, EndCoord1, NumPts1)
-my_ray2 = yt.LineBuffer(df.ds,StarCoord2, EndCoord2, NumPts2)
+cm = plt.get_cmap('gist_rainbow')
+
+CenterX = 0.5
+CenterY = 0.5
+CenterZ = 0.5
+
+R_s     = 0.0
+theta_s = 0
+phi_s   = 0
+
+R_e     = 0.5
+theta_e = 180
+phi_e   = 0
+
+theta_s *= np.pi/180  
+phi_s   *= np.pi/180
+theta_e *= np.pi/180
+phi_e   *= np.pi/180
 
 
-Xs1 *= df.ds.length_unit 
-Ys1 *= df.ds.length_unit 
-Zs1 *= df.ds.length_unit 
+NumLine_Theta = 100
+NumLine_Phi   = 1
 
-Xe1 *= df.ds.length_unit 
-Ye1 *= df.ds.length_unit 
-Ze1 *= df.ds.length_unit 
+NUM_COLORS = NumLine_Theta*NumLine_Phi
 
-Xs2 *= df.ds.length_unit 
-Ys2 *= df.ds.length_unit 
-Zs2 *= df.ds.length_unit 
+dTheta = abs( theta_e - theta_s ) / NumLine_Theta
+dPhi   = abs( phi_e - phi_s     ) / NumLine_Phi
 
-Xe2 *= df.ds.length_unit 
-Ye2 *= df.ds.length_unit 
-Ze2 *= df.ds.length_unit 
+colors =[cm(float(i)/NUM_COLORS) for i in range(NUM_COLORS)] 
+ax.set_prop_cycle(cycler('color', colors))
+
+phi   = phi_s
+
+for i in range(NumLine_Phi):
+
+    theta = theta_s
+    for j in range(NumLine_Theta):
+        print("phi=%f, theta=%f" % (phi*180/np.pi, theta*180/np.pi))
+
+        Xs, Ys, Zs = Spherical2Cartesian( R_s, theta, phi )
+        Xe, Ye, Ze = Spherical2Cartesian( R_e, theta, phi )
+
+        Xs += CenterX
+        Ys += CenterY
+        Zs += CenterZ
+        Xe += CenterX
+        Ye += CenterY
+        Ze += CenterZ
+        
+        StarCoord = [Xs, Ys, Zs]
+        EndCoord  = [Xe, Ye, Ze] 
+        
+        my_ray = yt.LineBuffer(df.ds,StarCoord, EndCoord, NumPts)
+        
+        
+        Xs *= df.ds.length_unit 
+        Ys *= df.ds.length_unit 
+        Zs *= df.ds.length_unit 
+        
+        Xe *= df.ds.length_unit 
+        Ye *= df.ds.length_unit 
+        Ze *= df.ds.length_unit 
+        
+        
+        r = np.sqrt((my_ray["x"]-Xs)**2 + (my_ray["y"]-Ys)**2 + (my_ray["z"]-Zs)**2 )
+        
+        ax.plot( r, my_ray[Field], marker='o')
+
+        theta += dTheta
+        
+    phi += dPhi
+        
+#MaxIdx = np.argmax(np.array(my_ray[Field]))
+#print(np.array(my_ray["x"][MaxIdx]))
 
 
-r1 = np.sqrt((my_ray1["x"]-Xs1)**2 + (my_ray1["y"]-Ys1)**2 + (my_ray1["z"]-Zs1)**2 )
-r2 = np.sqrt((my_ray2["x"]-Xs2)**2 + (my_ray2["y"]-Ys2)**2 + (my_ray2["z"]-Zs2)**2 )
-
-ax.plot( r1, my_ray1[Field1], 'ro', ms=2)
-ax.plot( r2, my_ray2[Field2], 'bo', ms=2)
-
-#ax.set_yscale('log')
-
-plt.show()
+#plt.show()
+plt.savefig("Fig__test.png")

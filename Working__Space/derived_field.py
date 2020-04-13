@@ -120,10 +120,18 @@ def _4_velocity_z(field, data):
 
 
 def _Bernoulli_const(field, data):
+    from __main__ import NormalizedConst_h_gamma
     Lorentz_factor = _lorentz_factor("", data)
     h_c2 = _specific_enthalpy_sr("", data)
     BernpulliConst = Lorentz_factor * h_c2
-    return BernpulliConst
+    return BernpulliConst/NormalizedConst_h_gamma
+
+def _Bernoulli_const_1(field, data):
+    from __main__ import NormalizedConst_h_gamma
+    Lorentz_factor = _lorentz_factor("", data)
+    h_c2 = _specific_enthalpy_sr("", data)
+    BernpulliConst = Lorentz_factor * h_c2
+    return BernpulliConst/NormalizedConst_h_gamma-1
 
 
 def _emissivity(field, data):
@@ -226,7 +234,6 @@ def _spherical_radial_4velocity(field, data):
     z_uni /= r
     return Ux*x_uni + Uy*y_uni + Uz*z_uni
 
-# symmetry axis: x
 
 def _cylindrical_radial_4velocity(field, data):
     from __main__ import cylindrical_axis
@@ -253,6 +260,40 @@ def _cylindrical_radial_4velocity(field, data):
     uni1 /= rho
     uni2 /= rho
     return U1*uni1 + U2*uni2
+
+
+def _cylindrical_radial_Mach_number(field, data):
+    from __main__ import cylindrical_axis
+
+    center = data.get_field_parameter('center')
+
+    if ( cylindrical_axis == "x" ):
+      U1   = _4_velocity_y("", data)
+      U2   = _4_velocity_z("", data)
+      uni1 = data["y"] - center[1]
+      uni2 = data["z"] - center[2]
+    if ( cylindrical_axis == "y" ):
+      U1   = _4_velocity_x("", data)
+      U2   = _4_velocity_z("", data)
+      uni1 = data["x"] - center[1]
+      uni2 = data["z"] - center[2]
+    if ( cylindrical_axis == "z" ):
+      U1   = _4_velocity_y("", data)
+      U2   = _4_velocity_x("", data)
+      uni1 = data["y"] - center[1]
+      uni2 = data["x"] - center[2]
+    
+    rho = np.sqrt(uni1**2 + uni2**2)
+    uni1 /= rho
+    uni2 /= rho
+
+    U_R = U1*uni1 + U2*uni2
+
+    U_s = _4_sound_speed("", data)
+
+    return U_R / U_s 
+
+
 
 def _sound_speed(field, data):
     Cs_sq = _sound_speed_sqr("", data)
