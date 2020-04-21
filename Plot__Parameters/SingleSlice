@@ -27,7 +27,7 @@ Resolution                  2048  # max, auto:150
 FigSize                     auto
 ColorBarMax                 auto
 ColorBarMin                 auto
-NameColorBar            $\gamma$  # auto, $<name>$@$<unit>$, $<name>$
+NameColorBar     $k_{B}T/mc^{2}$  # auto, $<name>$@$<unit>$, $<name>$
 LogScale                      on  # on/off
 LinThresh                     -1  # on: positive number  off:-1
 Grid                          on  # on/off
