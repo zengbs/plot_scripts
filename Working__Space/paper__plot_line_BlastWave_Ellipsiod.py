@@ -1,14 +1,8 @@
 import yt
-import matplotlib.pyplot as plt 
 import numpy as np
-from matplotlib.ticker import MultipleLocator
-from matplotlib import cm
-from mpl_toolkits.mplot3d import Axes3D
-import matplotlib.font_manager as font_manager
-from cycler import cycler
-
 import derived_field as df
 import unit
+from mpl_toolkits.mplot3d import Axes3D
 
 
 def Spherical2Cartesian( R, theta, phi ):
@@ -18,27 +12,32 @@ def Spherical2Cartesian( R, theta, phi ):
     return X, Y, Z   
 
 
-DataName = 'Data_000009'
+f = open("test.dat","w+")
+
+DataName = 'Data_000004'
 font = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 20}
 
-f, ax = plt.subplots( 1,1 )
+
 df.ds = yt.load(DataName)
-NumPts = 170
+NumPts = 512
 Field  = 'Lorentz_factor'
 function, units = unit.ChooseUnit(Field)
 df.ds.add_field(("gamer", Field), function=function, sampling_type="cell", units=units)
 
-cm_line = plt.get_cmap('gist_rainbow')
+NumLine_Theta = 100
+NumLine_Phi   = 200
+
+
 
 CenterX = 0.5
 CenterY = 0.5
 CenterZ = 0.5
 
-R_s     = 0.39
+R_s     = 0.125
 theta_s = 0
 phi_s   = 0
 
-R_e     = 0.41
+R_e     = 0.1875
 theta_e = 180
 phi_e   = 360
 
@@ -48,31 +47,23 @@ theta_e *= np.pi/180
 phi_e   *= np.pi/180
 
 
-NumLine_Theta = 4
-NumLine_Phi   = 4 
 
-NUM_COLORS = NumLine_Theta*NumLine_Phi
+Theta = np.linspace( theta_s, theta_e, NumLine_Theta )
+Phi   = np.linspace( phi_s  , phi_e  , NumLine_Phi   )
 
-dTheta = abs( theta_e - theta_s ) / NumLine_Theta
-dPhi   = abs( phi_e - phi_s     ) / NumLine_Phi
 
-colors =[cm_line(float(i)/NUM_COLORS) for i in range(NUM_COLORS)] 
-ax.set_prop_cycle(cycler('color', colors))
 
-X = []
-Y = []
-Z = []
-MaxGamma = []
+Theta_mesh, Phi_mesh = np.meshgrid( Theta, Phi, sparse=False, indexing='ij' )
 
-theta = theta_s
-for i in range(NumLine_Theta):
+f.write( "#%19s%20s%20s%20s\n" % (  "X", "Y", "Z", "MaxGamma" ) )
 
-    phi   = phi_s
-    for j in range(NumLine_Phi):
-        print("phi=%f, theta=%f" % (phi*180/np.pi, theta*180/np.pi))
+for j in range(NumLine_Phi):
 
-        Xs, Ys, Zs = Spherical2Cartesian( R_s, theta, phi )
-        Xe, Ye, Ze = Spherical2Cartesian( R_e, theta, phi )
+    for i in range(NumLine_Theta):
+        print("phi=%f, theta=%f" % ( Phi_mesh[i,j]*180/np.pi,Theta_mesh[i,j]*180/np.pi))
+
+        Xs, Ys, Zs = Spherical2Cartesian( R_s, Theta_mesh[i,j], Phi_mesh[i,j] )
+        Xe, Ye, Ze = Spherical2Cartesian( R_e, Theta_mesh[i,j], Phi_mesh[i,j] )
 
         Xs += CenterX
         Ys += CenterY
@@ -91,28 +82,13 @@ for i in range(NumLine_Theta):
         Ys *= df.ds.length_unit 
         Zs *= df.ds.length_unit 
         
-        Xe *= df.ds.length_unit 
-        Ye *= df.ds.length_unit 
-        Ze *= df.ds.length_unit 
-        
-        
-        r = np.sqrt((my_ray["x"]-Xs)**2 + (my_ray["y"]-Ys)**2 + (my_ray["z"]-Zs)**2 )
-        
-        ax.plot( r, my_ray[Field], marker='o')
-
-
         MaxIdx = np.argmax(np.array(my_ray[Field]))
  
-        X.append( np.array(my_ray["x"][MaxIdx]) )  
-        Y.append( np.array(my_ray["y"][MaxIdx]) )
-        Z.append( np.array(my_ray["z"][MaxIdx]) )
+        X        = my_ray["x"][MaxIdx] 
+        Y        = my_ray["y"][MaxIdx] 
+        Z        = my_ray["z"][MaxIdx] 
+        MaxGamma = my_ray[Field][MaxIdx]
 
-        MaxGamma.append( np.amax(np.array(my_ray[Field][MaxIdx])) )
-
-        phi += dPhi
-        
-    theta += dTheta
-
-
-#plt.show()
-#plt.savefig("Fig__test.png")
+        f.write( "%20.7e%20.7e%20.7e%20.7e\n" % (  X, Y, Z, MaxGamma ) )
+    f.write( "\n" )
+    f.flush()
