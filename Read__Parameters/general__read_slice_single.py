@@ -62,6 +62,12 @@ if (Plot__Paramater['NormalizedConst_Pres'] == 'auto'):
 
     Plot__Paramater['NormalizedConst_Pres'] = 'auto (%s)' % ( str(NormalizedConst_Pres) )
 
+if ( Plot__Paramater['NormalizedConst_Dens'] != 'auto' ):
+    NormalizedConst_Dens = Plot__Paramater['NormalizedConst_Dens']
+
+if ( Plot__Paramater['NormalizedConst_Pres'] != 'auto' ):
+    NormalizedConst_Pres = Plot__Paramater['NormalizedConst_Pres']
+
 if (Plot__Paramater['Field'] == "cylindrical_radial_4velocity"):
     cylindrical_axis = Plot__Paramater['cylindrical_axis']
 

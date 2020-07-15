@@ -98,9 +98,10 @@ def _Plot(Plot__Paramater, Input__TestProb):
      
      
          #   add derived field
+         function, units = unit.ChooseUnit(Field)
+
          if Field not in ('total_energy_per_volume', 'momentum_x', 'momentum_y', 'momentum_z'):
-             function, units = unit.ChooseUnit(Field)
-             df.ds.add_field(("gamer", Field), function=function, sampling_type="cell", units=units)
+           df.ds.add_field(("gamer", Field), function=function, sampling_type="cell", units=units)
      
          ad = df.ds.all_data()
      
@@ -191,7 +192,7 @@ def _Plot(Plot__Paramater, Input__TestProb):
                  sz.annotate_title(Title)
      
              # font
-             sz.set_font({'weight': 'bold', 'size': '40'})
+             sz.set_font({'size': '20'})
      
              # time stamp
              if (TimeStamp == 'on'):

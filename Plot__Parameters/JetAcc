@@ -30,7 +30,7 @@ DataName_03            Data_000008
 DataName_04            Data_000008
 
 FileName                    Figure
-FileFormat                     svg
+FileFormat                     pdf
 
 Field_00            Lorentz_factor
 ColorBarLabel_00          $\gamma$
@@ -84,7 +84,7 @@ norm_04                          0
 NormalizedConst_h_gamma       auto
 
 Field_05          cylindrical_radial_Mach_number
-ColorBarLabel_05         $U_{R}/U_{s}$
+ColorBarLabel_05         $M_{transverse}$
 ColorBarMax_05                auto
 ColorBarMin_05                auto
 norm_05                          0
