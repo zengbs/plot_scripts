@@ -7,71 +7,80 @@ import matplotlib.font_manager as font_manager
 import derived_field as df
 import unit
 
-#FileName = 'fig__benchmark_pizdaint'
-DataName = 'Data_000009'
+FileName = 'Profile'
+DataName1 = '/projectZ/tseng/product__BlastWave_Triaxial/Data_000005'
+DataName2 = '/projectZ/tseng/product__BlastWave_spherical/Data_000005'
+
 font = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 20}
 
 # Start point
 Xs1 = 0.0
-Ys1 = 1.0
-Zs1 = 0.5
+Ys1 = 0.0
+Zs1 = 0.0
 
 Xe1 = 1.0
-Ye1 = 0.0
-Ze1 = 0.5
+Ye1 = 1.0
+Ze1 = 1.0
 
 #End point
 Xs2 = 0.0
 Ys2 = 0.0
-Zs2 = 0.5
+Zs2 = 0.0
 
 Xe2 = 1.0
 Ye2 = 1.0
-Ze2 = 0.5
+Ze2 = 1.0
 
 
-StarCoord1 = [Xs1, Ys1, Zs1]
+StartCoord1 = [Xs1, Ys1, Zs1]
 EndCoord1  = [Xe1, Ye1, Ze1] 
 NumPts1    = 2048
 Field1 = 'Lorentz_factor'
 
-StarCoord2 = [Xs2, Ys2, Zs2]
+StartCoord2 = [Xs2, Ys2, Zs2]
 EndCoord2  = [Xe2, Ye2, Ze2] 
 NumPts2    = 2048
 Field2 = 'Lorentz_factor'
 
-f, ax = plt.subplots( 1, 1, sharex=False, sharey=False )
+f, ax = plt.subplots( 4, 2, sharex=False, sharey=False )
 
-df.ds = yt.load(DataName)
+df.ds1 = yt.load(DataName1)
+df.ds2 = yt.load(DataName2)
+
 function, units = unit.ChooseUnit(Field1)
-df.ds.add_field(("gamer", Field1), function=function, sampling_type="cell", units=units)
+function, units = unit.ChooseUnit(Field2)
 
-my_ray1 = yt.LineBuffer(df.ds,StarCoord1, EndCoord1, NumPts1)
-my_ray2 = yt.LineBuffer(df.ds,StarCoord2, EndCoord2, NumPts2)
+df.ds1.add_field(("gamer", Field1), function=function, sampling_type="cell", units=units)
+df.ds2.add_field(("gamer", Field1), function=function, sampling_type="cell", units=units)
 
-
-Xs1 *= df.ds.length_unit 
-Ys1 *= df.ds.length_unit 
-Zs1 *= df.ds.length_unit 
-
-Xe1 *= df.ds.length_unit 
-Ye1 *= df.ds.length_unit 
-Ze1 *= df.ds.length_unit 
-
-Xs2 *= df.ds.length_unit 
-Ys2 *= df.ds.length_unit 
-Zs2 *= df.ds.length_unit 
-
-Xe2 *= df.ds.length_unit 
-Ye2 *= df.ds.length_unit 
-Ze2 *= df.ds.length_unit 
+my_ray1 = yt.LineBuffer(df.ds1,StartCoord1, EndCoord1, NumPts1)
+my_ray2 = yt.LineBuffer(df.ds2,StartCoord2, EndCoord2, NumPts2)
 
 
-r1 = np.sqrt((my_ray1["x"]-Xs1)**2 + (my_ray1["y"]-Ys1)**2 + (my_ray1["z"]-Zs1)**2 )
-r2 = np.sqrt((my_ray2["x"]-Xs2)**2 + (my_ray2["y"]-Ys2)**2 + (my_ray2["z"]-Zs2)**2 )
+StartCoord1[0] *= df.ds1.length_unit 
+StartCoord1[1] *= df.ds1.length_unit 
+StartCoord1[2] *= df.ds1.length_unit 
+             
+Xe1 *= df.ds1.length_unit 
+Ye1 *= df.ds1.length_unit 
+Ze1 *= df.ds1.length_unit 
 
-ax.plot( r1, my_ray1[Field1], 'ro', ms=2)
-ax.plot( r2, my_ray2[Field2], 'bo', ms=2)
+EndCoord1[0] *= df.ds2.length_unit 
+EndCoord1[1] *= df.ds2.length_unit 
+EndCoord1[2] *= df.ds2.length_unit 
+             
+Xe2 *= df.ds2.length_unit 
+Ye2 *= df.ds2.length_unit 
+Ze2 *= df.ds2.length_unit 
+
+
+r1 = np.sqrt((my_ray1["x"]-StartCoord1[0])**2 + (my_ray1["y"]-StartCoord1[1])**2 + (my_ray1["z"]-StartCoord1[2])**2 )
+r2 = np.sqrt((my_ray2["x"]-EndCoord1[0])**2   + (my_ray2["y"]-EndCoord1[1])**2   + (my_ray2["z"]-EndCoord1[2])**2   )
+
+ax.plot( r1, my_ray1[Field1], 'ro', ms=2, label='triaxial')
+ax.plot( r2, my_ray2[Field2], 'bo', ms=2, label='spherical')
+
+ax.legend(loc='upper right', fontsize=8)
 
 #ax.set_yscale('log')
 
