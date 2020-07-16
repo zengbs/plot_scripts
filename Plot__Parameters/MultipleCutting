@@ -23,23 +23,21 @@
 #  norm   0/1 linear/log
 #  Title  off/auto/user-defined
 
-OffAxisSlice                     0
+OffAxisSlice                     1
 
 DataName_00            Data_000008 
 DataName_01            Data_000008
 DataName_02            Data_000008
 DataName_03            Data_000008
-DataName_04            Data_000008
 
 
 Title_00                     title
 Title_01                     title 
 Title_02                     title 
 Title_03                     title 
-Title_04                     title 
 
 FileName                    Figure
-FileFormat                     eps
+FileFormat                     pdf
 
 Field_00            Lorentz_factor
 ColorBarLabel_00          $\gamma$
@@ -79,41 +77,74 @@ norm_05                          0
 cylindrical_axis                 x
 
                      
+NormalVectorX_00               1
+NormalVectorY_00               1
+NormalVectorZ_00               -1
+
+NormalVectorX_01               1 
+NormalVectorY_01               1 
+NormalVectorZ_01               -1 
+
+NormalVectorX_02               1 
+NormalVectorY_02               1 
+NormalVectorZ_02               -1 
+
+NormalVectorX_03               1 
+NormalVectorY_03               1 
+NormalVectorZ_03               -1 
+
+NorthVectorX_00                  0
+NorthVectorY_00                  0
+NorthVectorZ_00                  1
+
+NorthVectorX_01                  0
+NorthVectorY_01                  0
+NorthVectorZ_01                  1
+
+NorthVectorX_02                  0
+NorthVectorY_02                  0
+NorthVectorZ_02                  1
+
+NorthVectorX_03                  0
+NorthVectorY_03                  0
+NorthVectorZ_03                  1
+
+CenterX_00                     0.5 
+CenterY_00                     0.5 
+CenterZ_00                     0.5 
+
+CenterX_01                     0.5 
+CenterY_01                     0.5  
+CenterZ_01                     0.5 
+
+CenterX_02                     0.5 
+CenterY_02                     0.5 
+CenterZ_02                     0.5 
                      
-CutAxis_00                       z
-Coord_00                        50
-Xmax_00                       77.5 
-Xmin_00                       22.5
-Ymax_00                         58
-Ymin_00                         42 
+CenterX_03                     0.5  
+CenterY_03                     0.5  
+CenterZ_03                     0.5 
 
-CutAxis_01                       x
-Coord_01                        34
-Xmax_01                       51.3  
-Xmin_01                       48.7   
-Ymax_01                       51.3   
-Ymin_01                       48.7  
+Xmax_00                       +0.5
+Xmin_00                       -0.5
+Ymax_00                       +0.5
+Ymin_00                       -0.5
                      
-CutAxis_02                       z
-Coord_02                        39
-Xmax_02                       51.3
-Xmin_02                       48.7
-Ymax_02                       51.3
-Ymin_02                       48.7
+Xmax_01                       +0.5
+Xmin_01                       -0.5 
+Ymax_01                       +0.5 
+Ymin_01                       -0.5
 
-CutAxis_03                       x
-Coord_03                        44
-Xmax_03                       51.3  
-Xmin_03                       48.7   
-Ymax_03                       51.3   
-Ymin_03                       48.7  
+Xmax_02                       +0.5
+Xmin_02                       -0.5 
+Ymax_02                       +0.5 
+Ymin_02                       -0.5
 
-CutAxis_04                       x
-Coord_04                        48
-Xmax_04                       51.3  
-Xmin_04                       48.7   
-Ymax_04                       51.3   
-Ymin_04                       48.7  
+Xmax_03                       +0.5
+Xmin_03                       -0.5 
+Ymax_03                       +0.5 
+Ymin_03                       -0.5
+                     
                      
 
 NormalizedConst_Pres          auto

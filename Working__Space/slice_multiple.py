@@ -18,31 +18,62 @@ def _Plot(Plot__Paramater, Input__TestProb):
 
    n = SimpleNamespace(**Plot__Paramater)
 
-   DataName = []
-   Field = []
+   DataName      = []
+   Field         = []
    ColorBarLabel = []
-   ColorBarMax = []
-   ColorBarMin = []
-   norm = []
-   CutAxis = []
-   Coord = []
-   Xmin = []
-   Xmax = []
-   Ymin = []
-   Ymax = []
-   Title = []
+   ColorBarMax   = []
+   ColorBarMin   = []
+   norm          = []
+   Title         = []
+   Xmin          = []
+   Xmax          = []
+   Ymin          = []
+   Ymax          = []
 
-   List     = [   DataName,   Field,   ColorBarLabel,   ColorBarMax,   ColorBarMin,   norm,   CutAxis,   Coord,   Xmin,   Xmax,   Ymin,   Ymax, Title ]
-   ListName = [ "DataName", "Field", "ColorBarLabel", "ColorBarMax", "ColorBarMin", "norm", "CutAxis", "Coord", "Xmin", "Xmax", "Ymin", "Ymax", "Title" ]
+#  axis slice
+   CutAxis       = []   # The axis along which to slice
+   Coord         = []   # The coordinate along the axis at which to slice. 
 
+#  off axis slice
+   NormalVectorX = []
+   NormalVectorY = []
+   NormalVectorZ = []
+   NorthVectorX  = []
+   NorthVectorY  = []
+   NorthVectorZ  = []
+   CenterX       = []
+   CenterY       = []
+   CenterZ       = []
+  
+   List          = []
+   ListName      = []
+
+#  A plane normal to one of the axes and intersecting a particular coordinate
+   if n.OffAxisSlice == 0:
+     List     = [  DataName,   Field,   ColorBarLabel,   ColorBarMax,   ColorBarMin,   norm,   CutAxis,   Coord,   Xmin,   Xmax,   Ymin,   Ymax,   Title ]
+     ListName = [ "DataName", "Field", "ColorBarLabel", "ColorBarMax", "ColorBarMin", "norm", "CutAxis", "Coord", "Xmin", "Xmax", "Ymin", "Ymax", "Title" ]
+
+#  A plane normal to a specified vector and intersecting a particular coordinate.
+   else:
+     List     = [  DataName,   Field,   ColorBarLabel,   ColorBarMax,   ColorBarMin,   norm,   NormalVectorX,  NormalVectorY,  NormalVectorZ,   CenterX,   CenterY,   CenterZ,  NorthVectorX,  NorthVectorY,  NorthVectorZ,   Xmin,   Xmax,   Ymin,   Ymax,   Title ]
+     ListName = [ "DataName", "Field", "ColorBarLabel", "ColorBarMax", "ColorBarMin", "norm", "NormalVectorX","NormalVectorY","NormalVectorZ", "CenterX", "CenterY", "CenterZ","NorthVectorX","NorthVectorY","NorthVectorZ", "Xmin", "Xmax", "Ymin", "Ymax", "Title" ]
+
+   NumData = 0
    for lstname, lst in zip(ListName, List):
-     for idx in range(100):
+     idx=0
+     key = lstname+str("_00")
+     while ( key in Plot__Paramater ):
+       lst.append( Plot__Paramater[key] )
+       idx=idx+1
        key = lstname+str("_%02d" % idx)
-       if key in Plot__Paramater:
-           lst.append( Plot__Paramater[key] )
-       else:
-           continue
 
+#    check  
+     if lstname is "DataName":
+       NumData = idx
+     elif  NumData != idx  and lstname is not ( "ColorBarLabel" or "ColorBarMin" or "ColorBarMax" or "norm" or "DataName" or "Field" ):
+       print('Number of %s != %d' % ( lstname, NumData ))
+       exit(0)
+       
 
    #################################################################
    
@@ -54,23 +85,23 @@ def _Plot(Plot__Paramater, Input__TestProb):
        
    #################################################################
    WindowHeight = [None]*len(Field)
-   WindowWidth  = [None]*len(Coord)
-   BufferSize   = [None]*len(Coord)
-   Extent       = [None]*len(Coord)
-   dX           = [None]*len(Coord)
-   dY           = [None]*len(Coord)
+   WindowWidth  = [None]*len(DataName)
+   BufferSize   = [None]*len(DataName)
+   Extent       = [None]*len(DataName)
+   dX           = [None]*len(DataName)
+   dY           = [None]*len(DataName)
 
    dX_max = 0
    dY_max = 0
 
-   for i in range(len(Coord)):
+   for i in range(len(DataName)):
        dX[i]           = abs(Xmax[i]-Xmin[i])
        dY[i]           = abs(Ymax[i]-Ymin[i])
        dX_max          = max ( dX_max, dX[i] )
        dY_max          = max ( dY_max, dY[i] )
 
 
-   for i in range(len(Coord)):
+   for i in range(len(DataName)):
        BufferSize[i]   = [  int(n.Resolution*dX[i]/dX_max), int(n.Resolution*dY[i]/dX_max)  ]
        WindowWidth[i]  = dY_max * BufferSize[i][0] / BufferSize[i][1]
        Extent[i]       = [ Xmin[i], Xmax[i], Ymin[i], Ymax[i] ]
@@ -100,8 +131,14 @@ def _Plot(Plot__Paramater, Input__TestProb):
            DataSet[j] = yt.load(DataName[j])
            DataSet[j].add_field(("gamer", Field[i]), function=function, sampling_type="cell", units=units)
 
-  
-           sl[i].append(  DataSet[j].slice(CutAxis[j], Coord[j], data_source=DataSet[j].all_data()  )  )
+           if n.OffAxisSlice == 0:
+             sl[i].append(  DataSet[j].slice(CutAxis[j], Coord[j], data_source=DataSet[j].all_data()  )  )
+           else:
+             NormalVector = [ NormalVectorX[j], NormalVectorY[j], NormalVectorZ[j]  ]
+             Center       = [       CenterX[j],       CenterY[j],       CenterZ[j]  ]
+             NorthVector  = [  NorthVectorX[j],  NorthVectorY[j],  NorthVectorZ[j]  ]
+             sl[i].append(  DataSet[j].cutting(NormalVector, Center, north_vector=NorthVector, data_source=DataSet[j].all_data()  )  )
+          
            frb[i].append( yt.FixedResolutionBuffer(sl[i][j], Extent[j],  BufferSize[j] ) )
 
            frb[i][j] = np.array(frb[i][j][Field[i]])
@@ -125,7 +162,7 @@ def _Plot(Plot__Paramater, Input__TestProb):
    # expressed as a fraction of the average axis width/height
    
    WidthRatio = []
-   for i in range(len(Coord)):
+   for i in range(len(DataName)):
      WidthRatio.append( WindowWidth[i] )
    
    # colorbar
@@ -147,13 +184,13 @@ def _Plot(Plot__Paramater, Input__TestProb):
  
    fig = plt.figure(figsize=( FigSize_X*Ratio , FigSize_Y*Ratio ), constrained_layout=False)
    
-   gs = fig.add_gridspec(len(Field),len(Coord)+1,wspace=n.wspace, hspace=n.hspace, width_ratios=WidthRatio)
+   gs = fig.add_gridspec(len(Field),len(DataName)+1,wspace=n.wspace, hspace=n.hspace, width_ratios=WidthRatio)
    
-   ax = [[None]*len(Coord)]*(len(Field))
+   ax = [[None]*len(DataName)]*(len(Field))
 
 
    for i in range(len(Field)):
-     for j in range(len(Coord)):
+     for j in range(len(DataName)):
        ax[i][j] = fig.add_subplot(gs[i,j])
        im = ax[i][j].imshow(frb[i][j], cmap=n.CMap, norm=norm[i], aspect=n.aspect,  extent=Extent[j], vmax=ColorBarMax[i], vmin=ColorBarMin[i] )
        ax[i][j].get_xaxis().set_ticks([])
@@ -165,7 +202,7 @@ def _Plot(Plot__Paramater, Input__TestProb):
                Title[j] = DataName[j]
            ax[i][j].set_title( Title[j], fontdict=font )
 
-     cax = fig.add_subplot(gs[i, len(Coord)])
+     cax = fig.add_subplot(gs[i, len(DataName)])
 
      cbar = fig.colorbar(im,cax=cax, use_gridspec=True)
 
