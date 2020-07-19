@@ -21,6 +21,8 @@ def _Plot(Plot__Paramater, Input__TestProb):
    Field       = []               
    YAxisLabel  = []               
    norm        = []
+   Ymax        = []
+   Ymin        = []
                                   
    # Below lists have the same size as number of column:
    Title       = []
@@ -35,10 +37,12 @@ def _Plot(Plot__Paramater, Input__TestProb):
    # Below list has arbitrary size:
    DataName    = []
    Label       = []
+   Mark        = []
+   MarkSize    = []
 
 
-   List     = [  DataName,  Label,   Field,   NumPts,   norm,   HeadX,   HeadY,   HeadZ,   TailX,   TailY,   TailZ,   Title ,  YAxisLabel ]
-   ListName = [ "DataName","Label", "Field", "NumPts", "norm", "HeadX", "HeadY", "HeadZ", "TailX", "TailY", "TailZ", "Title", "YAxisLabel" ]
+   List     = [  DataName,  Label,   Field,   NumPts,   norm,   HeadX,   HeadY,   HeadZ,   TailX,   TailY,   TailZ,   Title ,  YAxisLabel ,  Ymax,   Ymin  ,  Mark,   MarkSize  ]
+   ListName = [ "DataName","Label", "Field", "NumPts", "norm", "HeadX", "HeadY", "HeadZ", "TailX", "TailY", "TailZ", "Title", "YAxisLabel", "Ymax", "Ymin" , "Mark", "MarkSize" ]
 
 
    for lstname, lst in zip(ListName, List):
@@ -143,34 +147,35 @@ def _Plot(Plot__Paramater, Input__TestProb):
      for j in range(NumRay):
        for k in range(len(DataName)):
          Ray = np.sqrt( (Line[i][j][k]["x"]-Head[j][0])**2 + (Line[i][j][k]["y"]-Head[j][1])**2 + (Line[i][j][k]["z"]-Head[j][2])**2 )
-         axs[i][j].plot( Ray, Line[i][j][k][Field[i]], label=Label[k] )
+         axs[i].plot( Ray, Line[i][j][k][Field[i]], Mark[k], label=Label[k], markersize=3 )
 
-         axs[i][j].tick_params( which='both', direction='in', labelsize=12, top=False )
+         axs[i].tick_params( which='both', direction='in', labelsize=16, top=False )
 
-         axs[i][j].set_xlim(min(Ray), max(Ray))
-         axs[i][j].set_ylim(YMin[i]/1.2,   YMax[i]*1.2)
+         axs[i].set_xlim(min(Ray), max(Ray))
+         axs[i].set_ylim(Ymin[i],   Ymax[i])
 
          if norm[i] == 1:
-           axs[i][j].set_yscale('log')
+           axs[i].set_yscale('log')
          if j==0:
-          axs[i][j].set_ylabel(YAxisLabel[i], fontsize=16, fontweight='bold')
+          axs[i].set_ylabel(YAxisLabel[i], fontsize=20, fontweight='bold')
 
          # Removing tick labels must be after setting log scale;
          # otherwise tick labels emerge again
          if i < len(Field)-1:
-           axs[i][j].get_xaxis().set_ticks([])
+           axs[i].get_xaxis().set_ticks([])
          if j > 0:
-           axs[i][j].get_yaxis().set_ticks([])
+           axs[i].get_yaxis().set_ticks([])
 
          if i == 0:
            if ( Title[j] != 'off' ):
              if (Title[j] == 'auto'):
                title = "(%2.1f,%2.1f,%2.1f)\n(%2.1f,%2.1f,%2.1f)" % (Head[j][0], Head[j][1], Head[j][2], Tail[j][0], Tail[j][1], Tail[j][2])
-               axs[i][j].set_title( title, fontdict=font )
+               axs[i].set_title( title, fontdict=font )
              else:
-               axs[i][j].set_title( Title[j], fontdict=font )
+               axs[i].set_title( Title[j], fontdict=font )
 
    # legend
-   axs[0][0].legend(loc='upper center', fontsize=16)
+   axs[0].legend(loc='upper center', fontsize=16)
 
-   plt.show()
+   #plt.show()
+   plt.savefig( n.FileName+'.'+n.FileFormat, bbox_inches='tight', pad_inches=0.05, format=n.FileFormat, dpi=800 )

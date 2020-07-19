@@ -68,11 +68,11 @@ def _Plot(Plot__Paramater, Input__TestProb):
        key = lstname+str("_%02d" % idx)
 
 #    check  
-     if lstname is "DataName":
-       NumData = idx
-     elif  NumData != idx  and lstname is not ( "ColorBarLabel" or "ColorBarMin" or "ColorBarMax" or "norm" or "DataName" or "Field" ):
-       print('Number of %s != %d' % ( lstname, NumData ))
-       exit(0)
+#     if lstname is "DataName":
+#       NumData = idx
+#     elif  NumData != idx  and lstname is not ( "ColorBarLabel" or "ColorBarMin" or "ColorBarMax" or "norm" or "DataName" or "Field" ):
+#       print('Number of %s != %d' % ( lstname, NumData ))
+#       exit(0)
        
 
    #################################################################
