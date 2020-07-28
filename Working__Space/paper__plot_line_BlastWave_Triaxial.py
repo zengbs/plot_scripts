@@ -107,7 +107,6 @@ def _Plot(Plot__Paramater, Input__TestProb):
    Line     = []
 
    # !!! The second added derived field will overwrite the first one !!
-
    # add derived field
    for i in range(len(Field)):
        FieldFunction, Units = unit.ChooseUnit(Field[i])
@@ -120,21 +119,59 @@ def _Plot(Plot__Paramater, Input__TestProb):
               Line[i][j][k] = yt.LineBuffer( DataSet[k], Head[j], Tail[j], int(NumPts[j]) )
 
           
-   for j in range(NumRay):
-     Head[j] *= DataSet[j].length_unit
 
    # Dtermine the extreme y-values
-   YMax = [sys.float_info.min]*len(Field)
-   YMin = [sys.float_info.max]*len(Field)
+   Ymax = [sys.float_info.min]*len(Field)
+   Ymin = [sys.float_info.max]*len(Field)
 
    for i in range(len(Field)):
      for j in range(NumRay):
        for k in range(len(DataName)):
-         YMax[i]=max(np.amax(Line[i][j][k][Field[i]]), YMax[i])
-         YMin[i]=min(np.amin(Line[i][j][k][Field[i]]), YMin[i])
-         print('Field=%s, NumRay=%d, DataName=%s, Ymax=%20.16e, Ymin=%20.16e' %(Field[i], j, DataName[k], YMax[i], YMin[i]))
+         Ymax[i]=max(np.amax(Line[i][j][k][Field[i]]), Ymax[i])
+         Ymin[i]=min(np.amin(Line[i][j][k][Field[i]]), Ymin[i])
+         print('Field=%s, NumRay=%d, DataName=%s, Ymax=%20.16e, Ymin=%20.16e' %(Field[i], j, DataName[k], Ymax[i], Ymin[i]))
 
 
+   # Exact solution
+   #######################################################
+   U_shock = 3.5741156653703268e+00
+   Gamma_shock = np.sqrt(1+U_shock**2)
+   R_shock = 0.6
+
+   PresSrc  = 1e6
+   PresMin  = 4.7566689034571666e-15
+   GammaMin = 1.0
+   DensMin  = 1.8122080102453240e-11
+   TempMin  = PresMin*PresSrc/DensMin
+
+   DensAmb  = 1.0
+   HAmb     = 1.0
+
+   for j in range(NumRay):
+     Head[j] *= DataSet[j].length_unit
+
+   Exact = [None]*4
+
+   for i in range(len(Field)):
+     j=0
+     k=1
+     RayExact = np.sqrt( (Line[i][j][k]["x"]-Head[j][0])**2 + (Line[i][j][k]["y"]-Head[j][1])**2 + (Line[i][j][k]["z"]-Head[j][2])**2 )
+     Center = ( RayExact[0] + RayExact[-1] )*0.5
+     RayExact -= Center
+     RayExact = RayExact[RayExact > 0]
+  
+     Chi   = 1*DataSet[j].length_unit + 8*(1*DataSet[j].length_unit-RayExact/R_shock)*Gamma_shock**2
+     Exact[0] = Gamma_shock*np.power(2*Chi,-0.5)                   # Lorentz factor
+     Exact[2] = (2/3)*HAmb*(Gamma_shock**2)*np.power(Chi,-17/12)   # pressure
+     Exact[3] = (2**1.5)*DensAmb*Gamma_shock*np.power(Chi,-10/8)   # proper mass density
+     Exact[1] = Exact[2]/ Exact[3]                                 # temperature
+
+     Exact[0] *= GammaMin/Exact[0][0] 
+     Exact[1] *= TempMin /Exact[1][0]
+     Exact[2] *= PresMin /Exact[2][0]
+     Exact[3] *= DensMin /Exact[3][0]
+
+     RayExact += Center
    # Matplolib
    #######################################################
    font = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 20}
@@ -149,11 +186,12 @@ def _Plot(Plot__Paramater, Input__TestProb):
        for k in range(len(DataName)):
          Ray = np.sqrt( (Line[i][j][k]["x"]-Head[j][0])**2 + (Line[i][j][k]["y"]-Head[j][1])**2 + (Line[i][j][k]["z"]-Head[j][2])**2 )
          axs[i].plot( Ray, Line[i][j][k][Field[i]], Mark[k], label=Label[k], markersize=3 )
+         axs[i].plot( RayExact, Exact[i], color='k' )
 
          axs[i].tick_params( which='both', direction='in', labelsize=16, top=False )
 
          axs[i].set_xlim(min(Ray), max(Ray))
-         axs[i].set_ylim(YMin[i],   YMax[i])
+         #axs[i].set_ylim(Ymin[i],   Ymax[i])
 
          if norm[i] == 1:
            axs[i].set_yscale('log')
