@@ -3,10 +3,8 @@ import numpy as np
 import yt.visualization.eps_writer as eps
 import matplotlib
 import matplotlib.pyplot as plt
-from matplotlib.colors import LogNorm
 from types import SimpleNamespace    
 import sys
-import os
 
 
 
@@ -54,6 +52,59 @@ def _Plot(Plot__Paramater, Input__TestProb):
        key = lstname+str("_%02d" % idx)
 
 ###################################################################
+   NumRow = int(n.NumRow)
+   NumCol = int(n.NumCol)
+
+# check 
+   Exit = False
+
+   if ( len(Field) != NumRow ):
+     print("len(Field) != %d" % (NumRow))
+     Exit = True
+   if ( len(YAxisLabel) != NumRow ):
+     print("len(YAxisLabel) != %d" % (NumRow))
+     Exit = True
+   if ( len(YAxisLabel) != NumRow ):
+     print("len(YAxisLabel) != %d" % (NumRow))
+     Exit = True
+   if ( len(norm) != NumRow ):
+     print("len(norm) != %d" % (NumRow))
+     Exit = True
+   if ( len(Ymax) != NumRow ):
+     print("len(Ymax) != %d" % (NumRow))
+     Exit = True
+   if ( len(Ymin) != NumRow ):
+     print("len(Ymin) != %d" % (NumRow))
+     Exit = True
+
+   if ( len(Title) != NumCol ):
+     print("len(Title) != %d" % (NumCol))
+     Exit = True
+   if ( len(NumPts) != NumCol ):
+     print("len(NumPts) != %d" % (NumCol))
+     Exit = True
+   if ( len(HeadX) != NumCol ):
+     print("len(HeadX) != %d" % (NumCol))
+     Exit = True
+   if ( len(HeadY) != NumCol ):
+     print("len(HeadY) != %d" % (NumCol))
+     Exit = True
+   if ( len(HeadZ) != NumCol ):
+     print("len(HeadZ) != %d" % (NumCol))
+     Exit = True
+   if ( len(TailX) != NumCol ):
+     print("len(TailX) != %d" % (NumCol))
+     Exit = True
+   if ( len(TailY) != NumCol ):
+     print("len(TailY) != %d" % (NumCol))
+     Exit = True
+   if ( len(TailZ) != NumCol ):
+     print("len(TailZ) != %d" % (NumCol))
+     Exit = True
+   
+   if ( Exit ):
+     exit(0)
+###################################################################
 
 #  Head = [ [ HeadX_01, HeadY_01, HeadZ_01 ],
 #           [ HeadX_02, HeadY_02, HeadZ_02 ],
@@ -68,7 +119,7 @@ def _Plot(Plot__Paramater, Input__TestProb):
    NumRay = len(HeadX)
    Head = []
    Tail = []
-   for idx in range(NumRay):
+   for idx in range(NumCol):
      Head.append([])
      Tail.append([])
      Head[idx].append( HeadX[idx] )
@@ -78,6 +129,7 @@ def _Plot(Plot__Paramater, Input__TestProb):
      Tail[idx].append( TailY[idx] )
      Tail[idx].append( TailZ[idx] )
 
+
    # DataSet[DataName]          = [....]
    DataSet  = [yt.load(DataName[k]) for k in range(len(DataName))]
 
@@ -85,8 +137,8 @@ def _Plot(Plot__Paramater, Input__TestProb):
    BoxSizeY = DataSet[0]["BoxSize"][1]
    BoxSizeZ = DataSet[0]["BoxSize"][2]
 
-   # Ray can not lie on the surface or the edge of computational domain
-   for i in range(NumRay):
+   # Ray can not lie on the surface of or the edge of computational domain
+   for i in range(NumCol):
      for j in range(3):
        if (Head[i][j] == 0 and Tail[i][j] == 0):
           print("error: Ray can not lie on the surface or edge of computational domain")
@@ -107,12 +159,11 @@ def _Plot(Plot__Paramater, Input__TestProb):
    Line     = []
 
    # !!! The second added derived field will overwrite the first one !!
-
    # add derived field
-   for i in range(len(Field)):
+   for i in range(NumRow):
        FieldFunction, Units = unit.ChooseUnit(Field[i])
        Line.append([])
-       for j in range(NumRay):
+       for j in range(NumCol):
            Line[i].append([])
            for k in range(len(DataName)):
               DataSet[k].add_field(("gamer", Field[i]), function=FieldFunction, sampling_type="cell", units=Units, force_override=True)
@@ -120,65 +171,67 @@ def _Plot(Plot__Paramater, Input__TestProb):
               Line[i][j][k] = yt.LineBuffer( DataSet[k], Head[j], Tail[j], int(NumPts[j]) )
 
           
-   for j in range(NumRay):
+   for j in range(NumCol):
      Head[j] *= DataSet[j].length_unit
-
-   # Dtermine the extreme y-values
-   YMax = [sys.float_info.min]*len(Field)
-   YMin = [sys.float_info.max]*len(Field)
-
-   for i in range(len(Field)):
-     for j in range(NumRay):
-       for k in range(len(DataName)):
-         YMax[i]=max(np.amax(Line[i][j][k][Field[i]]), YMax[i])
-         YMin[i]=min(np.amin(Line[i][j][k][Field[i]]), YMin[i])
-         print('Field=%s, NumRay=%d, DataName=%s, Ymax=%20.16e, Ymin=%20.16e' %(Field[i], j, DataName[k], YMax[i], YMin[i]))
-
 
    # Matplolib
    #######################################################
    font = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 20}
    
-   f, axs = plt.subplots( len(Field), NumRay, sharex=False, sharey=False )
+   f, axs = plt.subplots( NumRow, NumCol, sharex=False, sharey=False )
    f.subplots_adjust( hspace=n.hspace, wspace=n.wspace )
-   f.set_size_inches( 5.0, 16.0 )
+   f.set_size_inches( 10.0, 16.0 )
 
+   axs = axs.flatten()
 
-   for i in range(len(Field)):
-     for j in range(NumRay):
+   for i in range(NumRow):
+     for j in range(NumCol):
        for k in range(len(DataName)):
          Ray = np.sqrt( (Line[i][j][k]["x"]-Head[j][0])**2 + (Line[i][j][k]["y"]-Head[j][1])**2 + (Line[i][j][k]["z"]-Head[j][2])**2 )
-         axs[i].plot( Ray, Line[i][j][k][Field[i]], Mark[k], label=Label[k], markersize=3 )
+         axs[i*NumCol+j].plot( Ray, Line[i][j][k][Field[i]], Mark[k], label=Label[k], markersize=MarkSize[k] )
+         #axs[i*NumCol+j].plot( RayExact, Exact[i], color='k' )
 
-         axs[i].tick_params( which='both', direction='in', labelsize=16, top=False )
+         axs[i*NumCol+j].tick_params( which='both', direction='in', labelsize=16, top=False )
 
-         axs[i].set_xlim(min(Ray), max(Ray))
-         axs[i].set_ylim(YMin[i],   YMax[i])
+         axs[i*NumCol+j].set_xlim(min(Ray), max(Ray))
+         
+         # Dtermine the extreme y-values
+         if ( NumCol > 1 ):
+           if ( Ymax[i] == 'auto' ):
+             Ymax[i] = sys.float_info.min
+             Ymax[i]=max(np.amax(Line[i][j][k][Field[i]]), Ymax[i])
+           elif ( Ymin[i] == 'auto' ):
+             Ymin[i] = sys.float_info.max
+             Ymin[i]=min(np.amin(Line[i][j][k][Field[i]]), Ymin[i])
+
+           axs[i*NumCol+j].set_ylim(Ymin[i], Ymax[i])
 
          if norm[i] == 1:
-           axs[i].set_yscale('log')
+           axs[i*NumCol+j].set_yscale('log')
          if j==0:
-          axs[i].set_ylabel(YAxisLabel[i], fontsize=20, fontweight='bold')
+           axs[i*NumCol+j].set_ylabel(YAxisLabel[i], fontsize=20, fontweight='bold')
 
          # Removing tick labels must be after setting log scale;
          # otherwise tick labels emerge again
-         if i < len(Field)-1:
-           axs[i].get_xaxis().set_ticks([])
+         if i < NumRow-1:
+           axs[i*NumCol+j].get_xaxis().set_ticks([])
          if j > 0:
-           axs[i].get_yaxis().set_ticks([])
+           axs[i*NumCol+j].get_yaxis().set_ticks([])
 
-         axs[i].get_xaxis().set_ticks([])
+         axs[i*NumCol+j].get_xaxis().set_ticks([])
 
          if i == 0:
            if ( Title[j] != 'off' ):
              if (Title[j] == 'auto'):
                title = "(%2.1f,%2.1f,%2.1f)\n(%2.1f,%2.1f,%2.1f)" % (Head[j][0], Head[j][1], Head[j][2], Tail[j][0], Tail[j][1], Tail[j][2])
-               axs[i].set_title( title, fontdict=font )
+               axs[i*NumCol+j].set_title( title, fontdict=font )
              else:
-               axs[i].set_title( Title[j], fontdict=font )
+               axs[i*NumCol+j].set_title( Title[j], fontdict=font )
 
    # legend
    axs[0].legend(loc='upper center', fontsize=16)
 
    #plt.show()
    plt.savefig( n.FileName+'.'+n.FileFormat, bbox_inches='tight', pad_inches=0.05, format=n.FileFormat, dpi=800 )
+
+   print("Done !!")
