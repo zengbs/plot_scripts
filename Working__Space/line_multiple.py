@@ -189,7 +189,6 @@ def _Plot(Plot__Paramater, Input__TestProb):
        for k in range(len(DataName)):
          Ray = np.sqrt( (Line[i][j][k]["x"]-Head[j][0])**2 + (Line[i][j][k]["y"]-Head[j][1])**2 + (Line[i][j][k]["z"]-Head[j][2])**2 )
          axs[i*NumCol+j].plot( Ray, Line[i][j][k][Field[i]], Mark[k], label=Label[k], markersize=MarkSize[k] )
-         #axs[i*NumCol+j].plot( RayExact, Exact[i], color='k' )
 
          axs[i*NumCol+j].tick_params( which='both', direction='in', labelsize=16, top=False )
 
@@ -231,7 +230,6 @@ def _Plot(Plot__Paramater, Input__TestProb):
    # legend
    axs[0].legend(loc='upper center', fontsize=16)
 
-   #plt.show()
    plt.savefig( n.FileName+'.'+n.FileFormat, bbox_inches='tight', pad_inches=0.05, format=n.FileFormat, dpi=800 )
 
    print("Done !!")

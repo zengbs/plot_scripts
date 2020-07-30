@@ -31,15 +31,15 @@ NumRow                              4
 NumCol                              2
 
 
-Mark_00                            b- 
-Mark_01                            r-.
-Mark_02                            g-
-Mark_03                            k-.
+Mark_00                            ro 
+Mark_01                            cx
+Mark_02                            bv
+Mark_03                            y+
 
-MarkSize_00                         1
-MarkSize_01                         1
-MarkSize_02                         1
-MarkSize_03                         1
+MarkSize_00                         3 
+MarkSize_01                         3 
+MarkSize_02                         3 
+MarkSize_03                         3 
 
 FileName                      Profile
 FileFormat                        pdf
@@ -47,10 +47,10 @@ FileFormat                        pdf
 Title_00                 Longest_Axis
 Title_01                Shortest_Axis
 
-Label_00              Triaxial(t=0.1)
-Label_01             Spherical(t=0.1)
-Label_02              Triaxial(t=0.6)
-Label_03             Spherical(t=0.6)
+Label_00            Triaxial__(t=0.1)
+Label_01            Spherical_(t=0.1)
+Label_02            Triaxial__(t=0.6)
+Label_03            Spherical_(t=0.6)
 
 Field_00               Lorentz_factor
 YAxisLabel_00                $\gamma$

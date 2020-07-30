@@ -20,30 +20,27 @@
 #     2. The images in the same column are limited to the same size.
 #
 ###################################################################
-#  norm   0/1 linear/log
-#  Title  off/auto/user-defined
-
+#  norm   0/1: linear/log
 OffAxisSlice                     1
 
-DataName_00            Data_000008 
-DataName_01            Data_000008
-DataName_02            Data_000008
-DataName_03            Data_000008
+DataName_00            Data_000001
+DataName_01            Data_000009
 
+NumRow                           4
+NumCol                           2
 
-Title_00                     title
-Title_01                     title 
-Title_02                     title 
-Title_03                     title 
-
-FileName                    Figure
+FileName  NormalVector_+1+1-1_Triaxial
 FileFormat                     pdf
+
+Title_00          Triaxial_(t=0.1)
+Title_01          Triaxial_(t=0.6) 
+
 
 Field_00            Lorentz_factor
 ColorBarLabel_00          $\gamma$
 ColorBarMax_00                auto
 ColorBarMin_00                auto
-norm_00                          0
+norm_00                          1
 
 Field_01            temperature_sr
 ColorBarLabel_01   $k_{B}T/mc^{2}$ 
@@ -52,46 +49,24 @@ ColorBarMin_01                auto
 norm_01                          1
 
 Field_02               pressure_sr
-ColorBarLabel_02         $P/P_{j}$
+ColorBarLabel_02       $P/P_{src}$
 ColorBarMax_02                auto
 ColorBarMin_02                auto
 norm_02                          1
 
 Field_03       proper_mass_density
-ColorBarLabel_03   $\rho/\rho_{j}$ 
+ColorBarLabel_03 $\rho/\rho_{src}$ 
 ColorBarMax_03                auto
 ColorBarMin_03                auto
 norm_03                          1
 
-Field_04        Bernoulli_constant 
-ColorBarLabel_04   $h\gamma/c^{2}$ 
-ColorBarMax_04                26.6
-ColorBarMin_04              26.245
-norm_04                          0
-                     
-Field_05          cylindrical_radial_4velocity 
-ColorBarLabel_05         $U_{R}/c$
-ColorBarMax_05                auto
-ColorBarMin_05                auto
-norm_05                          0
-cylindrical_axis                 x
+NormalVectorX_00                 1
+NormalVectorY_00                 1
+NormalVectorZ_00                -1
 
-                     
-NormalVectorX_00               1
-NormalVectorY_00               1
-NormalVectorZ_00               -1
-
-NormalVectorX_01               1 
-NormalVectorY_01               1 
-NormalVectorZ_01               -1 
-
-NormalVectorX_02               1 
-NormalVectorY_02               1 
-NormalVectorZ_02               -1 
-
-NormalVectorX_03               1 
-NormalVectorY_03               1 
-NormalVectorZ_03               -1 
+NormalVectorX_01                 1 
+NormalVectorY_01                 1 
+NormalVectorZ_01                -1 
 
 NorthVectorX_00                  0
 NorthVectorY_00                  0
@@ -101,51 +76,23 @@ NorthVectorX_01                  0
 NorthVectorY_01                  0
 NorthVectorZ_01                  1
 
-NorthVectorX_02                  0
-NorthVectorY_02                  0
-NorthVectorZ_02                  1
+CenterX_00                      32 
+CenterY_00                      32 
+CenterZ_00                      32 
 
-NorthVectorX_03                  0
-NorthVectorY_03                  0
-NorthVectorZ_03                  1
+CenterX_01                      32 
+CenterY_01                      32  
+CenterZ_01                      32 
 
-CenterX_00                     0.5 
-CenterY_00                     0.5 
-CenterZ_00                     0.5 
-
-CenterX_01                     0.5 
-CenterY_01                     0.5  
-CenterZ_01                     0.5 
-
-CenterX_02                     0.5 
-CenterY_02                     0.5 
-CenterZ_02                     0.5 
+Xmax_00                      +0.65 
+Xmin_00                      -0.65
+Ymax_00                      +0.65
+Ymin_00                      -0.65
                      
-CenterX_03                     0.5  
-CenterY_03                     0.5  
-CenterZ_03                     0.5 
-
-Xmax_00                       +0.5
-Xmin_00                       -0.5
-Ymax_00                       +0.5
-Ymin_00                       -0.5
-                     
-Xmax_01                       +0.5
-Xmin_01                       -0.5 
-Ymax_01                       +0.5 
-Ymin_01                       -0.5
-
-Xmax_02                       +0.5
-Xmin_02                       -0.5 
-Ymax_02                       +0.5 
-Ymin_02                       -0.5
-
-Xmax_03                       +0.5
-Xmin_03                       -0.5 
-Ymax_03                       +0.5 
-Ymin_03                       -0.5
-                     
-                     
+Xmax_01                      +0.65
+Xmin_01                      -0.65
+Ymax_01                      +0.65
+Ymin_01                      -0.65
 
 NormalizedConst_Pres          auto
 NormalizedConst_Dens          auto
@@ -154,7 +101,7 @@ Resolution                    2048
 aspect                       equal
 CMap                         arbre 
                      
-FigWidth                        20
+FigWidth                        10
 
-wspace                        0.03
+wspace                        0.02
 hspace                        0.04

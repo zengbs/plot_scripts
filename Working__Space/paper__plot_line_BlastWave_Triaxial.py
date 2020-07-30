@@ -218,7 +218,8 @@ def _Plot(Plot__Paramater, Input__TestProb):
 
    # Matplolib
    #######################################################
-   font = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 20}
+   font       = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 20}
+   FontLegend = {'family': 'monospace','weight': 'heavy', 'size': 16}
    
    f, axs = plt.subplots( NumRow, NumCol, sharex=False, sharey=False )
    f.subplots_adjust( hspace=n.hspace, wspace=n.wspace )
@@ -271,7 +272,7 @@ def _Plot(Plot__Paramater, Input__TestProb):
                axs[i*NumCol+j].set_title( Title[j], fontdict=font )
 
    # legend
-   axs[0].legend(loc='upper center', fontsize=16)
+   axs[2].legend(loc='lower center', prop=FontLegend)
 
    #plt.show()
    plt.savefig( n.FileName+'.'+n.FileFormat, bbox_inches='tight', pad_inches=0.05, format=n.FileFormat, dpi=800 )

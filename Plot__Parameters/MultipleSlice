@@ -31,6 +31,28 @@ DataName_02            Data_000008
 DataName_03            Data_000008
 DataName_04            Data_000008
 
+NumRow                           4
+NumCol                           2
+
+FileName  NormalVector_+1+1-1_Triaxial
+FileFormat                     pdf
+
+Title_00          Triaxial_(t=0.1)
+Title_01          Triaxial_(t=0.6) 
+
+
+Field_00            Lorentz_factor
+ColorBarLabel_00          $\gamma$
+ColorBarMax_00                auto
+ColorBarMin_00                auto
+norm_00                          1
+
+Field_01            temperature_sr
+ColorBarLabel_01   $k_{B}T/mc^{2}$ 
+ColorBarMax_01                auto
+ColorBarMin_01                auto
+norm_01                          1
+
 
 Title_00                     title
 Title_01                     title 
