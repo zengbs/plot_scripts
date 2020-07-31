@@ -17,7 +17,7 @@ def my_create_grps(name):
 #fs.copy('/Info'    ,fd['/Info']    )
 #fs.copy('/Tree'    ,fd['/Tree']    )
 
-ID = 0
+ID = 3
 
 for idx in range(ID,ID+1):
 

@@ -152,7 +152,7 @@ def _Plot(Plot__Paramater, Input__TestProb):
 
    #################################################################
  
-   for i in range(NumRow)
+   for i in range(NumRow):
      if ( Field[i] == 'Lorentz_factor_1' and norm[i] == 1 ):
        print('We recommand plot Lorentz_factor_1 with linear scale')
        exit(0)
