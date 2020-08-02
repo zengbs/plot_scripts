@@ -3,7 +3,7 @@ import sys
 sys.path.insert(1, '/projectY/tseng/gamer/bin/plot_scripts/Working__Space')
 
 import argparse
-from paper__plot_slice_HorizontalJet import _Plot
+from paper__PlotSliceHorizontalJet import _Plot
 
 
 parser = argparse.ArgumentParser(description='Process some integers.')

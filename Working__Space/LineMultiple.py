@@ -171,59 +171,16 @@ def _Plot(Plot__Paramater, Input__TestProb):
               Line[i][j][k] = yt.LineBuffer( DataSet[k], Head[j], Tail[j], int(NumPts[j]) )
 
           
-
-
-
-   # Exact solution
-   #######################################################
-   U_shock = 3.5741156653703268e+00
-   Gamma_shock = np.sqrt(1+U_shock**2)
-   R_shock = 0.6
-
-   PresSrc  = 1e6
-   PresMin  = 4.7566689034571666e-15
-   GammaMin = 1.0
-   DensMin  = 1.8122080102453240e-11
-   TempMin  = PresMin*PresSrc/DensMin
-
-   DensAmb  = 1.0
-   HAmb     = 1.0
-
    for j in range(NumCol):
      Head[j] *= DataSet[j].length_unit
 
-   Exact = [None]*4
-
-   for i in range(NumRow):
-     j=0
-     k=1
-     RayExact = np.sqrt( (Line[i][j][k]["x"]-Head[j][0])**2 + (Line[i][j][k]["y"]-Head[j][1])**2 + (Line[i][j][k]["z"]-Head[j][2])**2 )
-     Center = ( RayExact[0] + RayExact[-1] )*0.5
-     RayExact -= Center
-     RayExact = RayExact[RayExact > 0]
-  
-     Chi   = 1*DataSet[j].length_unit + 8*(1*DataSet[j].length_unit-RayExact/R_shock)*Gamma_shock**2
-     Exact[0] = Gamma_shock*np.power(2*Chi,-0.5)                   # Lorentz factor
-     Exact[2] = (2/3)*HAmb*(Gamma_shock**2)*np.power(Chi,-17/12)   # pressure
-     Exact[3] = (2**1.5)*DensAmb*Gamma_shock*np.power(Chi,-10/8)   # proper mass density
-     Exact[1] = Exact[2]/ Exact[3]                                 # temperature
-
-     Exact[0] *= GammaMin/Exact[0][0] 
-     Exact[1] *= TempMin /Exact[1][0]
-     Exact[2] *= PresMin /Exact[2][0]
-     Exact[3] *= DensMin /Exact[3][0]
-
-     RayExact += Center
-
-
    # Matplolib
    #######################################################
-   font       = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 20}
-   FontLegend = {'family': 'monospace','weight': 'heavy', 'size': 16}
+   font = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 20}
    
    f, axs = plt.subplots( NumRow, NumCol, sharex=False, sharey=False )
    f.subplots_adjust( hspace=n.hspace, wspace=n.wspace )
-   f.set_size_inches( 10.0, 16.0 )
+   f.set_size_inches( n.FigSizeX, n.FigSizeY )
 
    axs = axs.flatten()
 
@@ -232,7 +189,6 @@ def _Plot(Plot__Paramater, Input__TestProb):
        for k in range(len(DataName)):
          Ray = np.sqrt( (Line[i][j][k]["x"]-Head[j][0])**2 + (Line[i][j][k]["y"]-Head[j][1])**2 + (Line[i][j][k]["z"]-Head[j][2])**2 )
          axs[i*NumCol+j].plot( Ray, Line[i][j][k][Field[i]], Mark[k], label=Label[k], markersize=MarkSize[k] )
-         #axs[i*NumCol+j].plot( RayExact, Exact[i], color='k' )
 
          axs[i*NumCol+j].tick_params( which='both', direction='in', labelsize=16, top=False )
 
@@ -272,9 +228,8 @@ def _Plot(Plot__Paramater, Input__TestProb):
                axs[i*NumCol+j].set_title( Title[j], fontdict=font )
 
    # legend
-   axs[2].legend(loc='lower center', prop=FontLegend)
+   axs[0].legend(loc='upper center', fontsize=16)
 
-   #plt.show()
    plt.savefig( n.FileName+'.'+n.FileFormat, bbox_inches='tight', pad_inches=0.05, format=n.FileFormat, dpi=800 )
 
    print("Done !!")

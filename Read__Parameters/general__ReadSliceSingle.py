@@ -3,7 +3,7 @@ import sys
 sys.path.insert(1, '/projectY/tseng/gamer/bin/plot_scripts/Working__Space')
 
 import argparse
-from line_multiple import _Plot
+from SliceSingle import _Plot
 
 
 parser = argparse.ArgumentParser(description='Process some integers.')
@@ -46,8 +46,6 @@ NormalizedConst_Dens = 0
 NormalizedConst_Pres = 0
 
 
-
-
 if (Plot__Paramater['NormalizedConst_Dens'] == 'auto'):
     if "Jet_SrcDens" in Input__TestProb:
       NormalizedConst_Dens = Input__TestProb['Jet_SrcDens']
@@ -55,9 +53,6 @@ if (Plot__Paramater['NormalizedConst_Dens'] == 'auto'):
       NormalizedConst_Dens = Input__TestProb['Blast_Dens_Src']
 
     Plot__Paramater['NormalizedConst_Dens'] = 'auto (%s)' % ( str(NormalizedConst_Dens) )
-
-else:
-    NormalizedConst_Dens = Plot__Paramater['NormalizedConst_Dens']
 
 if (Plot__Paramater['NormalizedConst_Pres'] == 'auto'):
     if "Jet_SrcTemp" in Input__TestProb:
@@ -67,10 +62,13 @@ if (Plot__Paramater['NormalizedConst_Pres'] == 'auto'):
 
     Plot__Paramater['NormalizedConst_Pres'] = 'auto (%s)' % ( str(NormalizedConst_Pres) )
 
-else:
+if ( Plot__Paramater['NormalizedConst_Dens'] != 'auto' ):
+    NormalizedConst_Dens = Plot__Paramater['NormalizedConst_Dens']
+
+if ( Plot__Paramater['NormalizedConst_Pres'] != 'auto' ):
     NormalizedConst_Pres = Plot__Paramater['NormalizedConst_Pres']
 
-if "cylindrical_radial_4velocity" in Plot__Paramater.values():
+if (Plot__Paramater['Field'] == "cylindrical_radial_4velocity"):
     cylindrical_axis = Plot__Paramater['cylindrical_axis']
 
 if __name__ == '__main__':

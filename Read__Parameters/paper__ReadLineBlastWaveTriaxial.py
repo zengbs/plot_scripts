@@ -3,7 +3,7 @@ import sys
 sys.path.insert(1, '/projectY/tseng/gamer/bin/plot_scripts/Working__Space')
 
 import argparse
-from slice_multiple import _Plot
+from paper__PlotLineBlastWaveTriaxial import _Plot
 
 
 parser = argparse.ArgumentParser(description='Process some integers.')
@@ -44,6 +44,8 @@ FilePtr2.close()
 
 NormalizedConst_Dens = 0
 NormalizedConst_Pres = 0
+
+
 
 
 if (Plot__Paramater['NormalizedConst_Dens'] == 'auto'):

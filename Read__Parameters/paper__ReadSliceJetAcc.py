@@ -1,9 +1,9 @@
 import sys
 # insert at 1, 0 is the script path (or '' in REPL)
 sys.path.insert(1, '/projectY/tseng/gamer/bin/plot_scripts/Working__Space')
-
+import numpy as np
 import argparse
-from slice_single import _Plot
+from paper__PlotSliceJetAcc import _Plot
 
 
 parser = argparse.ArgumentParser(description='Process some integers.')
@@ -44,6 +44,7 @@ FilePtr2.close()
 
 NormalizedConst_Dens = 0
 NormalizedConst_Pres = 0
+NormalizedConst_h_gamma = 0
 
 
 if (Plot__Paramater['NormalizedConst_Dens'] == 'auto'):
@@ -62,14 +63,22 @@ if (Plot__Paramater['NormalizedConst_Pres'] == 'auto'):
 
     Plot__Paramater['NormalizedConst_Pres'] = 'auto (%s)' % ( str(NormalizedConst_Pres) )
 
-if ( Plot__Paramater['NormalizedConst_Dens'] != 'auto' ):
-    NormalizedConst_Dens = Plot__Paramater['NormalizedConst_Dens']
-
-if ( Plot__Paramater['NormalizedConst_Pres'] != 'auto' ):
-    NormalizedConst_Pres = Plot__Paramater['NormalizedConst_Pres']
-
-if (Plot__Paramater['Field'] == "cylindrical_radial_4velocity"):
+if "cylindrical_radial_4velocity" in Plot__Paramater.values():
     cylindrical_axis = Plot__Paramater['cylindrical_axis']
+
+if "cylindrical_radial_Mach_number" in Plot__Paramater.values():
+    cylindrical_axis = Plot__Paramater['cylindrical_axis']
+
+
+if (Plot__Paramater['NormalizedConst_h_gamma'] == 'auto'):
+    U  = Input__TestProb['Jet_SrcVel']
+    T  = Input__TestProb['Jet_SrcTemp']
+
+    h0 = 2.5*T + np.sqrt( 2.25*T**2 + 1 )
+    gamma = np.sqrt( 1 + U**2 )
+    NormalizedConst_h_gamma = h0*gamma
+    print("%10.6f" % NormalizedConst_h_gamma)
+
 
 if __name__ == '__main__':
     _Plot(Plot__Paramater, Input__TestProb)
