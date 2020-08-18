@@ -326,4 +326,5 @@ def _Plot(Plot__Paramater, Input__TestProb):
                f2.write(string)
              f2.write(f2_remainder)
 
+   print ( "FigSizeX=%f, FigSizeY=%f" % (FigSize_X*Ratio , FigSize_Y*Ratio) )
    print ("Done !!")

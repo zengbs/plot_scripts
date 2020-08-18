@@ -272,7 +272,7 @@ def _Plot(Plot__Paramater, Input__TestProb):
                axs[i*NumCol+j].set_title( Title[j], fontdict=font )
 
    # legend
-   axs[1].legend(loc='lower center', prop=FontLegend)
+   axs[1].legend(loc='lower center', prop=FontLegend, borderaxespad=2.0, handletextpad=0.4,markerscale=3.0)
 
    #plt.show()
    plt.savefig( n.FileName+'.'+n.FileFormat, bbox_inches='tight', pad_inches=0.05, format=n.FileFormat, dpi=800 )
