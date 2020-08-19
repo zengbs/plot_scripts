@@ -1,28 +1,8 @@
-#      
-#              ┌-----------┬-----------┐    ┌-----------┐ ┌--┐
-#              | Xmax_00   | Xmax_01   |    | Xmax_0?   | |c |
-#     Field_00 | Xmin_00   | Xmin_01   | ⋯  | Xmin_0?   | |o |
-#              | Ymax_00   | Ymax_01   |    | Ymax_0?   | |l |
-#              | Ymin_00   | Ymin_01   |    | Ymin_0?   | |o |
-#              ┕-----------┷-----------┘    ┕-----------┘ ┕--┘
-#                   ⋮            ⋮              ⋮
-#              ┌-----------┬-----------┐    ┌-----------┐ ┌--┐
-#              | Xmax_00   | Xmax_01   |    | Xmax_0?   | |b |
-#     Field_0? | Xmin_00   | Xmin_01   |    | Xmin_0?   | |a |
-#              | Ymax_00   | Ymax_01   | ⋯  | Ymax_0?   | |r |
-#              | Ymin_00   | Ymin_01   |    | Ymin_0?   | |  |
-#              ┕-----------┷-----------┘    ┕-----------┘ ┕--┘
-#                  Coord_00    Coord_01          Coord_0?
-#               DataName_00 DataName_01       DataName_0?
-#
-#
-#     1. The images in the 1st row can be arbitrary shape. 
-#     2. The images in the same column are limited to the same size.
-#
-###################################################################
-#  norm   0/1: linear/log
+# MultipleCutting
+
 OffAxisSlice                     1
 
+# number should be same as NumCol
 DataName_00            Data_000001
 DataName_01            Data_000009
 
@@ -32,10 +12,12 @@ NumCol                           2
 FileName  NormalVector_+1+1-1_Triaxial
 FileFormat                     pdf
 
+# number should be same as NumCol
 Title_00          Triaxial_(t=0.1)
 Title_01          Triaxial_(t=0.6) 
 
 
+# number should be same as NumRow
 Field_00            Lorentz_factor
 ColorBarLabel_00          $\gamma$
 ColorBarMax_00                auto
@@ -60,6 +42,7 @@ ColorBarMax_03                auto
 ColorBarMin_03                auto
 norm_03                          1
 
+# number should be same as NumCol
 NormalVectorX_00                 1
 NormalVectorY_00                 1
 NormalVectorZ_00                -1
@@ -68,6 +51,7 @@ NormalVectorX_01                 1
 NormalVectorY_01                 1 
 NormalVectorZ_01                -1 
 
+# number should be same as NumCol
 NorthVectorX_00                  0
 NorthVectorY_00                  0
 NorthVectorZ_00                  1
@@ -76,6 +60,7 @@ NorthVectorX_01                  0
 NorthVectorY_01                  0
 NorthVectorZ_01                  1
 
+# number should be same as NumCol
 CenterX_00                      32 
 CenterY_00                      32 
 CenterZ_00                      32 
@@ -84,6 +69,7 @@ CenterX_01                      32
 CenterY_01                      32  
 CenterZ_01                      32 
 
+# number should be same as NumCol
 Xmax_00                      +0.65 
 Xmin_00                      -0.65
 Ymax_00                      +0.65

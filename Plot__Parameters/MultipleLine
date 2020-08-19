@@ -1,27 +1,6 @@
-#      
-#              ┌-----------┬-----------┐    ┌-----------┐ ┌--┐
-#              | Xmax_00   | Xmax_01   |    | Xmax_0?   | |c |
-#     Field_00 | Xmin_00   | Xmin_01   | ⋯  | Xmin_0?   | |o |
-#              | Ymax_00   | Ymax_01   |    | Ymax_0?   | |l |
-#              | Ymin_00   | Ymin_01   |    | Ymin_0?   | |o |
-#              ┕-----------┷-----------┘    ┕-----------┘ ┕--┘
-#                   ⋮            ⋮              ⋮
-#              ┌-----------┬-----------┐    ┌-----------┐ ┌--┐
-#              | Xmax_00   | Xmax_01   |    | Xmax_0?   | |b |
-#     Field_0? | Xmin_00   | Xmin_01   |    | Xmin_0?   | |a |
-#              | Ymax_00   | Ymax_01   | ⋯  | Ymax_0?   | |r |
-#              | Ymin_00   | Ymin_01   |    | Ymin_0?   | |  |
-#              ┕-----------┷-----------┘    ┕-----------┘ ┕--┘
-#                  Coord_00    Coord_01          Coord_0?
-#               DataName_00 DataName_01       DataName_0?
-#
-#
-#     1. The images in the 1st row can be arbitrary shape. 
-#     2. The images in the same column are limited to the same size.
-#
-###################################################################
-#  norm   0/1: linear/log
+# MultipleLine 
 
+# arbitrary numbers:
 DataName_00                Data_000001
 DataName_01            /projectZ/tseng/paper/BlastWaves/HighEngy_HighRes/Spherical/Data_000001
 DataName_02                Data_000009
@@ -31,11 +10,13 @@ NumRow                              4
 NumCol                              2
 
 
+# arbitrary numbers:
 Mark_00                            ro 
 Mark_01                            cx
 Mark_02                            bv
 Mark_03                            y+
 
+# arbitrary numbers:
 MarkSize_00                         3 
 MarkSize_01                         3 
 MarkSize_02                         3 
@@ -44,14 +25,17 @@ MarkSize_03                         3
 FileName                      Profile
 FileFormat                        pdf
 
+# number should be same as NumCol
 Title_00                 Longest_Axis
 Title_01                Shortest_Axis
 
+# arbitrary numbers:
 Label_00            Triaxial__(t=0.1)
 Label_01            Spherical_(t=0.1)
 Label_02            Triaxial__(t=0.6)
 Label_03            Spherical_(t=0.6)
 
+# number should be same as NumRow
 Field_00               Lorentz_factor
 YAxisLabel_00                $\gamma$
 norm_00                             1
@@ -68,6 +52,7 @@ Field_03          proper_mass_density
 YAxisLabel_03       $\rho/\rho_{src}$ 
 norm_03                             1
 
+# number should be same as NumCol
 # major axis: x=t, y=t, z=-t+64; length of half-ray=0.65
 HeadX_00             31.6247223250267 
 HeadY_00             31.6247223250267
@@ -84,6 +69,7 @@ TailX_01             32.2653613888015
 TailY_01             32.2653613888015
 TailZ_01             32.5307227776030
 
+# number should be same as NumRow
 Ymax_00                           200 
 Ymax_01                           1e6
 Ymax_02                          1e-3
@@ -97,6 +83,7 @@ Ymin_03                         1e-11
 NormalizedConst_Pres             auto
 NormalizedConst_Dens             auto
 
+# number should be same as NumCol
 NumPts_00                        2048
 NumPts_01                        2048
 

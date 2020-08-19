@@ -1,46 +1,24 @@
-#      
-#              ┌-----------┬-----------┐    ┌-----------┐ ┌--┐
-#              | Xmax_00   | Xmax_01   |    | Xmax_0?   | |c |
-#     Field_00 | Xmin_00   | Xmin_01   | ⋯  | Xmin_0?   | |o |
-#              | Ymax_00   | Ymax_01   |    | Ymax_0?   | |l |
-#              | Ymin_00   | Ymin_01   |    | Ymin_0?   | |o |
-#              ┕-----------┷-----------┘    ┕-----------┘ ┕--┘
-#                   ⋮            ⋮              ⋮
-#              ┌-----------┬-----------┐    ┌-----------┐ ┌--┐
-#              | Xmax_00   | Xmax_01   |    | Xmax_0?   | |b |
-#     Field_0? | Xmin_00   | Xmin_01   |    | Xmin_0?   | |a |
-#              | Ymax_00   | Ymax_01   | ⋯  | Ymax_0?   | |r |
-#              | Ymin_00   | Ymin_01   |    | Ymin_0?   | |  |
-#              ┕-----------┷-----------┘    ┕-----------┘ ┕--┘
-#                  Coord_00    Coord_01          Coord_0?
-#               DataName_00 DataName_01       DataName_0?
-#
-#
-#     1. The images in the 1st row can be arbitrary shape. 
-#     2. The images in the same column are limited to the same size.
-#
-###################################################################
-#  norm   0/1 linear/log
-#  Title  off/auto/user-defined
+# MultipleSlice
 
-OffAxisSlice                     0
-
-DataName_00            Data_000008 
-DataName_01            Data_000008
-DataName_02            Data_000008
-DataName_03            Data_000008
-DataName_04            Data_000008
+OffAxisSlice                     0 # [0/1]
 
 NumRow                           4
 NumCol                           2
 
-FileName  NormalVector_+1+1-1_Triaxial
+# number should be same as NumCol
+DataName_00            Data_000008 
+DataName_01            Data_000008
+
+
+FileName                 ImageName
 FileFormat                     pdf
 
-Title_00          Triaxial_(t=0.1)
-Title_01          Triaxial_(t=0.6) 
+# number should be same as NumCol
+Title_00                     Title # off/auto 
+Title_01                     Title  # off/auto
 
 
+# number should be same as NumRow
 Field_00            Lorentz_factor
 ColorBarLabel_00          $\gamma$
 ColorBarMax_00                auto
@@ -53,27 +31,6 @@ ColorBarMax_01                auto
 ColorBarMin_01                auto
 norm_01                          1
 
-
-Title_00                     title
-Title_01                     title 
-Title_02                     title 
-Title_03                     title 
-Title_04                     title 
-
-FileName                    Figure
-FileFormat                     eps
-
-Field_00            Lorentz_factor
-ColorBarLabel_00          $\gamma$
-ColorBarMax_00                auto
-ColorBarMin_00                auto
-norm_00                          0
-
-Field_01            temperature_sr
-ColorBarLabel_01   $k_{B}T/mc^{2}$ 
-ColorBarMax_01                auto
-ColorBarMin_01                auto
-norm_01                          1
 
 Field_02               pressure_sr
 ColorBarLabel_02         $P/P_{j}$
@@ -93,15 +50,10 @@ ColorBarMax_04                26.6
 ColorBarMin_04              26.245
 norm_04                          0
                      
-Field_05          cylindrical_radial_4velocity 
-ColorBarLabel_05         $U_{R}/c$
-ColorBarMax_05                auto
-ColorBarMin_05                auto
-norm_05                          0
-cylindrical_axis                 x
 
                      
                      
+# number should be same as NumCol
 CutAxis_00                       z
 Coord_00                        50
 Xmax_00                       77.5 
@@ -115,27 +67,6 @@ Xmax_01                       51.3
 Xmin_01                       48.7   
 Ymax_01                       51.3   
 Ymin_01                       48.7  
-                     
-CutAxis_02                       z
-Coord_02                        39
-Xmax_02                       51.3
-Xmin_02                       48.7
-Ymax_02                       51.3
-Ymin_02                       48.7
-
-CutAxis_03                       x
-Coord_03                        44
-Xmax_03                       51.3  
-Xmin_03                       48.7   
-Ymax_03                       51.3   
-Ymin_03                       48.7  
-
-CutAxis_04                       x
-Coord_04                        48
-Xmax_04                       51.3  
-Xmin_04                       48.7   
-Ymax_04                       51.3   
-Ymin_04                       48.7  
                      
 
 NormalizedConst_Pres          auto
