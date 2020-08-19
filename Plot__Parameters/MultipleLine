@@ -87,5 +87,9 @@ NormalizedConst_Dens             auto
 NumPts_00                        2048
 NumPts_01                        2048
 
+FigSizeX                            5   
+FigSizeY                    19.576805
+
+
 wspace                           0.04
 hspace                           0.04
