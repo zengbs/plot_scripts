@@ -32,7 +32,7 @@ def _Plot(Plot__Paramater, Input__TestProb):
    TailY       = []
    TailZ       = []
 
-   # Below list has arbitrary size:
+   # Below list have the same arbitrary size:
    DataName    = []
    Label       = []
    Mark        = []
@@ -101,7 +101,17 @@ def _Plot(Plot__Paramater, Input__TestProb):
    if ( len(TailZ) != NumCol ):
      print("len(TailZ) != %d" % (NumCol))
      Exit = True
-   
+  
+   if ( len(Label) != len(DataName) )
+     print("len(Label) != %d" % (len(DataName)))
+     Exit = True
+   if ( len(Mark) != len(DataName) )
+     print("len(Mark) != %d" % (len(DataName)))
+     Exit = True
+   if ( len(MarkSize) != len(DataName) )
+     print("len(MarkSize) != %d" % (len(DataName)))
+     Exit = True
+ 
    if ( Exit ):
      exit(0)
 ###################################################################

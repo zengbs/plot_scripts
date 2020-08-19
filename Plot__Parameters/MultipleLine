@@ -75,6 +75,7 @@ Ymax_01                           1e6
 Ymax_02                          1e-3
 Ymax_03                           1e2     
 
+# number should be same as NumRow
 Ymin_00                           0.8
 Ymin_01                         1e-10  
 Ymin_02                         1e-16     
