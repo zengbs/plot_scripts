@@ -102,13 +102,13 @@ def _Plot(Plot__Paramater, Input__TestProb):
      print("len(TailZ) != %d" % (NumCol))
      Exit = True
   
-   if ( len(Label) != len(DataName) )
+   if ( len(Label) != len(DataName) ):
      print("len(Label) != %d" % (len(DataName)))
      Exit = True
-   if ( len(Mark) != len(DataName) )
+   if ( len(Mark) != len(DataName) ):
      print("len(Mark) != %d" % (len(DataName)))
      Exit = True
-   if ( len(MarkSize) != len(DataName) )
+   if ( len(MarkSize) != len(DataName) ):
      print("len(MarkSize) != %d" % (len(DataName)))
      Exit = True
  
