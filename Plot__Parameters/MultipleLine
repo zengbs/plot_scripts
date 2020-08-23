@@ -1,59 +1,89 @@
 # MultipleLine 
+NumRow                              4
+NumCol                              2
+FileName                      Profile
+FileFormat                        pdf
 
-# arbitrary numbers:
+NormalizedConst_Pres             auto
+NormalizedConst_Dens             auto
+
+FigSizeX                            5   
+FigSizeY                    19.576805
+
+wspace                           0.04
+hspace                           0.04
+
+
+######################################################################
+#   The following attributes must have the same number
+######################################################################
+
+# Data path
 DataName_00                Data_000001
 DataName_01            /projectZ/tseng/paper/BlastWaves/HighEngy_HighRes/Spherical/Data_000001
 DataName_02                Data_000009
 DataName_03            /projectZ/tseng/paper/BlastWaves/HighEngy_HighRes/Spherical/Data_000007
 
-NumRow                              4
-NumCol                              2
-
-
-# arbitrary numbers:
+# Marks:
 Mark_00                            ro 
 Mark_01                            cx
 Mark_02                            bv
 Mark_03                            y+
 
-# arbitrary numbers:
+# Mark size:
 MarkSize_00                         3 
 MarkSize_01                         3 
 MarkSize_02                         3 
 MarkSize_03                         3 
 
-FileName                      Profile
-FileFormat                        pdf
-
-# number should be same as NumCol
-Title_00                 Longest_Axis
-Title_01                Shortest_Axis
-
-# arbitrary numbers:
+# Legends:
+# --> no: no legend
 Label_00            Triaxial__(t=0.1)
 Label_01            Spherical_(t=0.1)
 Label_02            Triaxial__(t=0.6)
 Label_03            Spherical_(t=0.6)
 
-# number should be same as NumRow
+
+
+######################################################################
+#   The following attributes must have the same number as `NumCol'
+######################################################################
+
+# Title
+# --> off: no title
+# --> auto: path of data
+Title_00                 Longest_Axis
+Title_01                Shortest_Axis
+
+# Field:
+# norm: 0: linear scale, 1: log scale
 Field_00               Lorentz_factor
 YAxisLabel_00                $\gamma$
 norm_00                             1
 
+# Field:
+# norm: 0: linear scale, 1: log scale
 Field_01               temperature_sr
 YAxisLabel_01         $k_{B}T/mc^{2}$ 
 norm_01                             1
 
+# Field:
+# norm: 0: linear scale, 1: log scale
 Field_02                  pressure_sr
 YAxisLabel_02             $P/P_{src}$
 norm_02                             1
 
+# Field:
+# norm: 0: linear scale, 1: log scale
 Field_03          proper_mass_density
 YAxisLabel_03       $\rho/\rho_{src}$ 
 norm_03                             1
 
-# number should be same as NumCol
-# major axis: x=t, y=t, z=-t+64; length of half-ray=0.65
+# Number of points:
+NumPts_00                        2048
+NumPts_01                        2048
+
+# Origin is at the corner of computation domain
 HeadX_00             31.6247223250267 
 HeadY_00             31.6247223250267
 HeadZ_00             32.3752776749733
@@ -61,7 +91,7 @@ TailX_00             32.3752776749733
 TailY_00             32.3752776749733
 TailZ_00             31.6247223250267
 
-# minor axis: x=t, y=t, z=2t-32; length of half-ray=0.65
+# Origin is at the corner of computation domain
 HeadX_01             31.7346386111985
 HeadY_01             31.7346386111985
 HeadZ_01             31.4692772223970
@@ -69,28 +99,18 @@ TailX_01             32.2653613888015
 TailY_01             32.2653613888015
 TailZ_01             32.5307227776030
 
-# number should be same as NumRow
+######################################################################
+#   The following attributes must have the same number as `NumRow'
+######################################################################
+
+# Ymax: auto = auto scale
 Ymax_00                           200 
 Ymax_01                           1e6
 Ymax_02                          1e-3
 Ymax_03                           1e2     
 
-# number should be same as NumRow
+# Ymin: auto = auto scale
 Ymin_00                           0.8
 Ymin_01                         1e-10  
 Ymin_02                         1e-16     
 Ymin_03                         1e-11
-
-NormalizedConst_Pres             auto
-NormalizedConst_Dens             auto
-
-# number should be same as NumCol
-NumPts_00                        2048
-NumPts_01                        2048
-
-FigSizeX                            5   
-FigSizeY                    19.576805
-
-
-wspace                           0.04
-hspace                           0.04

@@ -52,6 +52,12 @@ def _Plot(Plot__Paramater, Input__TestProb):
        key = lstname+str("_%02d" % idx)
 
 ###################################################################
+
+   for idx in range(len(Label)):
+     if Label[idx] == 'no':
+       Label[idx] = None
+
+###################################################################
    NumRow = int(n.NumRow)
    NumCol = int(n.NumCol)
 
@@ -237,8 +243,9 @@ def _Plot(Plot__Paramater, Input__TestProb):
              else:
                axs[i*NumCol+j].set_title( Title[j], fontdict=font )
 
-   # legend
-   axs[0].legend(loc='upper center', fontsize=16)
+   # if all elements in Label are None then do not add legends
+   if not all(label is None for label in Label):
+     axs[0].legend(loc='upper center', fontsize=16)
 
    plt.savefig( n.FileName+'.'+n.FileFormat, bbox_inches='tight', pad_inches=0.05, format=n.FileFormat, dpi=800 )
 
