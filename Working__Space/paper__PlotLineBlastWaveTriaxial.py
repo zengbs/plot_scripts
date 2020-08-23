@@ -52,6 +52,12 @@ def _Plot(Plot__Paramater, Input__TestProb):
        key = lstname+str("_%02d" % idx)
 
 ###################################################################
+
+   for idx in range(len(Label)):
+     if Label[idx] == 'no':
+       Label[idx] = None
+
+###################################################################
    NumRow = int(n.NumRow)
    NumCol = int(n.NumCol)
 
@@ -101,7 +107,17 @@ def _Plot(Plot__Paramater, Input__TestProb):
    if ( len(TailZ) != NumCol ):
      print("len(TailZ) != %d" % (NumCol))
      Exit = True
-   
+  
+   if ( len(Label) != len(DataName) ):
+     print("len(Label) != %d" % (len(DataName)))
+     Exit = True
+   if ( len(Mark) != len(DataName) ):
+     print("len(Mark) != %d" % (len(DataName)))
+     Exit = True
+   if ( len(MarkSize) != len(DataName) ):
+     print("len(MarkSize) != %d" % (len(DataName)))
+     Exit = True
+ 
    if ( Exit ):
      exit(0)
 ###################################################################
@@ -176,15 +192,30 @@ def _Plot(Plot__Paramater, Input__TestProb):
 
    # Exact solution
    #######################################################
-   U_shock = 3.5741156653703268e+00
-   Gamma_shock = np.sqrt(1+U_shock**2)
-   R_shock = 0.6
 
-   PresSrc  = 1e6
-   PresMin  = 4.7566689034571666e-15
+   # Position of shock
+   R_shock = [0.2,0.3,0.4,0.5,0.6,0.7]
+
+   # shock's 4-velocity
+   U_shock = 3.5741156653703268e+00
+   Gamma_shock = np.sqrt(1 + U_shock**2)
+
+   # Find the denity and pressure at center of blast wave
+   CenterMin = np.arange(len(DataName),dtype=np.float64)
+   PresMin   = np.arange(len(DataName),dtype=np.float64)
+   DensMin   = np.arange(len(DataName),dtype=np.float64)
+
+   center = [BoxSizeX*0.5,BoxSizeY*0.5,BoxSizeZ*0.5]
+
+
+   for k in range(len(DataName)):
+     PresMin[k] = DataSet[k].point(center, ds=DataSet[k])['pressure_sr']
+     DensMin[k] = DataSet[k].point(center, ds=DataSet[k])['proper_mass_density']
+
+
    GammaMin = 1.0
-   DensMin  = 1.8122080102453240e-11
-   TempMin  = PresMin*PresSrc/DensMin
+   PrsSrc   = 1e6
+   TempMin  = PrsSrc*PresMin/DensMin
 
    DensAmb  = 1.0
    HAmb     = 1.0
@@ -192,28 +223,41 @@ def _Plot(Plot__Paramater, Input__TestProb):
    for j in range(NumCol):
      Head[j] *= DataSet[j].length_unit
 
-   Exact = [None]*4
+
+   Exact    = []
+   RayExact = []
 
    for i in range(NumRow):
-     j=0
-     k=1
-     RayExact = np.sqrt( (Line[i][j][k]["x"]-Head[j][0])**2 + (Line[i][j][k]["y"]-Head[j][1])**2 + (Line[i][j][k]["z"]-Head[j][2])**2 )
-     Center = ( RayExact[0] + RayExact[-1] )*0.5
-     RayExact -= Center
-     RayExact = RayExact[RayExact > 0]
+     Exact.append([])
+     RayExact.append([])
+     for j in range(NumCol):
+       Exact[i].append([])
+       RayExact[i].append([])
+       for k in range(len(DataName)):
+         Exact[i][j].append([])
+         Exact[i][j][k].append([])
+         Exact[i][j][k].append([])
+         Exact[i][j][k].append([])
+         Exact[i][j][k].append([])
+         RayExact[i][j].append([])
+
+         RayExact[i][j][k]  = np.sqrt( (Line[i][j][k]["x"]-Head[j][0])**2 + (Line[i][j][k]["y"]-Head[j][1])**2 + (Line[i][j][k]["z"]-Head[j][2])**2 )
+         Center             = ( RayExact[i][j][k][0] + RayExact[i][j][k][-1] )*0.5
+         RayExact[i][j][k] -= Center
+         RayExact[i][j][k]  = RayExact[i][j][k][RayExact[i][j][k] > 0]
   
-     Chi   = 1*DataSet[j].length_unit + 8*(1*DataSet[j].length_unit-RayExact/R_shock)*Gamma_shock**2
-     Exact[0] = Gamma_shock*np.power(2*Chi,-0.5)                   # Lorentz factor
-     Exact[2] = (2/3)*HAmb*(Gamma_shock**2)*np.power(Chi,-17/12)   # pressure
-     Exact[3] = (2**1.5)*DensAmb*Gamma_shock*np.power(Chi,-10/8)   # proper mass density
-     Exact[1] = Exact[2]/ Exact[3]                                 # temperature
+         Chi                = 1*DataSet[j].length_unit + 8*(1*DataSet[j].length_unit - RayExact[i][j][k]/R_shock[k])*Gamma_shock**2
+         Exact[i][j][k][0]  = Gamma_shock*np.power(2*Chi,-0.5)                   # Lorentz factor
+         Exact[i][j][k][2]  = (2/3)*HAmb*(Gamma_shock**2)*np.power(Chi,-17/12)   # pressure
+         Exact[i][j][k][3]  = (2**1.5)*DensAmb*Gamma_shock*np.power(Chi,-5/4)    # proper mass density
+         Exact[i][j][k][1]  = Exact[i][j][k][2] / Exact[i][j][k][3]              # temperature
 
-     Exact[0] *= GammaMin/Exact[0][0] 
-     Exact[1] *= TempMin /Exact[1][0]
-     Exact[2] *= PresMin /Exact[2][0]
-     Exact[3] *= DensMin /Exact[3][0]
+         Exact[i][j][k][0] *= GammaMin   / Exact[i][j][k][0][0].value 
+         Exact[i][j][k][1] *= TempMin[k] / Exact[i][j][k][1][0].value
+         Exact[i][j][k][2] *= PresMin[k] / Exact[i][j][k][2][0].value
+         Exact[i][j][k][3] *= DensMin[k] / Exact[i][j][k][3][0].value
 
-     RayExact += Center
+         RayExact[i][j][k] += Center
 
 
    # Matplolib
@@ -227,12 +271,14 @@ def _Plot(Plot__Paramater, Input__TestProb):
 
    axs = axs.flatten()
 
+   Color = ['c','b','y','g','m','r']
+
    for i in range(NumRow):
      for j in range(NumCol):
        for k in range(len(DataName)):
          Ray = np.sqrt( (Line[i][j][k]["x"]-Head[j][0])**2 + (Line[i][j][k]["y"]-Head[j][1])**2 + (Line[i][j][k]["z"]-Head[j][2])**2 )
          axs[i*NumCol+j].plot( Ray, Line[i][j][k][Field[i]], Mark[k], label=Label[k], markersize=MarkSize[k] )
-         #axs[i*NumCol+j].plot( RayExact, Exact[i], color='k' )
+         axs[i*NumCol+j].plot( RayExact[i][j][k], Exact[i][j][k][i], color=Color[k], linestyle=':'  )
 
          axs[i*NumCol+j].tick_params( which='both', direction='in', labelsize=16, top=False )
 
@@ -272,7 +318,8 @@ def _Plot(Plot__Paramater, Input__TestProb):
                axs[i*NumCol+j].set_title( Title[j], fontdict=font )
 
    # legend
-   axs[1].legend(loc='lower center', prop=FontLegend, borderaxespad=2.0, handletextpad=0.4,markerscale=3.0)
+   if not all(label is None for label in Label):
+      axs[1].legend(loc='lower center', prop=FontLegend, borderaxespad=2.0, handletextpad=0.4,markerscale=3.0)
 
    #plt.show()
    plt.savefig( n.FileName+'.'+n.FileFormat, bbox_inches='tight', pad_inches=0.05, format=n.FileFormat, dpi=800 )
