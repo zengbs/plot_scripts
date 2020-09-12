@@ -29,8 +29,10 @@ WaitForHULK()
 }
 
 
-JobID=6515
+JobID=$1
 
 WaitForHULK $JobID
 
 qsub submit.job
+
+exit

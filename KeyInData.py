@@ -4,8 +4,8 @@ from yt.units import G, kboltz, c, mp, qp
 #ds=yt.load("RESTART")
 ds=yt.load("Data_000001")
 
-for key in ds:
- print (key, ds[key])
+#for key in ds:
+# print (key, ds[key])
 #print (ds["MaxLevel"])
 #print (ds["BoxSize"])
 #print ('Step:', ds["Step"])
@@ -17,3 +17,4 @@ for key in ds:
 #print ('Unit_L:', ds["Unit_L"])
 #print ('EoS:', ds["Unit_L"]*ds.length_unit)
 #print ( c )
+print ( ds["Time"][0] )

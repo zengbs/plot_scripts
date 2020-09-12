@@ -194,7 +194,7 @@ def _Plot(Plot__Paramater, Input__TestProb):
    #######################################################
 
    # Position of shock
-   R_shock = [0.2,0.3,0.4,0.5,0.6,0.7]
+   R_shock = [0.24]
 
    # shock's 4-velocity
    U_shock = 3.5741156653703268e+00
@@ -224,46 +224,46 @@ def _Plot(Plot__Paramater, Input__TestProb):
      Head[j] *= DataSet[j].length_unit
 
 
-   Exact    = []
-   RayExact = []
-
-   for i in range(NumRow):
-     Exact.append([])
-     RayExact.append([])
-     for j in range(NumCol):
-       Exact[i].append([])
-       RayExact[i].append([])
-       for k in range(len(DataName)):
-         Exact[i][j].append([])
-         Exact[i][j][k].append([])
-         Exact[i][j][k].append([])
-         Exact[i][j][k].append([])
-         Exact[i][j][k].append([])
-         RayExact[i][j].append([])
-
-         RayExact[i][j][k]  = np.sqrt( (Line[i][j][k]["x"]-Head[j][0])**2 + (Line[i][j][k]["y"]-Head[j][1])**2 + (Line[i][j][k]["z"]-Head[j][2])**2 )
-         Center             = ( RayExact[i][j][k][0] + RayExact[i][j][k][-1] )*0.5
-         RayExact[i][j][k] -= Center
-         RayExact[i][j][k]  = RayExact[i][j][k][RayExact[i][j][k] > 0]
-  
-         Chi                = 1*DataSet[j].length_unit + 8*(1*DataSet[j].length_unit - RayExact[i][j][k]/R_shock[k])*Gamma_shock**2
-         Exact[i][j][k][0]  = Gamma_shock*np.power(2*Chi,-0.5)                   # Lorentz factor
-         Exact[i][j][k][2]  = (2/3)*HAmb*(Gamma_shock**2)*np.power(Chi,-17/12)   # pressure
-         Exact[i][j][k][3]  = (2**1.5)*DensAmb*Gamma_shock*np.power(Chi,-5/4)    # proper mass density
-         Exact[i][j][k][1]  = Exact[i][j][k][2] / Exact[i][j][k][3]              # temperature
-
-         Exact[i][j][k][0] *= GammaMin   / Exact[i][j][k][0][0].value 
-         Exact[i][j][k][1] *= TempMin[k] / Exact[i][j][k][1][0].value
-         Exact[i][j][k][2] *= PresMin[k] / Exact[i][j][k][2][0].value
-         Exact[i][j][k][3] *= DensMin[k] / Exact[i][j][k][3][0].value
-
-         RayExact[i][j][k] += Center
+#   Exact    = []
+#   RayExact = []
+#
+#   for i in range(NumRow):
+#     Exact.append([])
+#     RayExact.append([])
+#     for j in range(NumCol):
+#       Exact[i].append([])
+#       RayExact[i].append([])
+#       for k in range(len(DataName)):
+#         Exact[i][j].append([])
+#         Exact[i][j][k].append([])
+#         Exact[i][j][k].append([])
+#         Exact[i][j][k].append([])
+#         Exact[i][j][k].append([])
+#         RayExact[i][j].append([])
+#
+#         RayExact[i][j][k]  = np.sqrt( (Line[i][j][k]["x"]-Head[j][0])**2 + (Line[i][j][k]["y"]-Head[j][1])**2 + (Line[i][j][k]["z"]-Head[j][2])**2 )
+#         Center             = ( RayExact[i][j][k][0] + RayExact[i][j][k][-1] )*0.5
+#         RayExact[i][j][k] -= Center
+#         RayExact[i][j][k]  = RayExact[i][j][k][RayExact[i][j][k] > 0]
+#  
+#         Chi                = 1*DataSet[j].length_unit + 8*(1*DataSet[j].length_unit - RayExact[i][j][k]/R_shock[k])*Gamma_shock**2
+#         Exact[i][j][k][0]  = Gamma_shock*np.power(2*Chi,-0.5)                   # Lorentz factor
+#         Exact[i][j][k][2]  = (2/3)*HAmb*(Gamma_shock**2)*np.power(Chi,-17/12)   # pressure
+#         Exact[i][j][k][3]  = (2**1.5)*DensAmb*Gamma_shock*np.power(Chi,-5/4)    # proper mass density
+#         Exact[i][j][k][1]  = Exact[i][j][k][2] / Exact[i][j][k][3]              # temperature
+#
+#         Exact[i][j][k][0] *= GammaMin   / Exact[i][j][k][0][0].value 
+#         Exact[i][j][k][1] *= TempMin[k] / Exact[i][j][k][1][0].value
+#         Exact[i][j][k][2] *= PresMin[k] / Exact[i][j][k][2][0].value
+#         Exact[i][j][k][3] *= DensMin[k] / Exact[i][j][k][3][0].value
+#
+#         RayExact[i][j][k] += Center
 
 
    # Matplolib
    #######################################################
    font       = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 20}
-   FontLegend = {'family': 'monospace','weight': 'heavy', 'size': 16}
+   FontLegend = {'family': 'monospace','weight': 'heavy', 'size': 23}
    
    f, axs = plt.subplots( NumRow, NumCol, sharex=False, sharey=False )
    f.subplots_adjust( hspace=n.hspace, wspace=n.wspace )
@@ -271,16 +271,16 @@ def _Plot(Plot__Paramater, Input__TestProb):
 
    axs = axs.flatten()
 
-   Color = ['c','b','y','g','m','r']
+   Color = ['c','b','y','g','m','r','k']
 
    for i in range(NumRow):
      for j in range(NumCol):
        for k in range(len(DataName)):
          Ray = np.sqrt( (Line[i][j][k]["x"]-Head[j][0])**2 + (Line[i][j][k]["y"]-Head[j][1])**2 + (Line[i][j][k]["z"]-Head[j][2])**2 )
          axs[i*NumCol+j].plot( Ray, Line[i][j][k][Field[i]], Mark[k], label=Label[k], markersize=MarkSize[k] )
-         axs[i*NumCol+j].plot( RayExact[i][j][k], Exact[i][j][k][i], color=Color[k], linestyle=':'  )
+         #axs[i*NumCol+j].plot( RayExact[i][j][k], Exact[i][j][k][i], color=Color[k], linestyle=':'  )
 
-         axs[i*NumCol+j].tick_params( which='both', direction='in', labelsize=16, top=False )
+         axs[i*NumCol+j].tick_params( which='both', direction='in', labelsize=28, top=False )
 
          axs[i*NumCol+j].set_xlim(min(Ray), max(Ray))
          
@@ -298,7 +298,7 @@ def _Plot(Plot__Paramater, Input__TestProb):
          if norm[i] == 1:
            axs[i*NumCol+j].set_yscale('log')
          if j==0:
-           axs[i*NumCol+j].set_ylabel(YAxisLabel[i], fontsize=20, fontweight='bold')
+           axs[i*NumCol+j].set_ylabel(YAxisLabel[i], fontsize=25, fontweight='bold')
 
          # Removing tick labels must be after setting log scale;
          # otherwise tick labels emerge again
@@ -306,8 +306,10 @@ def _Plot(Plot__Paramater, Input__TestProb):
            axs[i*NumCol+j].get_xaxis().set_ticks([])
          if j > 0:
            axs[i*NumCol+j].get_yaxis().set_ticks([])
-
-         axs[i*NumCol+j].get_xaxis().set_ticks([])
+         if i == NumRow-1:
+           axs[i*NumCol+j].set_xticks([0.25,0.65,1.05])
+           axs[i*NumCol+j].set_xticklabels(["-0.2 L","0","+0.2 L"])
+           axs[i*NumCol+j].tick_params(axis='x', labelsize=20, color='k', direction='in', which='major' )
 
          if i == 0:
            if ( Title[j] != 'off' ):
@@ -317,9 +319,12 @@ def _Plot(Plot__Paramater, Input__TestProb):
              else:
                axs[i*NumCol+j].set_title( Title[j], fontdict=font )
 
+
    # legend
    if not all(label is None for label in Label):
-      axs[1].legend(loc='lower center', prop=FontLegend, borderaxespad=2.0, handletextpad=0.4,markerscale=3.0)
+      axs[1].legend(loc='lower center', prop=FontLegend, 
+                    handletextpad=0.4,markerscale=1.0,bbox_to_anchor=(0.5,0.08))
+
 
    #plt.show()
    plt.savefig( n.FileName+'.'+n.FileFormat, bbox_inches='tight', pad_inches=0.05, format=n.FileFormat, dpi=800 )

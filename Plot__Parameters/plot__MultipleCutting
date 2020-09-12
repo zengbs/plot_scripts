@@ -4,17 +4,17 @@ OffAxisSlice                     1
 
 # number should be same as NumCol
 DataName_00            Data_000001
-DataName_01            Data_000009
 
 NumRow                           4
-NumCol                           2
+NumCol                           1
 
-FileName  NormalVector_+1+1-1_Triaxial
+FileName      fig__MultipleCutting  
 FileFormat                     pdf
 
 # number should be same as NumCol
-Title_00          Triaxial_(t=0.1)
-Title_01          Triaxial_(t=0.6) 
+# auto/no/user-defined
+Title_00                 Triaxial
+Title_01                 Triaxial 
 
 
 # number should be same as NumRow
@@ -43,42 +43,26 @@ ColorBarMin_03                auto
 norm_03                          1
 
 # number should be same as NumCol
-NormalVectorX_00                 1
+NormalVectorX_00                -1
 NormalVectorY_00                 1
-NormalVectorZ_00                -1
-
-NormalVectorX_01                 1 
-NormalVectorY_01                 1 
-NormalVectorZ_01                -1 
+NormalVectorZ_00                 0
 
 # number should be same as NumCol
 NorthVectorX_00                  0
 NorthVectorY_00                  0
 NorthVectorZ_00                  1
 
-NorthVectorX_01                  0
-NorthVectorY_01                  0
-NorthVectorZ_01                  1
+# number should be same as NumCol
+CenterX_00                      25 
+CenterY_00                      25 
+CenterZ_00                      25 
 
 # number should be same as NumCol
-CenterX_00                      32 
-CenterY_00                      32 
-CenterZ_00                      32 
-
-CenterX_01                      32 
-CenterY_01                      32  
-CenterZ_01                      32 
-
-# number should be same as NumCol
-Xmax_00                      +0.65 
-Xmin_00                      -0.65
-Ymax_00                      +0.65
-Ymin_00                      -0.65
+Xmax_00                        +20 
+Xmin_00                        -20
+Ymax_00                        +20
+Ymin_00                        -20
                      
-Xmax_01                      +0.65
-Xmin_01                      -0.65
-Ymax_01                      +0.65
-Ymin_01                      -0.65
 
 NormalizedConst_Pres          auto
 NormalizedConst_Dens          auto

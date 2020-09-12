@@ -272,12 +272,30 @@ def _Plot(Plot__Paramater, Input__TestProb):
    ax = [[None]*NumCol]*(NumRow)
 
 
+   CutPosition = np.sqrt( (CenterX[1]-CenterX[0])**2 
+                         +(CenterY[1]-CenterY[0])**2
+                         +(CenterZ[1]-CenterZ[0])**2 )
+
+   Theta =  np.arctan2(1,np.sqrt(2))            
+                                                
+   FractionX  = 0.5*dX[0] + ( CutPosition*np.sin(Theta) - 0.5*dX[0] ) * np.tan(Theta) + CutPosition*np.cos(Theta)
+   FractionX /= dX[0]                          
+                                               
+   FractionY  = 0.5*dY[0] + CutPosition*np.sin(Theta) - 0.5*dY[0]/np.tan(Theta) + CutPosition/np.tan(Theta)*np.cos(Theta)
+   FractionY /= dY[0]                          
+
+
+
+
    for i in range(NumRow):
      for j in range(NumCol):
        ax[i][j] = fig.add_subplot(gs[i,j])
        im = ax[i][j].imshow(frb[i][j], cmap=n.CMap, norm=norm[i], aspect=n.aspect,  extent=Extent[j], vmax=ColorBarMax[i], vmin=ColorBarMin[i] )
-       if (i==0):
-         ax[i][j].annotate( "", xy=(0.5,0), xytext=(0.5,1), xycoords='axes fraction', arrowprops=dict( color='w', arrowstyle="-",linestyle="-.")  )
+       ax[i][j].get_xaxis().set_ticks([])
+       ax[i][j].get_yaxis().set_ticks([])
+       if j%2 == 0:
+         ax[i][j].annotate( "", xy=(FractionX,1), xytext=(1,FractionY), 
+                          xycoords='axes fraction', arrowprops=dict( color='k', arrowstyle="-",linestyle="-.")  )
 
        if i == 0:
          if ( Title[j] != 'off' ):
@@ -285,76 +303,43 @@ def _Plot(Plot__Paramater, Input__TestProb):
                Title[j] = DataName[j]
            ax[i][j].set_title( Title[j], fontdict=font )
 
-       if i == 3 and j == 0:
-         ax[i][j].set_xticks([-0.4,0,+0.4])
-         ax[i][j].set_yticks([-0.4,0,+0.4])
-         ax[i][j].set_xticklabels(["-0.2 L","0","+0.2 L"])
-         ax[i][j].set_yticklabels(["-0.2 L","0","+0.2 L"])
-         ax[i][j].tick_params(axis='y', labelsize=20, color='k', direction='in', which='major',pad=-15 )
-         ax[i][j].tick_params(axis='x', labelsize=20, color='k', direction='in', which='major')
-         plt.setp(ax[i][j].get_yticklabels(), rotation=270, ha="center", rotation_mode="anchor")
-
-         # Second axis
-         def L2R(L):
-             a=0.02
-             b=0.01
-             Geometric_r = np.sqrt( a*b )
-             return L / Geometric_r
-
-         def R2L(R):
-             a=0.02
-             b=0.01
-             Geometric_r = np.sqrt( a*b )
-             return R * Geometric_r
-
-         secax = ax[i][j].secondary_xaxis('top', functions=(L2R, R2L))
-         secax.set_xticks([-30,0,+30])
-         secax.set_xticklabels(["-0.2 L","0","+0.2 L"])
-         secax.tick_params(axis='x', labelsize=20, color='k', direction='in', which='major',pad=-28 )
-         secax.set_xlabel(r'$\sqrt{r_{L}r_{S}}$', fontsize=25, labelpad=-53)
-
-       else:
-         ax[i][j].get_xaxis().set_ticks([])
-         ax[i][j].get_yaxis().set_ticks([])
-
      cax = fig.add_subplot(gs[i, NumCol])
 
      cbar = fig.colorbar(im,cax=cax, use_gridspec=True)
 
      cbar.ax.tick_params(which='minor', length=0)
-     cbar.set_label(ColorBarLabel[i], size=28)
-     cbar.ax.tick_params(labelsize=25, color='k', direction='in', which='major')
+     cbar.set_label(ColorBarLabel[i], size=20)
+     cbar.ax.tick_params(labelsize=20, color='k', direction='in', which='major')
   
  
-   MetaData = {} 
-   
-   for key in DataSet[0]:
-     MetaData.update( {key: str( DataSet[0][key] ).replace("\n","")} )
-   for key in Input__TestProb:
-     MetaData.update( {key: str( Input__TestProb[key] ).replace("\n","")} )
-   for key in Plot__Paramater:
-     MetaData.update( {key: str( Plot__Paramater[key] ).replace("\n","")} )
-   
-   
-   MetaData.update( {"Pwd":os.getcwd()} )
-  
+#   MetaData = {} 
+#   
+#   for key in DataSet[0]:
+#     MetaData.update( {key: str( DataSet[0][key] ).replace("\n","")} )
+#   for key in Input__TestProb:
+#     MetaData.update( {key: str( Input__TestProb[key] ).replace("\n","")} )
+#   for key in Plot__Paramater:
+#     MetaData.update( {key: str( Plot__Paramater[key] ).replace("\n","")} )
+#   
+#   
+#   MetaData.update( {"Pwd":os.getcwd()} )
+#  
    FileOut = n.FileName+"."+n.FileFormat
  
-   plt.savefig( FileOut, bbox_inches='tight', pad_inches=0.05, format=n.FileFormat, dpi=800, metadata=MetaData )
-
-
-   # recoed all parameters in eps format 
-   if n.FileFormat == 'eps':
-      with open(FileOut, "r+") as f2:
-             for x in range(6):
-                f2.readline()            # skip past early lines
-             pos = f2.tell()             # remember insertion position
-             f2_remainder = f2.read()    # cache the rest of f2
-             f2.seek(pos)
-             for key in MetaData:
-               string = '%%{:<12}  {:12}\n'.format(key, MetaData[key])
-               f2.write(string)
-             f2.write(f2_remainder)
-
-   print ( "FigSizeX=%f, FigSizeY=%f" % (FigSize_X*Ratio , FigSize_Y*Ratio) )
+   plt.savefig( FileOut, bbox_inches='tight', pad_inches=0.05, format=n.FileFormat, dpi=800 )
+#
+#
+#   # recoed all parameters in eps format 
+#   if n.FileFormat == 'eps':
+#      with open(FileOut, "r+") as f2:
+#             for x in range(6):
+#                f2.readline()            # skip past early lines
+#             pos = f2.tell()             # remember insertion position
+#             f2_remainder = f2.read()    # cache the rest of f2
+#             f2.seek(pos)
+#             for key in MetaData:
+#               string = '%%{:<12}  {:12}\n'.format(key, MetaData[key])
+#               f2.write(string)
+#             f2.write(f2_remainder)
+#
    print ("Done !!")
