@@ -272,17 +272,23 @@ def _Plot(Plot__Paramater, Input__TestProb):
    ax = [[None]*NumCol]*(NumRow)
 
 
-   CutPosition = np.sqrt( (CenterX[1]-CenterX[0])**2 
-                         +(CenterY[1]-CenterY[0])**2
-                         +(CenterZ[1]-CenterZ[0])**2 )
-
    Theta =  np.arctan2(1,np.sqrt(2))            
+   CutPosition = []
+   FractionX = []
+   FractionY = []
+
+   for k in range(1,NumCol):
+      CutPosition.append ( np.sqrt( (CenterX[k]-CenterX[0])**2 
+                                   +(CenterY[k]-CenterY[0])**2
+                                   +(CenterZ[k]-CenterZ[0])**2 ) )
+
                                                 
-   FractionX  = 0.5*dX[0] + ( CutPosition*np.sin(Theta) - 0.5*dX[0] ) * np.tan(Theta) + CutPosition*np.cos(Theta)
-   FractionX /= dX[0]                          
-                                               
-   FractionY  = 0.5*dY[0] + CutPosition*np.sin(Theta) - 0.5*dY[0]/np.tan(Theta) + CutPosition/np.tan(Theta)*np.cos(Theta)
-   FractionY /= dY[0]                          
+   for k in range(0,NumCol-1):
+      FractionX.append ( 0.5*dX[0] + ( CutPosition[k]*np.sin(Theta) - 0.5*dX[0] ) * np.tan(Theta) + CutPosition[k]*np.cos(Theta) )
+      FractionX[k] /= dX[0]                          
+
+      FractionY.append(  0.5*dY[0] + CutPosition[k]*np.sin(Theta) - 0.5*dY[0]/np.tan(Theta) + CutPosition[k]/np.tan(Theta)*np.cos(Theta) )
+      FractionY[k] /= dY[0]                          
 
 
 
@@ -293,9 +299,10 @@ def _Plot(Plot__Paramater, Input__TestProb):
        im = ax[i][j].imshow(frb[i][j], cmap=n.CMap, norm=norm[i], aspect=n.aspect,  extent=Extent[j], vmax=ColorBarMax[i], vmin=ColorBarMin[i] )
        ax[i][j].get_xaxis().set_ticks([])
        ax[i][j].get_yaxis().set_ticks([])
-       if j%2 == 0:
-         ax[i][j].annotate( "", xy=(FractionX,1), xytext=(1,FractionY), 
-                          xycoords='axes fraction', arrowprops=dict( color='k', arrowstyle="-",linestyle="-.")  )
+       if j == 0:
+         for k in range(0,NumCol-1):
+            ax[i][j].annotate( "", xy=(FractionX[k],1), xytext=(1,FractionY[k]), 
+                           xycoords='axes fraction', arrowprops=dict( color='k', arrowstyle="-",linestyle="-.")  )
 
        if i == 0:
          if ( Title[j] != 'off' ):
