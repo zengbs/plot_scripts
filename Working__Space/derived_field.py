@@ -47,6 +47,17 @@ def _specific_enthalpy_sr(field, data):
         sys.exit(0)
     return h_c2
 
+def _specific_enthalpy_1_sr(field, data):
+    eta = data["Temp"]
+    if data.ds["EoS"] == 2:
+        h_c2_1 = data.ds["Gamma"] * eta / (data.ds["Gamma"] - 1.0)
+    elif data.ds["EoS"] == 1:
+        h_c2_1 = ( 2.5*eta + 2.25*eta**2 ) / ( 1 + np.sqrt( 1 + 2.25*eta**2 ) )
+    else:
+        print("Your EoS doesn't support yet!")
+        sys.exit(0)
+    return h_c2_1
+
 
 def _temperature_sr(field, data):
     Temp = data["Temp"]
@@ -127,11 +138,14 @@ def _Bernoulli_const(field, data):
     return BernpulliConst/NormalizedConst_h_gamma
 
 def _Bernoulli_const_1(field, data):
-    from __main__ import NormalizedConst_h_gamma
     Lorentz_factor = _lorentz_factor("", data)
-    h_c2 = _specific_enthalpy_sr("", data)
-    BernpulliConst = Lorentz_factor * h_c2
-    return BernpulliConst/NormalizedConst_h_gamma-1
+    h_c2_1 = _specific_enthalpy_1_sr("", data)
+    Ux = _4_velocity_x("", data)
+    Uy = _4_velocity_y("", data)
+    Uz = _4_velocity_z("", data)
+    U_mag2 = Ux**2 + Uy**2 + Uz**2
+    HTilde = _specific_enthalpy_1_sr("", data)
+    return HTilde*Lorentz_factor + U_mag2 / ( Lorentz_factor + 1 )
 
 
 def _emissivity(field, data):
@@ -459,3 +473,8 @@ def _threshold(field, data):
 #   Ur = data["cylindrical_radial_4velocity"]
 #   return np.where( (LorentzFactor>10.0) & (Ur > .00),1.0, 0.0 )
     return np.where((LorentzFactor > 25.0), 1.0, 0.0)
+
+def _UserDefined(field, data):
+    from __main__ import NormalizedConst_h_gamma
+    HGamma_1 = _Bernoulli_const_1("",data)
+    return np.abs(1-HGamma_1/(NormalizedConst_h_gamma-1))

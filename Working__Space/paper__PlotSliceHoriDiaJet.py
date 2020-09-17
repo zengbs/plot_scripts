@@ -275,19 +275,19 @@ def _Plot(Plot__Paramater, Input__TestProb):
    Theta = np.arctan2(  NormalVectorZ[1] , (NormalVectorX[1]**2 + NormalVectorY[1]**2 )**0.5 )
    CutPosition      = [None,None]
    FractionArrow1   = [None,None,None,None]
-   FractionArrow2   = [None,None,None,None]
+   #FractionArrow2   = [None,None,None,None]
 
    CutPosition[0] =  np.sqrt( (CenterX[1]-CenterX[0])**2 
                              +(CenterY[1]-CenterY[0])**2
                              +(CenterZ[1]-CenterZ[0])**2 )
 
-   CutPosition[1] =  np.sqrt( (CenterX[2]-CenterX[0])**2 
-                             +(CenterY[2]-CenterY[0])**2
-                             +(CenterZ[2]-CenterZ[0])**2 )
+   #CutPosition[1] =  np.sqrt( (CenterX[2]-CenterX[0])**2 
+   #                          +(CenterY[2]-CenterY[0])**2
+   #                          +(CenterZ[2]-CenterZ[0])**2 )
 
    # [0/1/2/3] = head-x / head-y / tail-x / tail-y
    Arrow1      = [CutPosition[0],0.02*dY[0],CutPosition[0],0.12*dY[0]]
-   Arrow2      = [CutPosition[1],0.02*dY[0],CutPosition[1],0.12*dY[0]]
+   #Arrow2      = [CutPosition[1],0.02*dY[0],CutPosition[1],0.12*dY[0]]
  
    ## Arrow1
    # head x-coordinate
@@ -306,30 +306,24 @@ def _Plot(Plot__Paramater, Input__TestProb):
    FractionArrow1[3] = Arrow1[2]*np.sin(Theta) + Arrow1[3]*np.cos(Theta) + 0.5*dY[0]
    FractionArrow1[3] /= dY[0]                          
 
-   ## Arrow2
-   # head x-coordinate
-   FractionArrow2[0] = Arrow2[0]*np.cos(Theta) - Arrow2[1]*np.sin(Theta) + 0.5*dX[0]
-   FractionArrow2[0] /= dX[0]                          
+   ### Arrow2
+   ## head x-coordinate
+   #FractionArrow2[0] = Arrow2[0]*np.cos(Theta) - Arrow2[1]*np.sin(Theta) + 0.5*dX[0]
+   #FractionArrow2[0] /= dX[0]                          
 
-   # head y-coordinate
-   FractionArrow2[1] = Arrow2[0]*np.sin(Theta) + Arrow2[1]*np.cos(Theta) + 0.5*dY[0]
-   FractionArrow2[1] /= dY[0]                          
+   ## head y-coordinate
+   #FractionArrow2[1] = Arrow2[0]*np.sin(Theta) + Arrow2[1]*np.cos(Theta) + 0.5*dY[0]
+   #FractionArrow2[1] /= dY[0]                          
 
-   # tail x-coordinate
-   FractionArrow2[2] = Arrow2[2]*np.cos(Theta) - Arrow2[3]*np.sin(Theta) + 0.5*dX[0]
-   FractionArrow2[2] /= dX[0]                          
+   ## tail x-coordinate
+   #FractionArrow2[2] = Arrow2[2]*np.cos(Theta) - Arrow2[3]*np.sin(Theta) + 0.5*dX[0]
+   #FractionArrow2[2] /= dX[0]                          
 
-   # tail y-coordinate
-   FractionArrow2[3] = Arrow2[2]*np.sin(Theta) + Arrow2[3]*np.cos(Theta) + 0.5*dY[0]
-   FractionArrow2[3] /= dY[0]                          
+   ## tail y-coordinate
+   #FractionArrow2[3] = Arrow2[2]*np.sin(Theta) + Arrow2[3]*np.cos(Theta) + 0.5*dY[0]
+   #FractionArrow2[3] /= dY[0]                          
 
 
-   print( Theta )
-   print( CutPosition )
-   print( Arrow1 )
-   print( Arrow2 )
-   print( FractionArrow1 )
-   print( FractionArrow2 )
 
    for i in range(NumRow):
      for j in range(NumCol):
@@ -340,22 +334,22 @@ def _Plot(Plot__Paramater, Input__TestProb):
        if j == 0 and i == 0:
          ax[i][j].annotate( "A", xy=(FractionArrow1[0],FractionArrow1[1]), xytext=(FractionArrow1[2],FractionArrow1[3]),color='w',
                            xycoords='axes fraction',horizontalalignment="center", arrowprops=dict( color='w', arrowstyle="-")  )
-         ax[i][j].annotate( "B", xy=(FractionArrow2[0],FractionArrow2[1]), xytext=(FractionArrow2[2],FractionArrow2[3]),color='w', 
-                           xycoords='axes fraction',horizontalalignment="center", arrowprops=dict( color='w', arrowstyle="-")  )
+         #ax[i][j].annotate( "A", xy=(FractionArrow2[0],FractionArrow2[1]), xytext=(FractionArrow2[2],FractionArrow2[3]),color='w', 
+         #                  xycoords='axes fraction',horizontalalignment="center", arrowprops=dict( color='w', arrowstyle="-")  )
        if j == 0 and i ==1:
-         ax[i][j].annotate( "A", xy=(FractionArrow1[0],FractionArrow1[1]), xytext=(FractionArrow1[2],FractionArrow1[3]),color='k',
+         ax[i][j].annotate( "A", xy=(FractionArrow1[0],FractionArrow1[1]), xytext=(FractionArrow1[2],FractionArrow1[3]),color='w',
                            xycoords='axes fraction',horizontalalignment="center", arrowprops=dict( color='k', arrowstyle="-")  )
-         ax[i][j].annotate( "B", xy=(FractionArrow2[0],FractionArrow2[1]), xytext=(FractionArrow2[2],FractionArrow2[3]),color='k', 
-                           xycoords='axes fraction',horizontalalignment="center", arrowprops=dict( color='k', arrowstyle="-")  )
+         #ax[i][j].annotate( "A", xy=(FractionArrow2[0],FractionArrow2[1]), xytext=(FractionArrow2[2],FractionArrow2[3]),color='k', 
+         #                  xycoords='axes fraction',horizontalalignment="center", arrowprops=dict( color='k', arrowstyle="-")  )
 
        if j == 1:
          ax[i][j].text(0.05,0.95,"A",horizontalalignment='left',verticalalignment='top',
                        transform=ax[i][j].transAxes,fontdict=font, bbox=    dict(facecolor='white', alpha=0.5) )
        if j == 2:
-         ax[i][j].text(0.05,0.95,"B",horizontalalignment='left',verticalalignment='top',
+         ax[i][j].text(0.05,0.95,"A",horizontalalignment='left',verticalalignment='top',
                        transform=ax[i][j].transAxes,fontdict=font, bbox=    dict(facecolor='white', alpha=0.5) )
        if j == 3:
-         ax[i][j].text(0.05,0.95,"B",horizontalalignment='left',verticalalignment='top',
+         ax[i][j].text(0.05,0.95,"A",horizontalalignment='left',verticalalignment='top',
                        transform=ax[i][j].transAxes,fontdict=font, bbox=    dict(facecolor='white', alpha=0.5) )
 
        if i == 0:

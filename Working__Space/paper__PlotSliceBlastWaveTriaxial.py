@@ -264,7 +264,12 @@ def _Plot(Plot__Paramater, Input__TestProb):
    FigSize_Y = sum(HeightRatio) + Sum_hspace
   
    Ratio = n.FigWidth/FigSize_X
- 
+
+   # Set label on the top x-axis 
+   plt.rcParams['xtick.bottom'] = plt.rcParams['xtick.labelbottom'] = False
+   plt.rcParams['xtick.top'] = plt.rcParams['xtick.labeltop'] = True 
+
+
    fig = plt.figure(figsize=( FigSize_X*Ratio , FigSize_Y*Ratio ), constrained_layout=False)
    
    gs = fig.add_gridspec(NumRow,NumCol+1,wspace=n.wspace, hspace=n.hspace, width_ratios=WidthRatio)
@@ -285,15 +290,8 @@ def _Plot(Plot__Paramater, Input__TestProb):
                Title[j] = DataName[j]
            ax[i][j].set_title( Title[j], fontdict=font )
 
-       if i == 3 and j == 0:
-         ax[i][j].set_xticks([-0.4,0,+0.4])
-         ax[i][j].set_yticks([-0.4,0,+0.4])
-         ax[i][j].set_xticklabels(["-0.2 L","0","+0.2 L"])
-         ax[i][j].set_yticklabels(["-0.2 L","0","+0.2 L"])
-         ax[i][j].tick_params(axis='y', labelsize=20, color='k', direction='in', which='major',pad=-15 )
-         ax[i][j].tick_params(axis='x', labelsize=20, color='k', direction='in', which='major')
-         plt.setp(ax[i][j].get_yticklabels(), rotation=270, ha="center", rotation_mode="anchor")
 
+       if i == 3 and j == 0:
          # Second axis
          def L2R(L):
              a=0.02
@@ -307,15 +305,20 @@ def _Plot(Plot__Paramater, Input__TestProb):
              Geometric_r = np.sqrt( a*b )
              return R * Geometric_r
 
-         secax = ax[i][j].secondary_xaxis('top', functions=(L2R, R2L))
-         secax.set_xticks([-30,0,+30])
-         secax.set_xticklabels(["-0.2 L","0","+0.2 L"])
-         secax.tick_params(axis='x', labelsize=20, color='k', direction='in', which='major',pad=-28 )
-         secax.set_xlabel(r'$\sqrt{r_{L}r_{S}}$', fontsize=25, labelpad=-53)
+         ax[i][j].get_xaxis().set_ticks([])
+         ax[i][j].get_yaxis().set_ticks([])
+         secax = ax[i][j].secondary_xaxis('bottom', functions=(L2R, R2L))
+         secax.tick_params(axis='x', labelsize=20, color='k', direction='in', which='major' )
+         secax.set_xlabel(r'$\sqrt{r_{L}r_{S}}$', fontsize=25)
 
        else:
          ax[i][j].get_xaxis().set_ticks([])
          ax[i][j].get_yaxis().set_ticks([])
+
+       if i == 3 and j == 0:
+         ax[i][j].set_xticks([-0.4,0,+0.4])
+         ax[i][j].set_xticklabels(["-0.2 L","0","+0.2 L"])
+         ax[i][j].tick_params(axis='x', labelsize=20, color='w', direction='in', which='major',top=True)
 
      cax = fig.add_subplot(gs[i, NumCol])
 

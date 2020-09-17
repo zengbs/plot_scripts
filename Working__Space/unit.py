@@ -90,5 +90,8 @@ def ChooseUnit ( Field):
   if Field == 'Mach_number_sr':
       unit = ''
       function = df._Mach_number_sr
+  if Field == 'UserDefined':
+      unit = ''
+      function = df._UserDefined
  
   return function, unit 
