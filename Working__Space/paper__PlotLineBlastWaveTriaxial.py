@@ -265,8 +265,8 @@ def _Plot(Plot__Paramater, Input__TestProb):
    font       = {'family': 'monospace','color': 'black', 'weight': 'normal', 'size': 20}
    FontLegend = {'family': 'monospace','weight': 'normal', 'size': 23}
 
-   plt.rcParams['xtick.bottom'] = plt.rcParams['xtick.labelbottom'] = False
-   plt.rcParams['xtick.top'] = plt.rcParams['xtick.labeltop'] = True
+   #plt.rcParams['xtick.bottom'] = plt.rcParams['xtick.labelbottom'] = False
+   #plt.rcParams['xtick.top'] = plt.rcParams['xtick.labeltop'] = True
   
    Legend = [None,None,None,None]
  
@@ -282,9 +282,9 @@ def _Plot(Plot__Paramater, Input__TestProb):
      for j in range(NumCol):
        for k in range(len(DataName)):
          Ray = np.sqrt( (Line[i][j][k]["x"]-Head[j][0])**2 + (Line[i][j][k]["y"]-Head[j][1])**2 + (Line[i][j][k]["z"]-Head[j][2])**2 )
-         Legend[k],=axs[i*NumCol+j].plot( Ray, Line[i][j][k][Field[i]], Mark[k], label=Label[k], markersize=MarkSize[k], color=Color[k], lw=4 )
+         Legend[k],=axs[i*NumCol+j].plot( Ray, Line[i][j][k][Field[i]], Mark[k], label=Label[k], markersize=MarkSize[k], color=Color[k], lw=2 )
 
-         axs[i*NumCol+j].tick_params( which='both', direction='in', labelsize=20, top=False )
+         axs[i*NumCol+j].tick_params( which='both', direction='in', labelsize=25, top=False )
 
          axs[i*NumCol+j].set_xlim(min(Ray), max(Ray))
          
@@ -323,22 +323,22 @@ def _Plot(Plot__Paramater, Input__TestProb):
              else:
                axs[i*NumCol+j].set_title( Title[j], fontdict=font )
 
-           # Second axis             
-           def L2R(L):               
-               a=0.02                
-               b=0.01                
-               Geometric_r = np.sqrt( a*b )
-               return (L-0.65) / Geometric_r                                                                                                      
-                                        
-           def R2L(R):               
-               a=0.02                
-               b=0.01                
-               Geometric_r = np.sqrt( a*b )
-               return R * Geometric_r+0.65
-                                     
-           secax = axs[i*NumCol+j].secondary_xaxis('top', functions=(L2R, R2L))
-           secax.tick_params(axis='x', labelsize=20, color='k', direction='in', which='major')
-           secax.set_xlabel(r'$\sqrt{r_{L}r_{S}}$', fontsize=25)
+           ## Second axis             
+           #def L2R(L):               
+           #    a=0.02                
+           #    b=0.01                
+           #    Geometric_r = np.sqrt( a*b )
+           #    return (L-0.65) / Geometric_r                                                                                                      
+           #                             
+           #def R2L(R):               
+           #    a=0.02                
+           #    b=0.01                
+           #    Geometric_r = np.sqrt( a*b )
+           #    return R * Geometric_r+0.65
+           #                          
+           #secax = axs[i*NumCol+j].secondary_xaxis('top', functions=(L2R, R2L))
+           #secax.tick_params(axis='x', labelsize=20, color='k', direction='in', which='major')
+           #secax.set_xlabel(r'$\sqrt{r_{L}r_{S}}$', fontsize=25)
 
 
 

@@ -266,8 +266,8 @@ def _Plot(Plot__Paramater, Input__TestProb):
    Ratio = n.FigWidth/FigSize_X
 
    # Set label on the top x-axis 
-   plt.rcParams['xtick.bottom'] = plt.rcParams['xtick.labelbottom'] = False
-   plt.rcParams['xtick.top'] = plt.rcParams['xtick.labeltop'] = True 
+   #plt.rcParams['xtick.bottom'] = plt.rcParams['xtick.labelbottom'] = False
+   #plt.rcParams['xtick.top'] = plt.rcParams['xtick.labeltop'] = True 
 
 
    fig = plt.figure(figsize=( FigSize_X*Ratio , FigSize_Y*Ratio ), constrained_layout=False)
@@ -291,34 +291,37 @@ def _Plot(Plot__Paramater, Input__TestProb):
            ax[i][j].set_title( Title[j], fontdict=font )
 
 
-       if i == 3 and j == 0:
-         # Second axis
-         def L2R(L):
-             a=0.02
-             b=0.01
-             Geometric_r = np.sqrt( a*b )
-             return L / Geometric_r
+       #if i == 3 and j == 0:
+       #  # Second axis
+       #  def L2R(L):
+       #      a=0.02
+       #      b=0.01
+       #      Geometric_r = np.sqrt( a*b )
+       #      return L / Geometric_r
 
-         def R2L(R):
-             a=0.02
-             b=0.01
-             Geometric_r = np.sqrt( a*b )
-             return R * Geometric_r
+       #  def R2L(R):
+       #      a=0.02
+       #      b=0.01
+       #      Geometric_r = np.sqrt( a*b )
+       #      return R * Geometric_r
 
-         ax[i][j].get_xaxis().set_ticks([])
-         ax[i][j].get_yaxis().set_ticks([])
-         secax = ax[i][j].secondary_xaxis('bottom', functions=(L2R, R2L))
-         secax.tick_params(axis='x', labelsize=20, color='k', direction='in', which='major' )
-         secax.set_xlabel(r'$\sqrt{r_{L}r_{S}}$', fontsize=25)
+       #  ax[i][j].get_xaxis().set_ticks([])
+       #  ax[i][j].get_yaxis().set_ticks([])
+       #  secax = ax[i][j].secondary_xaxis('bottom', functions=(L2R, R2L))
+       #  secax.tick_params(axis='x', labelsize=20, color='k', direction='in', which='major' )
+       #  secax.set_xlabel(r'$\sqrt{r_{L}r_{S}}$', fontsize=25)
 
-       else:
-         ax[i][j].get_xaxis().set_ticks([])
-         ax[i][j].get_yaxis().set_ticks([])
+       #else:
+       #  ax[i][j].get_xaxis().set_ticks([])
+       #  ax[i][j].get_yaxis().set_ticks([])
+
+       ax[i][j].get_xaxis().set_ticks([])
+       ax[i][j].get_yaxis().set_ticks([])
 
        if i == 3 and j == 0:
          ax[i][j].set_xticks([-0.4,0,+0.4])
          ax[i][j].set_xticklabels(["-0.2 L","0","+0.2 L"])
-         ax[i][j].tick_params(axis='x', labelsize=20, color='w', direction='in', which='major',top=True)
+         ax[i][j].tick_params(axis='x', labelsize=20, color='k', direction='in', which='major',top=True)
 
      cax = fig.add_subplot(gs[i, NumCol])
 

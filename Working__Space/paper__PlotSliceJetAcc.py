@@ -165,6 +165,10 @@ def _Plot(Plot__Paramater, Input__TestProb):
      cax = fig.add_subplot(gs[i, len(Coord)])
 
      cbar = fig.colorbar(im,cax=cax, use_gridspec=True)
+     
+     if i == 1:
+       cbar.ax.yaxis.set_ticks([1e-1,1e-3])
+ 
 
      cbar.ax.tick_params(which='minor', length=0)
      cbar.set_label(ColorBarLabel[i], size=20)
@@ -199,3 +203,5 @@ def _Plot(Plot__Paramater, Input__TestProb):
                string = '%%{:<12}  {:12}\n'.format(key, MetaData[key])
                f2.write(string)
              f2.write(f2_remainder)
+
+   print('Done!')
