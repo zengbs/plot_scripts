@@ -1,9 +1,5 @@
 import sys
-# insert at 1, 0 is the script path (or '' in REPL)
-sys.path.insert(1, '/projectY/tseng/gamer/bin/plot_scripts/Working__Space')
-
 import argparse
-from paper__PlotSliceHoriDiaJet  import _Plot
 
 
 parser = argparse.ArgumentParser(description='Process some integers.')
@@ -17,7 +13,7 @@ Input__TestProb = {}
 
 
 
-FilePtr1 = open('/projectZ/tseng/paper/Flow/Resolution/DiagonalFlow01HigRes/Input__TestProb', "r")
+FilePtr1 = open('Input__TestProb', "r")
 FilePtr2 = open(File, "r")
 
 
@@ -42,9 +38,6 @@ for line in FilePtr2:
 FilePtr1.close()
 FilePtr2.close()
 
-NormalizedConst_Dens = 0
-NormalizedConst_Pres = 0
-
 
 if (Plot__Paramater['NormalizedConst_Dens'] == 'auto'):
     if "Jet_SrcDens" in Input__TestProb:
@@ -54,16 +47,5 @@ if (Plot__Paramater['NormalizedConst_Dens'] == 'auto'):
 
     Plot__Paramater['NormalizedConst_Dens'] = 'auto (%s)' % ( str(NormalizedConst_Dens) )
 
-if (Plot__Paramater['NormalizedConst_Pres'] == 'auto'):
-    if "Jet_SrcTemp" in Input__TestProb:
-      NormalizedConst_Pres = Input__TestProb['Jet_SrcDens'] * Input__TestProb['Jet_SrcTemp']
-    if "Blast_Temp_Src" in Input__TestProb:
-      NormalizedConst_Pres = Input__TestProb['Blast_Dens_Src'] * Input__TestProb['Blast_Temp_Src']
-
-    Plot__Paramater['NormalizedConst_Pres'] = 'auto (%s)' % ( str(NormalizedConst_Pres) )
-
-if "cylindrical_radial_4velocity" in Plot__Paramater.values():
-    cylindrical_axis = Plot__Paramater['cylindrical_axis']
-
-if __name__ == '__main__':
-    _Plot(Plot__Paramater, Input__TestProb)
+else:
+    NormalizedConst_Dens = Plot__Paramater['NormalizedConst_Dens']
