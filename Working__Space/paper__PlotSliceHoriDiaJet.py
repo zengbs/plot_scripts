@@ -340,71 +340,87 @@ def _Plot(Plot__Paramater, Input__TestProb):
        im = ax[i][j].imshow(frb[i][j], cmap=n.CMap, norm=norm[i], aspect=n.aspect,  extent=Extent[j], vmax=ColorBarMax[i], vmin=ColorBarMin[i] )
        ax[i][j].get_xaxis().set_ticks([])
        ax[i][j].get_yaxis().set_ticks([])
-       if j == 0 and i == 0:
-         ax[i][j].annotate( "A", xy=(RotatedArrow1[0],RotatedArrow1[1]), xytext=(RotatedArrow1[2],RotatedArrow1[3]),color='w',
-                           fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
-                           arrowprops=dict( color='w', arrowstyle="-")  )
-       if j == 0 and i == 1:
+       if NumCol == 6:
+         if j == 0 and i == 0:
            ax[i][j].annotate( "A", xy=(RotatedArrow1[0],RotatedArrow1[1]), xytext=(RotatedArrow1[2],RotatedArrow1[3]),color='w',
                              fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
                              arrowprops=dict( color='w', arrowstyle="-")  )
-       if j == 3 and i == 0:
-         if Horizontal:
-           ax[i][j].add_patch(patches.Polygon(Corner, True,
-                              edgecolor="w",                                
-                              linestyle='-',
-                              facecolor="None",linewidth=1) ) 
-           ax[i][j].annotate( "A", xy=(RotatedArrow1[0],RotatedArrow1[1]), xytext=(RotatedArrow1[2],RotatedArrow1[3]),color='w',
-                             fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
-                             arrowprops=dict( color='w', arrowstyle="-")  )
-           ax[i][j].annotate( "B", xy=(RotatedArrow2[0],RotatedArrow2[1]), xytext=(RotatedArrow2[2],RotatedArrow2[3]),color='w', 
-                             fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
-                             arrowprops=dict( color='w', arrowstyle="-")  )
-           ax[i][j].annotate( "C", xy=(RotatedArrow3[0],RotatedArrow3[1]), xytext=(RotatedArrow3[2],RotatedArrow3[3]),color='w', 
-                             fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center',
-                             arrowprops=dict( color='w', arrowstyle="-")  )
-         else:
-           ax[i][j].annotate( "A", xy=(RotatedArrow1[0],RotatedArrow1[1]), xytext=(RotatedArrow1[2],RotatedArrow1[3]),color='w',
-                             fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
-                             arrowprops=dict( color='w', arrowstyle="-")  )
-       if j == 3 and i == 1:
-         if Horizontal:
-           ax[i][j].add_patch(patches.Polygon(Corner, True,
-                              edgecolor="w",                                
-                              linestyle='-',
-                              facecolor="None",linewidth=1) ) 
-           ax[i][j].annotate( "A", xy=(RotatedArrow1[0],RotatedArrow1[1]), xytext=(RotatedArrow1[2],RotatedArrow1[3]),color='w',
-                             fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
-                             arrowprops=dict( color='w', arrowstyle="-")  )
-           ax[i][j].annotate( "B", xy=(RotatedArrow2[0],RotatedArrow2[1]), xytext=(RotatedArrow2[2],RotatedArrow2[3]),color='w', 
-                             fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
-                             arrowprops=dict( color='w', arrowstyle="-")  )
-           ax[i][j].annotate( "C", xy=(RotatedArrow3[0],RotatedArrow3[1]), xytext=(RotatedArrow3[2],RotatedArrow3[3]),color='w', 
-                             fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center',
-                             arrowprops=dict( color='w', arrowstyle="-")  )
-         else:
-           ax[i][j].annotate( "A", xy=(RotatedArrow1[0],RotatedArrow1[1]), xytext=(RotatedArrow1[2],RotatedArrow1[3]),color='w',
-                             fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
-                             arrowprops=dict( color='w', arrowstyle="-")  )
+         if j == 0 and i == 1:
+             ax[i][j].annotate( "A", xy=(RotatedArrow1[0],RotatedArrow1[1]), xytext=(RotatedArrow1[2],RotatedArrow1[3]),color='w',
+                               fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
+                               arrowprops=dict( color='w', arrowstyle="-")  )
+         if j == 3 and i == 0:
+           if Horizontal:
+             ax[i][j].add_patch(patches.Polygon(Corner, True,
+                                edgecolor="w",                                
+                                linestyle='-',
+                                facecolor="None",linewidth=1) ) 
+             ax[i][j].annotate( "A", xy=(RotatedArrow1[0],RotatedArrow1[1]), xytext=(RotatedArrow1[2],RotatedArrow1[3]),color='w',
+                               fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
+                               arrowprops=dict( color='w', arrowstyle="-")  )
+             ax[i][j].annotate( "B", xy=(RotatedArrow2[0],RotatedArrow2[1]), xytext=(RotatedArrow2[2],RotatedArrow2[3]),color='w', 
+                               fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
+                               arrowprops=dict( color='w', arrowstyle="-")  )
+             ax[i][j].annotate( "C", xy=(RotatedArrow3[0],RotatedArrow3[1]), xytext=(RotatedArrow3[2],RotatedArrow3[3]),color='w', 
+                               fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center',
+                               arrowprops=dict( color='w', arrowstyle="-")  )
+           else:
+             ax[i][j].annotate( "A", xy=(RotatedArrow1[0],RotatedArrow1[1]), xytext=(RotatedArrow1[2],RotatedArrow1[3]),color='w',
+                               fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
+                               arrowprops=dict( color='w', arrowstyle="-")  )
+         if j == 3 and i == 1:
+           if Horizontal:
+             ax[i][j].add_patch(patches.Polygon(Corner, True,
+                                edgecolor="w",                                
+                                linestyle='-',
+                                facecolor="None",linewidth=1) ) 
+             ax[i][j].annotate( "A", xy=(RotatedArrow1[0],RotatedArrow1[1]), xytext=(RotatedArrow1[2],RotatedArrow1[3]),color='w',
+                               fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
+                               arrowprops=dict( color='w', arrowstyle="-")  )
+             ax[i][j].annotate( "B", xy=(RotatedArrow2[0],RotatedArrow2[1]), xytext=(RotatedArrow2[2],RotatedArrow2[3]),color='w', 
+                               fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
+                               arrowprops=dict( color='w', arrowstyle="-")  )
+             ax[i][j].annotate( "C", xy=(RotatedArrow3[0],RotatedArrow3[1]), xytext=(RotatedArrow3[2],RotatedArrow3[3]),color='w', 
+                               fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center',
+                               arrowprops=dict( color='w', arrowstyle="-")  )
+           else:
+             ax[i][j].annotate( "A", xy=(RotatedArrow1[0],RotatedArrow1[1]), xytext=(RotatedArrow1[2],RotatedArrow1[3]),color='w',
+                               fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
+                               arrowprops=dict( color='w', arrowstyle="-")  )
 
-       if j == 1:
-         ax[i][j].text(0.05,0.95,"A",horizontalalignment='left',verticalalignment='top',
-                       transform=ax[i][j].transAxes,fontdict=font, bbox=    dict(facecolor='white', alpha=0.5) )
-       if j == 2:
-         ax[i][j].text(0.05,0.95,"A",horizontalalignment='left',verticalalignment='top',
-                       transform=ax[i][j].transAxes,fontdict=font, bbox=    dict(facecolor='white', alpha=0.5) )
-       if j == 4:
-         ax[i][j].text(0.05,0.95,"A",horizontalalignment='left',verticalalignment='top',
-                       transform=ax[i][j].transAxes,fontdict=font, bbox=    dict(facecolor='white', alpha=0.5) )
-       if j == 5:
-         ax[i][j].text(0.05,0.95,"A",horizontalalignment='left',verticalalignment='top',
-                       transform=ax[i][j].transAxes,fontdict=font, bbox=    dict(facecolor='white', alpha=0.5) )
+         if j == 1:
+           ax[i][j].text(0.05,0.95,"A",horizontalalignment='left',verticalalignment='top',
+                         transform=ax[i][j].transAxes,fontdict=font, bbox=    dict(facecolor='white', alpha=0.5) )
+         if j == 2:
+           ax[i][j].text(0.05,0.95,"A",horizontalalignment='left',verticalalignment='top',
+                         transform=ax[i][j].transAxes,fontdict=font, bbox=    dict(facecolor='white', alpha=0.5) )
+         if j == 4:
+           ax[i][j].text(0.05,0.95,"A",horizontalalignment='left',verticalalignment='top',
+                         transform=ax[i][j].transAxes,fontdict=font, bbox=    dict(facecolor='white', alpha=0.5) )
+         if j == 5:
+           ax[i][j].text(0.05,0.95,"A",horizontalalignment='left',verticalalignment='top',
+                         transform=ax[i][j].transAxes,fontdict=font, bbox=    dict(facecolor='white', alpha=0.5) )
+       elif NumCol == 3:
+          if j == 0:
+           ax[i][j].annotate( "B", xy=(6,0.5), xytext=(6,1),color='w',
+                               fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
+                               arrowprops=dict( color='w', arrowstyle="-")  )
+           ax[i][j].annotate( "C", xy=(8,0.5), xytext=(8,1),color='w',
+                               fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
+                               arrowprops=dict( color='w', arrowstyle="-")  )
+          if j == 1:
+            ax[i][j].text(0.05,0.95,"B",horizontalalignment='left',verticalalignment='top',
+                          transform=ax[i][j].transAxes,fontdict=font, bbox=    dict(facecolor='white', alpha=0.5) )
+          if j == 2:
+            ax[i][j].text(0.05,0.95,"C",horizontalalignment='left',verticalalignment='top',
+                          transform=ax[i][j].transAxes,fontdict=font, bbox=    dict(facecolor='white', alpha=0.5) )
 
        if i == 0:
          if ( Title[j] != 'off' ):
            if (Title[j] == 'auto'):
                Title[j] = DataName[j]
            ax[i][j].set_title( Title[j], fontdict=font )
+         
 
      cax = fig.add_subplot(gs[i, NumCol])
 
