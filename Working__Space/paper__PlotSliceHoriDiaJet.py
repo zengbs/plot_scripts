@@ -15,6 +15,12 @@ import os
 import derived_field as df
 import unit
 
+
+def Rotate(X, Y, Theta):
+  RotatedX = X*np.cos(Theta) - Y*np.sin(Theta)
+  RotatedY = X*np.sin(Theta) + Y*np.cos(Theta)
+  return RotatedX, RotatedY
+
 def _Plot(Plot__Paramater, Input__TestProb):   
 
    n = SimpleNamespace(**Plot__Paramater)
@@ -239,7 +245,7 @@ def _Plot(Plot__Paramater, Input__TestProb):
    # Matplolib
    ######################################################
    
-   font = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 20}
+   font = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 15}
    
    
    # The amount of width/height reserved for space between subplots,
@@ -274,74 +280,59 @@ def _Plot(Plot__Paramater, Input__TestProb):
 
 
    Theta = np.arctan2(  NormalVectorZ[1] , (NormalVectorX[1]**2 + NormalVectorY[1]**2 )**0.5 )
-   CutPosition    = [None,None,None]
-   FractionArrow1 = [None,None,None,None]
-   FractionArrow2 = [None,None,None,None]
-   FractionArrow3 = [None,None,None,None]
-
-   CutPosition[0] = np.sqrt( (CenterX[1]-CenterX[0])**2 ) - 4
-
-   CutPosition[1] = np.sqrt( (CenterX[1]-CenterX[0])**2 )
-
-   CutPosition[2] = np.sqrt( (CenterX[1]-CenterX[0])**2 ) + 4
+   RotatedArrow1 = [None,None,None,None]
+   RotatedArrow2 = [None,None,None,None]
+   RotatedArrow3 = [None,None,None,None]
 
    # [0/1/2/3] = head-x / head-y / tail-x / tail-y
-   Arrow1      = [CutPosition[0],0.02*dY[0],CutPosition[0],0.12*dY[0]]
-   Arrow2      = [CutPosition[1],0.02*dY[0],CutPosition[1],0.12*dY[0]]
-   Arrow3      = [CutPosition[2],0.02*dY[0],CutPosition[2],0.12*dY[0]]
+   # -->  xycoords='data', the coordinate system of the data.
+   # --> (Xmin, Ymin) is bottom left of the axes, and (Xmax, Ymax) is top right of the axes.
+   Arrow1      = [-6,+0,-6,+5] # A
+   Arrow2      = [+6,+0,+6,-5] # B
+   Arrow3      = [+8,+0,+8,+5] # C
  
+
+
+   ### Counterclockwise rotation w.r.t. center of axes
    ## Arrow1
-   # head x-coordinate
-   FractionArrow1[0] = Arrow1[0]*np.cos(Theta) - Arrow1[1]*np.sin(Theta) + 0.5*dX[0]
-   FractionArrow1[0] /= dX[0]                          
-
-   # head y-coordinate
-   FractionArrow1[1] = Arrow1[0]*np.sin(Theta) + Arrow1[1]*np.cos(Theta) + 0.5*dY[0]
-   FractionArrow1[1] /= dY[0]                          
-
-   # tail x-coordinate
-   FractionArrow1[2] = Arrow1[2]*np.cos(Theta) - Arrow1[3]*np.sin(Theta) + 0.5*dX[0]
-   FractionArrow1[2] /= dX[0]                          
-
-   # tail y-coordinate
-   FractionArrow1[3] = Arrow1[2]*np.sin(Theta) + Arrow1[3]*np.cos(Theta) + 0.5*dY[0]
-   FractionArrow1[3] /= dY[0]                          
+   RotatedArrow1[0], RotatedArrow1[1] = Rotate( Arrow1[0],  Arrow1[1], Theta )
+   RotatedArrow1[2], RotatedArrow1[3] = Rotate( Arrow1[2],  Arrow1[3], Theta )
 
    ### Arrow2
-   ## head x-coordinate
-   FractionArrow2[0] = Arrow2[0]*np.cos(Theta) - Arrow2[1]*np.sin(Theta) + 0.5*dX[0]
-   FractionArrow2[0] /= dX[0]                          
-
-   # head y-coordinate
-   FractionArrow2[1] = Arrow2[0]*np.sin(Theta) + Arrow2[1]*np.cos(Theta) + 0.5*dY[0]
-   FractionArrow2[1] /= dY[0]                          
-
-   # tail x-coordinate
-   FractionArrow2[2] = Arrow2[2]*np.cos(Theta) - Arrow2[3]*np.sin(Theta) + 0.5*dX[0]
-   FractionArrow2[2] /= dX[0]                          
-
-   # tail y-coordinate
-   FractionArrow2[3] = Arrow2[2]*np.sin(Theta) + Arrow2[3]*np.cos(Theta) + 0.5*dY[0]
-   FractionArrow2[3] /= dY[0]                          
+   RotatedArrow2[0], RotatedArrow2[1] = Rotate( Arrow2[0],  Arrow2[1], Theta )
+   RotatedArrow2[2], RotatedArrow2[3] = Rotate( Arrow2[2],  Arrow2[3], Theta )
 
    ### Arrow3
-   ## head x-coordinate
-   FractionArrow3[0] = Arrow3[0]*np.cos(Theta) - Arrow3[1]*np.sin(Theta) + 0.5*dX[0]
-   FractionArrow3[0] /= dX[0]                          
+   RotatedArrow3[0], RotatedArrow3[1] = Rotate( Arrow3[0],  Arrow3[1], Theta )
+   RotatedArrow3[2], RotatedArrow3[3] = Rotate( Arrow3[2],  Arrow3[3], Theta )
 
-   # head y-coordinate
-   FractionArrow3[1] = Arrow3[0]*np.sin(Theta) + Arrow3[1]*np.cos(Theta) + 0.5*dY[0]
-   FractionArrow3[1] /= dY[0]                          
+   ### Rectangular coordinates [x,y]
+   Corner1 = [ 4,-3]
+   Corner2 = [10,-3]
+   Corner3 = [10,+3]
+   Corner4 = [ 4,+3]
 
-   # tail x-coordinate
-   FractionArrow3[2] = Arrow3[2]*np.cos(Theta) - Arrow3[3]*np.sin(Theta) + 0.5*dX[0]
-   FractionArrow3[2] /= dX[0]                          
+   RotatedCorner1 = [None,None]
+   RotatedCorner2 = [None,None]
+   RotatedCorner3 = [None,None]
+   RotatedCorner4 = [None,None]
 
-   # tail y-coordinate
-   FractionArrow3[3] = Arrow3[2]*np.sin(Theta) + Arrow3[3]*np.cos(Theta) + 0.5*dY[0]
-   FractionArrow3[3] /= dY[0]                          
+   RotatedCorner1[0], RotatedCorner1[1] = Rotate( Corner1[0], Corner1[1], Theta )
+   RotatedCorner2[0], RotatedCorner2[1] = Rotate( Corner2[0], Corner2[1], Theta )
+   RotatedCorner3[0], RotatedCorner3[1] = Rotate( Corner3[0], Corner3[1], Theta )
+   RotatedCorner4[0], RotatedCorner4[1] = Rotate( Corner4[0], Corner4[1], Theta )
 
 
+   Corner = np.array([[RotatedCorner1[0],RotatedCorner1[1]],
+                      [RotatedCorner2[0],RotatedCorner2[1]],
+                      [RotatedCorner3[0],RotatedCorner3[1]],
+                      [RotatedCorner4[0],RotatedCorner4[1]]])
+
+   if NormalVectorX[0] == 0 and NormalVectorY[0] == 1 and  NormalVectorZ[0] == 0:
+     Horizontal = True
+   else:
+     Horizontal = False
+ 
 
    for i in range(NumRow):
      for j in range(NumCol):
@@ -350,43 +341,63 @@ def _Plot(Plot__Paramater, Input__TestProb):
        ax[i][j].get_xaxis().set_ticks([])
        ax[i][j].get_yaxis().set_ticks([])
        if j == 0 and i == 0:
-         ax[i][j].annotate( "A", xy=(FractionArrow1[0],FractionArrow1[1]), xytext=(FractionArrow1[2],FractionArrow1[3]),color='w',
-                           fontsize=10, xycoords='axes fraction',horizontalalignment="center", arrowprops=dict( color='w', arrowstyle="-")  )
+         ax[i][j].annotate( "A", xy=(RotatedArrow1[0],RotatedArrow1[1]), xytext=(RotatedArrow1[2],RotatedArrow1[3]),color='w',
+                           fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
+                           arrowprops=dict( color='w', arrowstyle="-")  )
        if j == 0 and i == 1:
-         ax[i][j].annotate( "A", xy=(FractionArrow1[0],FractionArrow1[1]), xytext=(FractionArrow1[2],FractionArrow1[3]),color='w',
-                           fontsize=10, xycoords='axes fraction',horizontalalignment="center", arrowprops=dict( color='k', arrowstyle="-")  )
+           ax[i][j].annotate( "A", xy=(RotatedArrow1[0],RotatedArrow1[1]), xytext=(RotatedArrow1[2],RotatedArrow1[3]),color='w',
+                             fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
+                             arrowprops=dict( color='w', arrowstyle="-")  )
        if j == 3 and i == 0:
-         ax[i][j].annotate( "A", xy=(FractionArrow1[0],FractionArrow1[1]), xytext=(FractionArrow1[2],FractionArrow1[3]),color='w',
-                           fontsize=10, xycoords='axes fraction',horizontalalignment="center", arrowprops=dict( color='w', arrowstyle="-")  )
-         ax[i][j].annotate( "B", xy=(FractionArrow2[0],FractionArrow2[1]), xytext=(FractionArrow2[2],FractionArrow2[3]),color='w', 
-                           fontsize=10, xycoords='axes fraction',horizontalalignment="center", arrowprops=dict( color='w', arrowstyle="-")  )
-         ax[i][j].annotate( "C", xy=(FractionArrow3[0],FractionArrow3[1]), xytext=(FractionArrow3[2],FractionArrow3[3]),color='w', 
-                           fontsize=10, xycoords='axes fraction',horizontalalignment="center", arrowprops=dict( color='w', arrowstyle="-")  )
+         if Horizontal:
+           ax[i][j].add_patch(patches.Polygon(Corner, True,
+                              edgecolor="w",                                
+                              linestyle='-',
+                              facecolor="None",linewidth=1) ) 
+           ax[i][j].annotate( "A", xy=(RotatedArrow1[0],RotatedArrow1[1]), xytext=(RotatedArrow1[2],RotatedArrow1[3]),color='w',
+                             fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
+                             arrowprops=dict( color='w', arrowstyle="-")  )
+           ax[i][j].annotate( "B", xy=(RotatedArrow2[0],RotatedArrow2[1]), xytext=(RotatedArrow2[2],RotatedArrow2[3]),color='w', 
+                             fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
+                             arrowprops=dict( color='w', arrowstyle="-")  )
+           ax[i][j].annotate( "C", xy=(RotatedArrow3[0],RotatedArrow3[1]), xytext=(RotatedArrow3[2],RotatedArrow3[3]),color='w', 
+                             fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center',
+                             arrowprops=dict( color='w', arrowstyle="-")  )
+         else:
+           ax[i][j].annotate( "A", xy=(RotatedArrow1[0],RotatedArrow1[1]), xytext=(RotatedArrow1[2],RotatedArrow1[3]),color='w',
+                             fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
+                             arrowprops=dict( color='w', arrowstyle="-")  )
        if j == 3 and i == 1:
-         ax[i][j].annotate( "A", xy=(FractionArrow1[0],FractionArrow1[1]), xytext=(FractionArrow1[2],FractionArrow1[3]),color='w',
-                           fontsize=10, xycoords='axes fraction',horizontalalignment="center", arrowprops=dict( color='k', arrowstyle="-")  )
-         ax[i][j].annotate( "B", xy=(FractionArrow2[0],FractionArrow2[1]), xytext=(FractionArrow2[2],FractionArrow2[3]),color='k', 
-                           fontsize=10, xycoords='axes fraction',horizontalalignment="center", arrowprops=dict( color='k', arrowstyle="-")  )
-         ax[i][j].annotate( "C", xy=(FractionArrow3[0],FractionArrow3[1]), xytext=(FractionArrow3[2],FractionArrow3[3]),color='k', 
-                           fontsize=10, xycoords='axes fraction',horizontalalignment="center", arrowprops=dict( color='k', arrowstyle="-")  )
-       if j == 3 and i == 0:
-          ax[i][j].add_patch( patches.Rectangle( (0,0), 12, 12, edgecolor="black", angle=Theta*180/np.pi,
-                              linestyle='solid', facecolor="None",linewidth=1 ))
-       if j == 3 and i == 1:
-          ax[i][j].add_patch( patches.Rectangle( (0,0), 12, 12, edgecolor="black", angle=Theta*180/np.pi,
-                              linestyle='solid', facecolor="None",linewidth=1 ))
+         if Horizontal:
+           ax[i][j].add_patch(patches.Polygon(Corner, True,
+                              edgecolor="w",                                
+                              linestyle='-',
+                              facecolor="None",linewidth=1) ) 
+           ax[i][j].annotate( "A", xy=(RotatedArrow1[0],RotatedArrow1[1]), xytext=(RotatedArrow1[2],RotatedArrow1[3]),color='w',
+                             fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
+                             arrowprops=dict( color='w', arrowstyle="-")  )
+           ax[i][j].annotate( "B", xy=(RotatedArrow2[0],RotatedArrow2[1]), xytext=(RotatedArrow2[2],RotatedArrow2[3]),color='w', 
+                             fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
+                             arrowprops=dict( color='w', arrowstyle="-")  )
+           ax[i][j].annotate( "C", xy=(RotatedArrow3[0],RotatedArrow3[1]), xytext=(RotatedArrow3[2],RotatedArrow3[3]),color='w', 
+                             fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center',
+                             arrowprops=dict( color='w', arrowstyle="-")  )
+         else:
+           ax[i][j].annotate( "A", xy=(RotatedArrow1[0],RotatedArrow1[1]), xytext=(RotatedArrow1[2],RotatedArrow1[3]),color='w',
+                             fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
+                             arrowprops=dict( color='w', arrowstyle="-")  )
 
        if j == 1:
          ax[i][j].text(0.05,0.95,"A",horizontalalignment='left',verticalalignment='top',
                        transform=ax[i][j].transAxes,fontdict=font, bbox=    dict(facecolor='white', alpha=0.5) )
        if j == 2:
-         ax[i][j].text(0.05,0.95,"B",horizontalalignment='left',verticalalignment='top',
+         ax[i][j].text(0.05,0.95,"A",horizontalalignment='left',verticalalignment='top',
                        transform=ax[i][j].transAxes,fontdict=font, bbox=    dict(facecolor='white', alpha=0.5) )
        if j == 4:
          ax[i][j].text(0.05,0.95,"A",horizontalalignment='left',verticalalignment='top',
                        transform=ax[i][j].transAxes,fontdict=font, bbox=    dict(facecolor='white', alpha=0.5) )
        if j == 5:
-         ax[i][j].text(0.05,0.95,"B",horizontalalignment='left',verticalalignment='top',
+         ax[i][j].text(0.05,0.95,"A",horizontalalignment='left',verticalalignment='top',
                        transform=ax[i][j].transAxes,fontdict=font, bbox=    dict(facecolor='white', alpha=0.5) )
 
        if i == 0:
@@ -400,8 +411,8 @@ def _Plot(Plot__Paramater, Input__TestProb):
      cbar = fig.colorbar(im,cax=cax, use_gridspec=True)
 
      cbar.ax.tick_params(which='minor', length=0)
-     cbar.set_label(ColorBarLabel[i], size=20)
-     cbar.ax.tick_params(labelsize=20, color='k', direction='in', which='major')
+     cbar.set_label(ColorBarLabel[i], size=font['size'])
+     cbar.ax.tick_params(labelsize=font['size'], color='k', direction='in', which='major')
   
  
 #   MetaData = {} 
