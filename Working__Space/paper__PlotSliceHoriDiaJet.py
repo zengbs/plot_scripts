@@ -244,8 +244,11 @@ def _Plot(Plot__Paramater, Input__TestProb):
 
    # Matplolib
    ######################################################
-   
-   font = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 15}
+
+   if NumCol == 6:
+     font = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 15}
+   if NumCol == 3:
+     font = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 25}
    
    
    # The amount of width/height reserved for space between subplots,
@@ -358,12 +361,12 @@ def _Plot(Plot__Paramater, Input__TestProb):
              ax[i][j].annotate( "A", xy=(RotatedArrow1[0],RotatedArrow1[1]), xytext=(RotatedArrow1[2],RotatedArrow1[3]),color='w',
                                fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
                                arrowprops=dict( color='w', arrowstyle="-")  )
-             ax[i][j].annotate( "B", xy=(RotatedArrow2[0],RotatedArrow2[1]), xytext=(RotatedArrow2[2],RotatedArrow2[3]),color='w', 
-                               fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
-                               arrowprops=dict( color='w', arrowstyle="-")  )
-             ax[i][j].annotate( "C", xy=(RotatedArrow3[0],RotatedArrow3[1]), xytext=(RotatedArrow3[2],RotatedArrow3[3]),color='w', 
-                               fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center',
-                               arrowprops=dict( color='w', arrowstyle="-")  )
+             #ax[i][j].annotate( "B", xy=(RotatedArrow2[0],RotatedArrow2[1]), xytext=(RotatedArrow2[2],RotatedArrow2[3]),color='w', 
+             #                  fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
+             #                  arrowprops=dict( color='w', arrowstyle="-")  )
+             #ax[i][j].annotate( "C", xy=(RotatedArrow3[0],RotatedArrow3[1]), xytext=(RotatedArrow3[2],RotatedArrow3[3]),color='w', 
+             #                  fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center',
+             #                  arrowprops=dict( color='w', arrowstyle="-")  )
            else:
              ax[i][j].annotate( "A", xy=(RotatedArrow1[0],RotatedArrow1[1]), xytext=(RotatedArrow1[2],RotatedArrow1[3]),color='w',
                                fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
@@ -377,12 +380,12 @@ def _Plot(Plot__Paramater, Input__TestProb):
              ax[i][j].annotate( "A", xy=(RotatedArrow1[0],RotatedArrow1[1]), xytext=(RotatedArrow1[2],RotatedArrow1[3]),color='w',
                                fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
                                arrowprops=dict( color='w', arrowstyle="-")  )
-             ax[i][j].annotate( "B", xy=(RotatedArrow2[0],RotatedArrow2[1]), xytext=(RotatedArrow2[2],RotatedArrow2[3]),color='w', 
-                               fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
-                               arrowprops=dict( color='w', arrowstyle="-")  )
-             ax[i][j].annotate( "C", xy=(RotatedArrow3[0],RotatedArrow3[1]), xytext=(RotatedArrow3[2],RotatedArrow3[3]),color='w', 
-                               fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center',
-                               arrowprops=dict( color='w', arrowstyle="-")  )
+             #ax[i][j].annotate( "B", xy=(RotatedArrow2[0],RotatedArrow2[1]), xytext=(RotatedArrow2[2],RotatedArrow2[3]),color='w', 
+             #                  fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
+             #                  arrowprops=dict( color='w', arrowstyle="-")  )
+             #ax[i][j].annotate( "C", xy=(RotatedArrow3[0],RotatedArrow3[1]), xytext=(RotatedArrow3[2],RotatedArrow3[3]),color='w', 
+             #                  fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center',
+             #                  arrowprops=dict( color='w', arrowstyle="-")  )
            else:
              ax[i][j].annotate( "A", xy=(RotatedArrow1[0],RotatedArrow1[1]), xytext=(RotatedArrow1[2],RotatedArrow1[3]),color='w',
                                fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
