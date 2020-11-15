@@ -245,11 +245,12 @@ def _Plot(Plot__Paramater, Input__TestProb):
    # Matplolib
    ######################################################
 
-   if NumCol == 6:
-     font = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 15}
    if NumCol == 3:
-     font = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 25}
-   
+     font = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 15}
+   if NumCol == 2:
+     font = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 15}
+   if NumCol == 5:
+     font = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 15}
    
    # The amount of width/height reserved for space between subplots,
    # expressed as a fraction of the average axis width/height
@@ -290,30 +291,30 @@ def _Plot(Plot__Paramater, Input__TestProb):
    # [0/1/2/3] = head-x / head-y / tail-x / tail-y
    # -->  xycoords='data', the coordinate system of the data.
    # --> (Xmin, Ymin) is bottom left of the axes, and (Xmax, Ymax) is top right of the axes.
-   Arrow1      = [-6,+0,-6,+5] # A
-   Arrow2      = [+6,+0,+6,-5] # B
-   Arrow3      = [+8,+0,+8,+5] # C
+   Arrow1      = [-6,+0,-6,+4] # A
+   #Arrow2      = [+6,+0,+6,-4] # B
+   #Arrow3      = [+8,+0,+8,+4] # C
  
-
 
    ### Counterclockwise rotation w.r.t. center of axes
    ## Arrow1
    RotatedArrow1[0], RotatedArrow1[1] = Rotate( Arrow1[0],  Arrow1[1], Theta )
    RotatedArrow1[2], RotatedArrow1[3] = Rotate( Arrow1[2],  Arrow1[3], Theta )
 
-   ### Arrow2
-   RotatedArrow2[0], RotatedArrow2[1] = Rotate( Arrow2[0],  Arrow2[1], Theta )
-   RotatedArrow2[2], RotatedArrow2[3] = Rotate( Arrow2[2],  Arrow2[3], Theta )
 
-   ### Arrow3
-   RotatedArrow3[0], RotatedArrow3[1] = Rotate( Arrow3[0],  Arrow3[1], Theta )
-   RotatedArrow3[2], RotatedArrow3[3] = Rotate( Arrow3[2],  Arrow3[3], Theta )
+   #### Arrow2
+   #RotatedArrow2[0], RotatedArrow2[1] = Rotate( Arrow2[0],  Arrow2[1], Theta )
+   #RotatedArrow2[2], RotatedArrow2[3] = Rotate( Arrow2[2],  Arrow2[3], Theta )
+
+   #### Arrow3
+   #RotatedArrow3[0], RotatedArrow3[1] = Rotate( Arrow3[0],  Arrow3[1], Theta )
+   #RotatedArrow3[2], RotatedArrow3[3] = Rotate( Arrow3[2],  Arrow3[3], Theta )
 
    ### Rectangular coordinates [x,y]
-   Corner1 = [ 4,-3]
-   Corner2 = [10,-3]
-   Corner3 = [10,+3]
-   Corner4 = [ 4,+3]
+   Corner1 = [1,-3]
+   Corner2 = [7,-3]
+   Corner3 = [7,+3]
+   Corner4 = [1,+3]
 
    RotatedCorner1 = [None,None]
    RotatedCorner2 = [None,None]
@@ -335,6 +336,12 @@ def _Plot(Plot__Paramater, Input__TestProb):
      Horizontal = True
    else:
      Horizontal = False
+
+   if DataName[0].split('/')[-2][-6:] == "LowRes":
+     Case = "LowRes"
+   else:
+     Case = "HigRes"
+     
  
 
    for i in range(NumRow):
@@ -343,72 +350,25 @@ def _Plot(Plot__Paramater, Input__TestProb):
        im = ax[i][j].imshow(frb[i][j], cmap=n.CMap, norm=norm[i], aspect=n.aspect,  extent=Extent[j], vmax=ColorBarMax[i], vmin=ColorBarMin[i] )
        ax[i][j].get_xaxis().set_ticks([])
        ax[i][j].get_yaxis().set_ticks([])
-       if NumCol == 6:
-         if j == 0 and i == 0:
+       if NumCol == 2:
+         if j == 0:
+           if Case == "HigRes" and Horizontal:
+             ax[i][j].add_patch(patches.Polygon(Corner, True,
+                                edgecolor="w",                                
+                                linestyle='-',
+                                facecolor="None",linewidth=1) ) 
            ax[i][j].annotate( "A", xy=(RotatedArrow1[0],RotatedArrow1[1]), xytext=(RotatedArrow1[2],RotatedArrow1[3]),color='w',
                              fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
                              arrowprops=dict( color='w', arrowstyle="-")  )
-         if j == 0 and i == 1:
-             ax[i][j].annotate( "A", xy=(RotatedArrow1[0],RotatedArrow1[1]), xytext=(RotatedArrow1[2],RotatedArrow1[3]),color='w',
-                               fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
-                               arrowprops=dict( color='w', arrowstyle="-")  )
-         if j == 3 and i == 0:
-           if Horizontal:
-             ax[i][j].add_patch(patches.Polygon(Corner, True,
-                                edgecolor="w",                                
-                                linestyle='-',
-                                facecolor="None",linewidth=1) ) 
-             ax[i][j].annotate( "A", xy=(RotatedArrow1[0],RotatedArrow1[1]), xytext=(RotatedArrow1[2],RotatedArrow1[3]),color='w',
-                               fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
-                               arrowprops=dict( color='w', arrowstyle="-")  )
-             #ax[i][j].annotate( "B", xy=(RotatedArrow2[0],RotatedArrow2[1]), xytext=(RotatedArrow2[2],RotatedArrow2[3]),color='w', 
-             #                  fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
-             #                  arrowprops=dict( color='w', arrowstyle="-")  )
-             #ax[i][j].annotate( "C", xy=(RotatedArrow3[0],RotatedArrow3[1]), xytext=(RotatedArrow3[2],RotatedArrow3[3]),color='w', 
-             #                  fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center',
-             #                  arrowprops=dict( color='w', arrowstyle="-")  )
-           else:
-             ax[i][j].annotate( "A", xy=(RotatedArrow1[0],RotatedArrow1[1]), xytext=(RotatedArrow1[2],RotatedArrow1[3]),color='w',
-                               fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
-                               arrowprops=dict( color='w', arrowstyle="-")  )
-         if j == 3 and i == 1:
-           if Horizontal:
-             ax[i][j].add_patch(patches.Polygon(Corner, True,
-                                edgecolor="w",                                
-                                linestyle='-',
-                                facecolor="None",linewidth=1) ) 
-             ax[i][j].annotate( "A", xy=(RotatedArrow1[0],RotatedArrow1[1]), xytext=(RotatedArrow1[2],RotatedArrow1[3]),color='w',
-                               fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
-                               arrowprops=dict( color='w', arrowstyle="-")  )
-             #ax[i][j].annotate( "B", xy=(RotatedArrow2[0],RotatedArrow2[1]), xytext=(RotatedArrow2[2],RotatedArrow2[3]),color='w', 
-             #                  fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
-             #                  arrowprops=dict( color='w', arrowstyle="-")  )
-             #ax[i][j].annotate( "C", xy=(RotatedArrow3[0],RotatedArrow3[1]), xytext=(RotatedArrow3[2],RotatedArrow3[3]),color='w', 
-             #                  fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center',
-             #                  arrowprops=dict( color='w', arrowstyle="-")  )
-           else:
-             ax[i][j].annotate( "A", xy=(RotatedArrow1[0],RotatedArrow1[1]), xytext=(RotatedArrow1[2],RotatedArrow1[3]),color='w',
-                               fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
-                               arrowprops=dict( color='w', arrowstyle="-")  )
-
          if j == 1:
-           ax[i][j].text(0.05,0.95,"A",horizontalalignment='left',verticalalignment='top',
-                         transform=ax[i][j].transAxes,fontdict=font, bbox=    dict(facecolor='white', alpha=0.5) )
-         if j == 2:
-           ax[i][j].text(0.05,0.95,"A",horizontalalignment='left',verticalalignment='top',
-                         transform=ax[i][j].transAxes,fontdict=font, bbox=    dict(facecolor='white', alpha=0.5) )
-         if j == 4:
-           ax[i][j].text(0.05,0.95,"A",horizontalalignment='left',verticalalignment='top',
-                         transform=ax[i][j].transAxes,fontdict=font, bbox=    dict(facecolor='white', alpha=0.5) )
-         if j == 5:
            ax[i][j].text(0.05,0.95,"A",horizontalalignment='left',verticalalignment='top',
                          transform=ax[i][j].transAxes,fontdict=font, bbox=    dict(facecolor='white', alpha=0.5) )
        elif NumCol == 3:
           if j == 0:
-           ax[i][j].annotate( "B", xy=(6,0.5), xytext=(6,1),color='w',
+           ax[i][j].annotate( "B", xy=(2,0.5), xytext=(2,1),color='w',
                                fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
                                arrowprops=dict( color='w', arrowstyle="-")  )
-           ax[i][j].annotate( "C", xy=(8,0.5), xytext=(8,1),color='w',
+           ax[i][j].annotate( "C", xy=(6,0.5), xytext=(6,1),color='w',
                                fontsize=font['size'], xycoords='data',horizontalalignment="center", verticalalignment='center', 
                                arrowprops=dict( color='w', arrowstyle="-")  )
           if j == 1:
@@ -434,34 +394,6 @@ def _Plot(Plot__Paramater, Input__TestProb):
      cbar.ax.tick_params(labelsize=font['size'], color='k', direction='in', which='major')
   
  
-#   MetaData = {} 
-#   
-#   for key in DataSet[0]:
-#     MetaData.update( {key: str( DataSet[0][key] ).replace("\n","")} )
-#   for key in Input__TestProb:
-#     MetaData.update( {key: str( Input__TestProb[key] ).replace("\n","")} )
-#   for key in Plot__Paramater:
-#     MetaData.update( {key: str( Plot__Paramater[key] ).replace("\n","")} )
-#   
-#   
-#   MetaData.update( {"Pwd":os.getcwd()} )
-#  
-   FileOut = n.FileName+"."+n.FileFormat
- 
+   FileOut = n.FileName+"."+n.FileFormat 
    plt.savefig( FileOut, bbox_inches='tight', pad_inches=0.05, format=n.FileFormat, dpi=800 )
-#
-#
-#   # recoed all parameters in eps format 
-#   if n.FileFormat == 'eps':
-#      with open(FileOut, "r+") as f2:
-#             for x in range(6):
-#                f2.readline()            # skip past early lines
-#             pos = f2.tell()             # remember insertion position
-#             f2_remainder = f2.read()    # cache the rest of f2
-#             f2.seek(pos)
-#             for key in MetaData:
-#               string = '%%{:<12}  {:12}\n'.format(key, MetaData[key])
-#               f2.write(string)
-#             f2.write(f2_remainder)
-#
    print ("Done !!")

@@ -8,7 +8,7 @@ from yt.units import gravitational_constant_cgs,\
     boltzmann_constant_cgs,    \
     mass_hydrogen_cgs,         \
     planck_constant_cgs
-
+import sys
 
 eV = 1.6021766208e-12
 keV = 1.0e3*eV
@@ -40,7 +40,7 @@ def _specific_enthalpy_sr(field, data):
     eta = data["Temp"]
     if data.ds["EoS"] == 2:
         h_c2 = 1.0 + data.ds["Gamma"] * eta / (data.ds["Gamma"] - 1.0)
-    elif data.ds["EoS"] == 1:
+    elif data.ds["EoS"] == 4:
         h_c2 = 2.5*eta+np.sqrt(2.25*eta**2+1.0)
     else:
         print("Your EoS doesn't support yet!")

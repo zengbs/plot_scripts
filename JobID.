@@ -1,0 +1,61 @@
+    start_time = Sun Oct 25 13:10:11 2020
+    start_time = Sun Oct 25 13:10:42 2020
+    start_time = Sun Oct 25 13:17:30 2020
+    start_time = Sun Oct 25 13:38:41 2020
+    start_time = Sun Oct 25 13:38:45 2020
+    start_time = Sun Oct 25 13:38:45 2020
+    start_time = Sun Oct 25 13:38:50 2020
+    Job_Name = DiagonalFlow03LowRes
+    Job_Name = DiagonalFlow03HigRes_DT_0.12
+    Job_Name = STDIN
+    Job_Name = DiagonalFlow01HigRes_DT_0.12
+    Job_Name = DiagonalFlow01LowRes
+    Job_Name = HorizontalFlow01HigRes_DT_0.12
+    Job_Name = HorizontalFlow01LowRes
+
+eureka00.gpucluster.calab: 
+                                                                         Req'd  Req'd   Elap
+Job ID               Username    Queue    Jobname          SessID NDS   TSK    Memory Time  S Time
+-------------------- ----------- -------- ---------------- ------ ----- ------ ------ ----- - -----
+11341.eureka00.g     tseng       workq    DiagonalFlow03Lo  98740     1     16    --  720:0 R 00:28
+   eureka02/15+eureka02/14+eureka02/13+eureka02/12+eureka02/11+eureka02/10
+   +eureka02/9+eureka02/8+eureka02/7+eureka02/6+eureka02/5+eureka02/4
+   +eureka02/3+eureka02/2+eureka02/1+eureka02/0
+11342.eureka00.g     tseng       stableq  DiagonalFlow03Hi  68758     2     32    --  720:0 R 00:27
+   eureka03/15+eureka03/14+eureka03/13+eureka03/12+eureka03/11+eureka03/10
+   +eureka03/9+eureka03/8+eureka03/7+eureka03/6+eureka03/5+eureka03/4
+   +eureka03/3+eureka03/2+eureka03/1+eureka03/0+eureka14/15+eureka14/14
+   +eureka14/13+eureka14/12+eureka14/11+eureka14/10+eureka14/9+eureka14/8
+   +eureka14/7+eureka14/6+eureka14/5+eureka14/4+eureka14/3+eureka14/2
+   +eureka14/1+eureka14/0
+11343.eureka00.g     tseng       workq    STDIN            121061     1     16    --  720:0 C 00:21
+   eureka15/15+eureka15/14+eureka15/13+eureka15/12+eureka15/11+eureka15/10
+   +eureka15/9+eureka15/8+eureka15/7+eureka15/6+eureka15/5+eureka15/4
+   +eureka15/3+eureka15/2+eureka15/1+eureka15/0
+11346.eureka00.g     tseng       stableq  DiagonalFlow01Hi 122069     4     64    --  720:0 R 00:00
+   eureka15/15+eureka15/14+eureka15/13+eureka15/12+eureka15/11+eureka15/10
+   +eureka15/9+eureka15/8+eureka15/7+eureka15/6+eureka15/5+eureka15/4
+   +eureka15/3+eureka15/2+eureka15/1+eureka15/0+eureka17/15+eureka17/14
+   +eureka17/13+eureka17/12+eureka17/11+eureka17/10+eureka17/9+eureka17/8
+   +eureka17/7+eureka17/6+eureka17/5+eureka17/4+eureka17/3+eureka17/2
+   +eureka17/1+eureka17/0+eureka18/15+eureka18/14+eureka18/13+eureka18/12
+   +eureka18/11+eureka18/10+eureka18/9+eureka18/8+eureka18/7+eureka18/6
+   +eureka18/5+eureka18/4+eureka18/3+eureka18/2+eureka18/1+eureka18/0
+   +eureka19/15+eureka19/14+eureka19/13+eureka19/12+eureka19/11+eureka19/10
+   +eureka19/9+eureka19/8+eureka19/7+eureka19/6+eureka19/5+eureka19/4
+   +eureka19/3+eureka19/2+eureka19/1+eureka19/0
+11347.eureka00.g     tseng       workq    DiagonalFlow01Lo  16977     1     16    --  720:0 R   -- 
+   eureka20/15+eureka20/14+eureka20/13+eureka20/12+eureka20/11+eureka20/10
+   +eureka20/9+eureka20/8+eureka20/7+eureka20/6+eureka20/5+eureka20/4
+   +eureka20/3+eureka20/2+eureka20/1+eureka20/0
+11348.eureka00.g     tseng       workq    HorizontalFlow01    --      2     32    --  720:0 R   -- 
+   eureka21/15+eureka21/14+eureka21/13+eureka21/12+eureka21/11+eureka21/10
+   +eureka21/9+eureka21/8+eureka21/7+eureka21/6+eureka21/5+eureka21/4
+   +eureka21/3+eureka21/2+eureka21/1+eureka21/0+eureka22/15+eureka22/14
+   +eureka22/13+eureka22/12+eureka22/11+eureka22/10+eureka22/9+eureka22/8
+   +eureka22/7+eureka22/6+eureka22/5+eureka22/4+eureka22/3+eureka22/2
+   +eureka22/1+eureka22/0
+11349.eureka00.g     tseng       workq    HorizontalFlow01  65938     1     16    --  720:0 R   -- 
+   eureka23/15+eureka23/14+eureka23/13+eureka23/12+eureka23/11+eureka23/10
+   +eureka23/9+eureka23/8+eureka23/7+eureka23/6+eureka23/5+eureka23/4
+   +eureka23/3+eureka23/2+eureka23/1+eureka23/0
