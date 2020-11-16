@@ -15,7 +15,7 @@ FileFormat                     pdf
 
 # number should be same as NumCol
 Title_00                     Title # off/auto 
-Title_01                     Title  # off/auto
+Title_01                     Title # off/auto
 
 
 # number should be same as NumRow
@@ -54,6 +54,9 @@ norm_04                          0
                      
                      
 # number should be same as NumCol
+# Coord_??             origin is at the corner of data set
+# Xmax/Xmin/Ymax/Ymin  origin is at the corner of figure if OffAxisSlice == 0
+# Xmax/Xmin/Ymax/Ymin  origin is at the center of figure if OffAxisSlice == 1
 CutAxis_00                       z
 Coord_00                        50
 Xmax_00                       77.5 

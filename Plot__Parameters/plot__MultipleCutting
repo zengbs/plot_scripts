@@ -58,6 +58,8 @@ CenterY_00                      25
 CenterZ_00                      25 
 
 # number should be same as NumCol
+# Xmax/Xmin/Ymax/Ymin  origin is at the corner of figure if OffAxisSlice == 0
+# Xmax/Xmin/Ymax/Ymin  origin is at the center of figure if OffAxisSlice == 1
 Xmax_00                        +20 
 Xmin_00                        -20
 Ymax_00                        +20

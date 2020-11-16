@@ -295,33 +295,33 @@ def _Plot(Plot__Paramater, Input__TestProb):
   
  
    MetaData = {} 
-   
-   for key in DataSet[0]:
-     MetaData.update( {key: str( DataSet[0][key] ).replace("\n","")} )
-   for key in Input__TestProb:
-     MetaData.update( {key: str( Input__TestProb[key] ).replace("\n","")} )
-   for key in Plot__Paramater:
-     MetaData.update( {key: str( Plot__Paramater[key] ).replace("\n","")} )
-   
-   
-   MetaData.update( {"Pwd":os.getcwd()} )
+   #
+   #for key in DataSet[0]:
+   #  MetaData.update( {key: str( DataSet[0][key] ).replace("\n","")} )
+   #for key in Input__TestProb:
+   #  MetaData.update( {key: str( Input__TestProb[key] ).replace("\n","")} )
+   #for key in Plot__Paramater:
+   #  MetaData.update( {key: str( Plot__Paramater[key] ).replace("\n","")} )
+   #
+   #
+   #MetaData.update( {"Pwd":os.getcwd()} )
   
    FileOut = n.FileName+"."+n.FileFormat
  
    plt.savefig( FileOut, bbox_inches='tight', pad_inches=0.05, format=n.FileFormat, dpi=800, metadata=MetaData )
 
 
-   # recoed all parameters in eps format 
-   if n.FileFormat == 'eps':
-      with open(FileOut, "r+") as f2:
-             for x in range(6):
-                f2.readline()            # skip past early lines
-             pos = f2.tell()             # remember insertion position
-             f2_remainder = f2.read()    # cache the rest of f2
-             f2.seek(pos)
-             for key in MetaData:
-               string = '%%{:<12}  {:12}\n'.format(key, MetaData[key])
-               f2.write(string)
-             f2.write(f2_remainder)
+   ## recoed all parameters in eps format 
+   #if n.FileFormat == 'eps':
+   #   with open(FileOut, "r+") as f2:
+   #          for x in range(6):
+   #             f2.readline()            # skip past early lines
+   #          pos = f2.tell()             # remember insertion position
+   #          f2_remainder = f2.read()    # cache the rest of f2
+   #          f2.seek(pos)
+   #          for key in MetaData:
+   #            string = '%%{:<12}  {:12}\n'.format(key, MetaData[key])
+   #            f2.write(string)
+   #          f2.write(f2_remainder)
 
    print ("Done !!")
