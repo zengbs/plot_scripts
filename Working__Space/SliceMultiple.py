@@ -173,28 +173,60 @@ def _Plot(Plot__Paramater, Input__TestProb):
    Extent       = [None]*NumCol
    dX           = [None]*NumCol
    dY           = [None]*NumCol
+   MaxFig       = [None]*NumCol
+   DataSet      = [None]*NumCol
+ 
 
    dX_max = 0
    dY_max = 0
 
-   for i in range(NumCol):
-       dX[i]           = abs(Xmax[i]-Xmin[i])
-       dY[i]           = abs(Ymax[i]-Ymin[i])
-       dX_max          = max ( dX_max, dX[i] )
-       dY_max          = max ( dY_max, dY[i] )
+   for i in range(NumRow):
+       for j in range(NumCol):
+           DataSet[j] = yt.load(DataName[j])
+
+   for j in range(NumCol):
+       if ( Xmax[j] == 'auto' or Xmin[j] == 'auto' or Ymax[j] == 'auto' or Xmin[j] == 'auto' ):
+          MaxFig[j] = True;
+
+   for j in range(NumCol):
+       if ( n.OffAxisSlice == 0 and MaxFig[j] ):
+          Xmin[j] = 0.0
+          Ymin[j] = 0.0
+
+          if ( Xmax[j] == 'auto' and CutAxis[j] == 'x' ):
+               Xmax[j] = DataSet[j]['BoxSize'][1]
+          if ( Xmax[j] == 'auto' and CutAxis[j] == 'y' ):
+               Xmax[j] = DataSet[j]['BoxSize'][2]
+          if ( Xmax[j] == 'auto' and CutAxis[j] == 'z' ):
+               Xmax[j] = DataSet[j]['BoxSize'][0]
+
+          if ( Ymax[j] == 'auto' and CutAxis[j] == 'x' ):
+               Ymax[j] = DataSet[j]['BoxSize'][2]
+          if ( Ymax[j] == 'auto' and CutAxis[j] == 'y' ):
+               Ymax[j] = DataSet[j]['BoxSize'][0]
+          if ( Ymax[j] == 'auto' and CutAxis[j] == 'z' ):
+               Ymax[j] = DataSet[j]['BoxSize'][1]
+
+          dX[j]  = abs(Xmax[j]-Xmin[j])
+          dY[j]  = abs(Ymax[j]-Ymin[j])
+          dX_max = max( dX_max, dX[j] )
+          dY_max = max( dY_max, dY[j] )
+       elif ( n.OffAxisSlice == 1 and MaxFig[j] == True ):
+          print("Off axis slice does not support maximum slice")
+          exit(0)
+    
 
 
-   for i in range(NumCol):
-       BufferSize[i]   = [  int(n.Resolution*dX[i]/dX_max), int(n.Resolution*dY[i]/dX_max)  ]
-       WindowWidth[i]  = dY_max * BufferSize[i][0] / BufferSize[i][1]
-       Extent[i]       = [ Xmin[i], Xmax[i], Ymin[i], Ymax[i] ]
+   for j in range(NumCol):
+       BufferSize[j]   = [  int(n.Resolution*dX[j]/dX_max), int(n.Resolution*dY[j]/dX_max)  ]
+       WindowWidth[j]  = dY_max * BufferSize[j][0] / BufferSize[j][1]
+       Extent[j]       = [ Xmin[j], Xmax[j], Ymin[j], Ymax[j] ]
 
    for i in range(NumRow):
        WindowHeight[i] = dY_max
 
    #################################################################
    
-   DataSet  = [ None ]*NumCol
 
    sl  = []
    frb = []
