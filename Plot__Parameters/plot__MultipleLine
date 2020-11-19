@@ -55,30 +55,6 @@ Label_03            Spherical_(t=0.6)
 Title_00                 Longest_Axis
 Title_01                Shortest_Axis
 
-# Field:
-# norm: 0: linear scale, 1: log scale
-Field_00               Lorentz_factor
-YAxisLabel_00                $\gamma$
-norm_00                             1
-
-# Field:
-# norm: 0: linear scale, 1: log scale
-Field_01               temperature_sr
-YAxisLabel_01         $k_{B}T/mc^{2}$ 
-norm_01                             1
-
-# Field:
-# norm: 0: linear scale, 1: log scale
-Field_02                  pressure_sr
-YAxisLabel_02             $P/P_{src}$
-norm_02                             1
-
-# Field:
-# norm: 0: linear scale, 1: log scale
-Field_03          proper_mass_density
-YAxisLabel_03       $\rho/\rho_{src}$ 
-norm_03                             1
-
 # Number of points:
 NumPts_00                        2048
 NumPts_01                        2048
@@ -102,6 +78,18 @@ TailZ_01             32.5307227776030
 ######################################################################
 #   The following attributes must have the same number as `NumRow'
 ######################################################################
+#
+# Field:
+# norm: 0: linear scale, 1: log scale
+Field_00               Lorentz_factor
+YAxisLabel_00                $\gamma$
+norm_00                             1
+
+# Field:
+# norm: 0: linear scale, 1: log scale
+Field_01               temperature_sr
+YAxisLabel_01         $k_{B}T/mc^{2}$ 
+norm_01                             1
 
 # Ymax: auto = auto scale
 Ymax_00                           200 

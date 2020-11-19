@@ -205,9 +205,7 @@ def _Plot(Plot__Paramater, Input__TestProb):
        for k in range(len(DataName)):
          Ray = np.sqrt( (Line[i][j][k]["x"]-Head[j][0])**2 + (Line[i][j][k]["y"]-Head[j][1])**2 + (Line[i][j][k]["z"]-Head[j][2])**2 )
          axs[i*NumCol+j].plot( Ray, Line[i][j][k][Field[i]], Mark[k], label=Label[k], markersize=MarkSize[k] )
-
          axs[i*NumCol+j].tick_params( which='both', direction='in', labelsize=16, top=False )
-
          axs[i*NumCol+j].set_xlim(min(Ray), max(Ray))
          
          # Dtermine the extreme y-values
@@ -215,10 +213,9 @@ def _Plot(Plot__Paramater, Input__TestProb):
            if ( Ymax[i] == 'auto' ):
              Ymax[i] = sys.float_info.min
              Ymax[i]=max(np.amax(Line[i][j][k][Field[i]]), Ymax[i])
-           elif ( Ymin[i] == 'auto' ):
+           if ( Ymin[i] == 'auto' ):
              Ymin[i] = sys.float_info.max
              Ymin[i]=min(np.amin(Line[i][j][k][Field[i]]), Ymin[i])
-
            axs[i*NumCol+j].set_ylim(Ymin[i], Ymax[i])
 
          if norm[i] == 1:
