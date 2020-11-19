@@ -198,15 +198,22 @@ def _Plot(Plot__Paramater, Input__TestProb):
    f.subplots_adjust( hspace=n.hspace, wspace=n.wspace )
    f.set_size_inches( n.FigSizeX, n.FigSizeY )
 
-   axs = axs.flatten()
+   if ( NumRow != 1 or NumCol != 1 ):
+        axs = axs.flatten()
 
    for i in range(NumRow):
      for j in range(NumCol):
        for k in range(len(DataName)):
+
+         if ( NumRow == 1 and NumCol == 1 ):
+              ax = axs
+         else:
+              ax = axs[i*NumCol+j]
+
          Ray = np.sqrt( (Line[i][j][k]["x"]-Head[j][0])**2 + (Line[i][j][k]["y"]-Head[j][1])**2 + (Line[i][j][k]["z"]-Head[j][2])**2 )
-         axs[i*NumCol+j].plot( Ray, Line[i][j][k][Field[i]], Mark[k], label=Label[k], markersize=MarkSize[k] )
-         axs[i*NumCol+j].tick_params( which='both', direction='in', labelsize=16, top=False )
-         axs[i*NumCol+j].set_xlim(min(Ray), max(Ray))
+         ax.plot( Ray, Line[i][j][k][Field[i]], Mark[k], label=Label[k], markersize=MarkSize[k] )
+         ax.tick_params( which='both', direction='in', labelsize=16, top=False )
+         ax.set_xlim(min(Ray), max(Ray))
          
          # Dtermine the extreme y-values
          if ( NumCol > 1 ):
@@ -216,33 +223,34 @@ def _Plot(Plot__Paramater, Input__TestProb):
            if ( Ymin[i] == 'auto' ):
              Ymin[i] = sys.float_info.max
              Ymin[i]=min(np.amin(Line[i][j][k][Field[i]]), Ymin[i])
-           axs[i*NumCol+j].set_ylim(Ymin[i], Ymax[i])
+           ax.set_ylim(Ymin[i], Ymax[i])
 
          if norm[i] == 1:
-           axs[i*NumCol+j].set_yscale('log')
+           ax.set_yscale('log')
          if j==0:
-           axs[i*NumCol+j].set_ylabel(YAxisLabel[i], fontsize=20, fontweight='bold')
+           ax.set_ylabel(YAxisLabel[i], fontsize=20, fontweight='bold')
 
          # Removing tick labels must be after setting log scale;
          # otherwise tick labels emerge again
          if i < NumRow-1:
-           axs[i*NumCol+j].get_xaxis().set_ticks([])
+           ax.get_xaxis().set_ticks([])
          if j > 0:
-           axs[i*NumCol+j].get_yaxis().set_ticks([])
+           ax.get_yaxis().set_ticks([])
 
-         axs[i*NumCol+j].get_xaxis().set_ticks([])
+         ax.get_xaxis().set_ticks([])
 
          if i == 0:
            if ( Title[j] != 'off' ):
              if (Title[j] == 'auto'):
                title = "(%2.1f,%2.1f,%2.1f)\n(%2.1f,%2.1f,%2.1f)" % (Head[j][0], Head[j][1], Head[j][2], Tail[j][0], Tail[j][1], Tail[j][2])
-               axs[i*NumCol+j].set_title( title, fontdict=font )
+               ax.set_title( title, fontdict=font )
              else:
-               axs[i*NumCol+j].set_title( Title[j], fontdict=font )
+               ax.set_title( Title[j], fontdict=font )
 
    # if all elements in Label are None then do not add legends
    if not all(label is None for label in Label):
-     axs[0].legend(loc='upper center', fontsize=16)
+     if ( i == 0 and j == 0 ):
+          ax.legend(loc='upper center', fontsize=16)
 
    plt.savefig( n.FileName+'.'+n.FileFormat, bbox_inches='tight', pad_inches=0.05, format=n.FileFormat, dpi=800 )
 
