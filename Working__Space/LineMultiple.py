@@ -18,7 +18,8 @@ def _Plot(Plot__Paramater, Input__TestProb):
    # Below lists have the same size as number of row:
    Field       = []               
    YAxisLabel  = []               
-   norm        = []
+   normX       = []
+   normY       = []
    Ymax        = []
    Ymin        = []
                                   
@@ -31,6 +32,7 @@ def _Plot(Plot__Paramater, Input__TestProb):
    TailX       = []
    TailY       = []
    TailZ       = []
+   OriginX     = []
 
    # Below list have the same arbitrary size:
    DataName    = []
@@ -39,8 +41,8 @@ def _Plot(Plot__Paramater, Input__TestProb):
    MarkSize    = []
 
 
-   List     = [  DataName,  Label,   Field,   NumPts,   norm,   HeadX,   HeadY,   HeadZ,   TailX,   TailY,   TailZ,   Title ,  YAxisLabel ,  Ymax,   Ymin  ,  Mark,   MarkSize  ]
-   ListName = [ "DataName","Label", "Field", "NumPts", "norm", "HeadX", "HeadY", "HeadZ", "TailX", "TailY", "TailZ", "Title", "YAxisLabel", "Ymax", "Ymin" , "Mark", "MarkSize" ]
+   List     = [  DataName,  Label,   Field,   NumPts,   normX,   normY,   HeadX,   HeadY,   HeadZ,   TailX,   TailY,   TailZ,   Title ,  YAxisLabel ,  Ymax,   Ymin  ,  Mark,   MarkSize ,  OriginX  ]
+   ListName = [ "DataName","Label", "Field", "NumPts", "normX", "normY", "HeadX", "HeadY", "HeadZ", "TailX", "TailY", "TailZ", "Title", "YAxisLabel", "Ymax", "Ymin" , "Mark", "MarkSize", "OriginX" ]
 
 
    for lstname, lst in zip(ListName, List):
@@ -73,8 +75,11 @@ def _Plot(Plot__Paramater, Input__TestProb):
    if ( len(YAxisLabel) != NumRow ):
      print("len(YAxisLabel) != %d" % (NumRow))
      Exit = True
-   if ( len(norm) != NumRow ):
-     print("len(norm) != %d" % (NumRow))
+   if ( len(normX) != NumRow ):
+     print("len(normX) != %d" % (NumRow))
+     Exit = True
+   if ( len(normY) != NumRow ):
+     print("len(normY) != %d" % (NumRow))
      Exit = True
    if ( len(Ymax) != NumRow ):
      print("len(Ymax) != %d" % (NumRow))
@@ -188,7 +193,8 @@ def _Plot(Plot__Paramater, Input__TestProb):
 
           
    for j in range(NumCol):
-     Head[j] *= DataSet[j].length_unit
+     Head[j]    *= DataSet[j].length_unit
+     OriginX[j] *= DataSet[j].length_unit
 
    # Matplolib
    #######################################################
@@ -211,7 +217,7 @@ def _Plot(Plot__Paramater, Input__TestProb):
               ax = axs[i*NumCol+j]
 
          Ray = np.sqrt( (Line[i][j][k]["x"]-Head[j][0])**2 + (Line[i][j][k]["y"]-Head[j][1])**2 + (Line[i][j][k]["z"]-Head[j][2])**2 )
-         ax.plot( Ray, Line[i][j][k][Field[i]], Mark[k], label=Label[k], markersize=MarkSize[k] )
+         ax.plot( Ray-OriginX[j], Line[i][j][k][Field[i]], Mark[k], label=Label[k], markersize=MarkSize[k] )
          ax.tick_params( which='both', direction='in', labelsize=16, top=False )
          ax.set_xlim(min(Ray), max(Ray))
          
@@ -225,7 +231,9 @@ def _Plot(Plot__Paramater, Input__TestProb):
              Ymin[i]=min(np.amin(Line[i][j][k][Field[i]]), Ymin[i])
            ax.set_ylim(Ymin[i], Ymax[i])
 
-         if norm[i] == 1:
+         if normX[i] == 1:
+           ax.set_xscale('log')
+         if normY[i] == 1:
            ax.set_yscale('log')
          if j==0:
            ax.set_ylabel(YAxisLabel[i], fontsize=20, fontweight='bold')

@@ -75,6 +75,10 @@ TailX_01             32.2653613888015
 TailY_01             32.2653613888015
 TailZ_01             32.5307227776030
 
+# The coordinate of figure's origin
+OriginX_00       
+OriginX_01
+
 ######################################################################
 #   The following attributes must have the same number as `NumRow'
 ######################################################################
@@ -83,13 +87,15 @@ TailZ_01             32.5307227776030
 # norm: 0: linear scale, 1: log scale
 Field_00               Lorentz_factor
 YAxisLabel_00                $\gamma$
-norm_00                             1
+normX_00                            1
+normY_00                            1
 
 # Field:
 # norm: 0: linear scale, 1: log scale
 Field_01               temperature_sr
 YAxisLabel_01         $k_{B}T/mc^{2}$ 
-norm_01                             1
+normX_01                            1
+normY_00                            1
 
 # Ymax: auto = auto scale
 Ymax_00                           200 
