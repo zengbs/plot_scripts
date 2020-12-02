@@ -70,6 +70,11 @@ def _gravitational_potential(field, data):
 
 def _pressure_sr(field, data):
     from __main__ import NormalizedConst_Dens, NormalizedConst_Pres
+    See  = NormalizedConst_Pres > 0
+    See |= NormalizedConst_Dens > 0
+    if ( not See ):
+       print( "NormalizedConst_Dens=%e, NormalizedConst_Pres=%e" % ( NormalizedConst_Dens, NormalizedConst_Pres ) )
+       exit(0)
     eta = data["Temp"]
     rho = _proper_mass_density("", data)*NormalizedConst_Dens
     pres = rho * eta
@@ -78,6 +83,11 @@ def _pressure_sr(field, data):
 
 def _proper_mass_density(field, data):
     from __main__ import NormalizedConst_Dens, NormalizedConst_Pres
+    See  = NormalizedConst_Pres > 0
+    See |= NormalizedConst_Dens > 0
+    if ( not See ):
+       print( "NormalizedConst_Dens=%e, NormalizedConst_Pres=%e" % ( NormalizedConst_Dens, NormalizedConst_Pres ) )
+       exit(0)
     Lorentz_factor = _lorentz_factor("", data)
     rho = data["Dens"]/Lorentz_factor
     return rho/NormalizedConst_Dens
