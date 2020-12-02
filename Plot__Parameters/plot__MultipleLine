@@ -2,13 +2,13 @@
 NumRow                              4
 NumCol                              2
 FileName                      Profile
-FileFormat                        pdf
+FileFormat                        png
 
 NormalizedConst_Pres             auto
 NormalizedConst_Dens             auto
 
 FigSizeX                            5   
-FigSizeY                    19.576805
+FigSizeY                            6
 
 wspace                           0.04
 hspace                           0.04
@@ -98,13 +98,13 @@ normX_01                            1
 normY_00                            1
 
 # Ymax: auto = auto scale
-Ymax_00                           200 
-Ymax_01                           1e6
-Ymax_02                          1e-3
-Ymax_03                           1e2     
+Ymax_00                          auto 
+Ymax_01                          auto
+Ymax_02                          auto
+Ymax_03                          auto     
 
 # Ymin: auto = auto scale
-Ymin_00                           0.8
-Ymin_01                         1e-10  
-Ymin_02                         1e-16     
-Ymin_03                         1e-11
+Ymin_00                          auto
+Ymin_01                          auto  
+Ymin_02                          auto     
+Ymin_03                          auto

@@ -240,12 +240,10 @@ def _Plot(Plot__Paramater, Input__TestProb):
 
          # Removing tick labels must be after setting log scale;
          # otherwise tick labels emerge again
-         if i < NumRow-1:
-           ax.get_xaxis().set_ticks([])
-         if j > 0:
-           ax.get_yaxis().set_ticks([])
-
-         ax.get_xaxis().set_ticks([])
+         #if i < NumRow:
+         #  ax.get_xaxis().set_ticks([])
+         #if j > 0:
+         #  ax.get_yaxis().set_ticks([])
 
          if i == 0:
            if ( Title[j] != 'off' ):

@@ -192,7 +192,7 @@ def _Plot(Plot__Paramater, Input__TestProb):
        if ( n.OffAxisSlice == 0 and MaxFig[j] ):
           Xmin[j] = 0.0
           Ymin[j] = 0.0
-
+          print("hi")
   
           if ( Xmax[j] == 'auto' ):
                if ( CutAxis[j] == 'x' ):
@@ -231,14 +231,15 @@ def _Plot(Plot__Paramater, Input__TestProb):
                     exit(0)
 
 
-          dX[j]  = abs(Xmax[j]-Xmin[j])
-          dY[j]  = abs(Ymax[j]-Ymin[j])
-          dX_max = max( dX_max, dX[j] )
-          dY_max = max( dY_max, dY[j] )
+
        elif ( n.OffAxisSlice == 1 and MaxFig[j] == True ):
           print("Off axis slice does not support maximum slice")
           exit(0)
-    
+   
+   dX[j]  = abs(Xmax[j]-Xmin[j])
+   dY[j]  = abs(Ymax[j]-Ymin[j])
+   dX_max = max( dX_max, dX[j] )
+   dY_max = max( dY_max, dY[j] )
 
 
    for j in range(NumCol):
@@ -268,7 +269,9 @@ def _Plot(Plot__Paramater, Input__TestProb):
            frb.append([])
 
            DataSet[j] = yt.load(DataName[j])
-           DataSet[j].add_field(("gamer", Field[i]), function=function, sampling_type="cell", units=units)
+
+           if (Field[i] not in ('momentum_x', 'momentum_y', 'momentum_z', 'total_energy_per_volume', 'mass_density_sr')):
+             DataSet[j].add_field(("gamer", Field[i]), function=function, sampling_type="cell", units=units)
 
            if n.OffAxisSlice == 0:
              sl[i].append(  DataSet[j].slice(CutAxis[j], Coord[j], data_source=DataSet[j].all_data()  )  )

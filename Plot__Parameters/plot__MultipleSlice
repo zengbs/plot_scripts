@@ -11,7 +11,7 @@ DataName_01            Data_000008
 
 
 FileName                 ImageName
-FileFormat                     pdf
+FileFormat                     png
 
 # number should be same as NumCol
 Title_00                     Title # off/auto 
