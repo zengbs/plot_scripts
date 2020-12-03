@@ -270,8 +270,9 @@ def _Plot(Plot__Paramater, Input__TestProb):
 
            DataSet[j] = yt.load(DataName[j])
 
-           if (Field[i] not in ('momentum_x', 'momentum_y', 'momentum_z', 'total_energy_per_volume')):
-             DataSet[j].add_field(("gamer", Field[i]), function=function, sampling_type="cell", units=units)
+           if ( n.Model == 'SRHD' ):
+             if (Field[i] not in ('momentum_x', 'momentum_y', 'momentum_z', 'total_energy_per_volume')):
+               DataSet[j].add_field(("gamer", Field[i]), function=function, sampling_type="cell", units=units)
 
            if n.OffAxisSlice == 0:
              sl[i].append(  DataSet[j].slice(CutAxis[j], Coord[j], data_source=DataSet[j].all_data()  )  )

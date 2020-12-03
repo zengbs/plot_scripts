@@ -187,7 +187,8 @@ def _Plot(Plot__Paramater, Input__TestProb):
        for j in range(NumCol):
            Line[i].append([])
            for k in range(len(DataName)):
-              DataSet[k].add_field(("gamer", Field[i]), function=FieldFunction, sampling_type="cell", units=Units, force_override=True)
+              if ( n.Model == 'SRHD' ):
+                DataSet[k].add_field(("gamer", Field[i]), function=FieldFunction, sampling_type="cell", units=Units, force_override=True)
               Line[i][j].append ([])
               Line[i][j][k] = yt.LineBuffer( DataSet[k], Head[j], Tail[j], int(NumPts[j]) )
 
