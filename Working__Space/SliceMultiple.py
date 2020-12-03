@@ -189,10 +189,10 @@ def _Plot(Plot__Paramater, Input__TestProb):
           MaxFig[j] = True;
 
    for j in range(NumCol):
+       print(j)
        if ( n.OffAxisSlice == 0 and MaxFig[j] ):
           Xmin[j] = 0.0
           Ymin[j] = 0.0
-          print("hi")
   
           if ( Xmax[j] == 'auto' ):
                if ( CutAxis[j] == 'x' ):
@@ -235,12 +235,11 @@ def _Plot(Plot__Paramater, Input__TestProb):
        elif ( n.OffAxisSlice == 1 and MaxFig[j] == True ):
           print("Off axis slice does not support maximum slice")
           exit(0)
-   
-   dX[j]  = abs(Xmax[j]-Xmin[j])
-   dY[j]  = abs(Ymax[j]-Ymin[j])
-   dX_max = max( dX_max, dX[j] )
-   dY_max = max( dY_max, dY[j] )
 
+       dX[j]  = abs(Xmax[j]-Xmin[j])
+       dY[j]  = abs(Ymax[j]-Ymin[j])
+       dX_max = max( dX_max, dX[j] )
+       dY_max = max( dY_max, dY[j] )
 
    for j in range(NumCol):
        BufferSize[j]   = [  int(n.Resolution*dX[j]/dX_max), int(n.Resolution*dY[j]/dX_max)  ]

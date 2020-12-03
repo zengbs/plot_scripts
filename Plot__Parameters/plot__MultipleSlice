@@ -10,8 +10,8 @@ NumRow                           4
 NumCol                           2
 
 # number should be same as NumCol
-DataName_00            Data_000008 
-DataName_01            Data_000008
+DataName_00           ./Data_000008 
+DataName_01           ./Data_000008
 
 
 FileName                 ImageName
@@ -79,11 +79,11 @@ Ymin_01                       48.7
 NormalizedConst_Pres          auto
 NormalizedConst_Dens          auto
 
-Resolution                    2048
+Resolution                    1024
 aspect                       equal
 CMap                         arbre 
                      
-FigWidth                        20
+FigWidth                         5
 
 wspace                        0.03
 hspace                        0.04
