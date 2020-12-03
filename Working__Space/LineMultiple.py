@@ -188,6 +188,7 @@ def _Plot(Plot__Paramater, Input__TestProb):
            Line[i].append([])
            for k in range(len(DataName)):
               if ( n.Model == 'SRHD' ):
+                if (Field[i] not in ('momentum_x', 'momentum_y', 'momentum_z', 'total_energy_per_volume')):
                 DataSet[k].add_field(("gamer", Field[i]), function=FieldFunction, sampling_type="cell", units=Units, force_override=True)
               Line[i][j].append ([])
               Line[i][j][k] = yt.LineBuffer( DataSet[k], Head[j], Tail[j], int(NumPts[j]) )
