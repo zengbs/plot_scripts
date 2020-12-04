@@ -189,7 +189,6 @@ def _Plot(Plot__Paramater, Input__TestProb):
           MaxFig[j] = True;
 
    for j in range(NumCol):
-       print(j)
        if ( n.OffAxisSlice == 0 and MaxFig[j] ):
           Xmin[j] = 0.0
           Ymin[j] = 0.0

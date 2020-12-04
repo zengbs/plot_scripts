@@ -1,6 +1,3 @@
-# MODEL
-Model                            SRHD
-
 # MultipleLine 
 NumRow                              4
 NumCol                              2
@@ -46,7 +43,15 @@ Label_01            Spherical_(t=0.1)
 Label_02            Triaxial__(t=0.6)
 Label_03            Spherical_(t=0.6)
 
+# Model: (SRHD/HD)
+Model_00                         SRHD
+Model_01                         SRHD
+Model_02                         SRHD
+Model_03                         SRHD
 
+# Field:
+Field_00               Lorentz_factor
+Field_01               temperature_sr
 
 ######################################################################
 #   The following attributes must have the same number as `NumCol'
@@ -86,16 +91,12 @@ OriginX_01
 #   The following attributes must have the same number as `NumRow'
 ######################################################################
 #
-# Field:
 # norm: 0: linear scale, 1: log scale
-Field_00               Lorentz_factor
 YAxisLabel_00                $\gamma$
 normX_00                            1
 normY_00                            1
 
-# Field:
 # norm: 0: linear scale, 1: log scale
-Field_01               temperature_sr
 YAxisLabel_01         $k_{B}T/mc^{2}$ 
 normX_01                            1
 normY_00                            1

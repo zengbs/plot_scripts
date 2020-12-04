@@ -16,8 +16,8 @@ def _Plot(Plot__Paramater, Input__TestProb):
    n = SimpleNamespace(**Plot__Paramater)
 
    # Below lists have the same size as number of row:
-   Field       = []               
-   YAxisLabel  = []               
+   YAxisLabel  = []
+   XAxisLabel  = []
    normX       = []
    normY       = []
    Ymax        = []
@@ -36,13 +36,15 @@ def _Plot(Plot__Paramater, Input__TestProb):
 
    # Below list have the same arbitrary size:
    DataName    = []
+   Field       = []
    Label       = []
    Mark        = []
    MarkSize    = []
+   Model       = []
 
 
-   List     = [  DataName,  Label,   Field,   NumPts,   normX,   normY,   HeadX,   HeadY,   HeadZ,   TailX,   TailY,   TailZ,   Title ,  YAxisLabel ,  Ymax,   Ymin  ,  Mark,   MarkSize ,  OriginX  ]
-   ListName = [ "DataName","Label", "Field", "NumPts", "normX", "normY", "HeadX", "HeadY", "HeadZ", "TailX", "TailY", "TailZ", "Title", "YAxisLabel", "Ymax", "Ymin" , "Mark", "MarkSize", "OriginX" ]
+   List     = [  DataName,  Label,   Field,   NumPts,   normX,   normY,   HeadX,   HeadY,   HeadZ,   TailX,   TailY,   TailZ,   Title ,  YAxisLabel ,  XAxisLabel ,  Ymax,   Ymin  ,  Mark,   MarkSize ,  OriginX  ,  Model  ]
+   ListName = [ "DataName","Label", "Field", "NumPts", "normX", "normY", "HeadX", "HeadY", "HeadZ", "TailX", "TailY", "TailZ", "Title", "YAxisLabel", "XAxisLabel", "Ymax", "Ymin" , "Mark", "MarkSize", "OriginX" , "Model" ]
 
 
    for lstname, lst in zip(ListName, List):
@@ -66,11 +68,11 @@ def _Plot(Plot__Paramater, Input__TestProb):
 # check 
    Exit = False
 
-   if ( len(Field) != NumRow ):
-     print("len(Field) != %d" % (NumRow))
-     Exit = True
-   if ( len(YAxisLabel) != NumRow ):
-     print("len(YAxisLabel) != %d" % (NumRow))
+   #if ( len(Field) != NumRow ):
+   #  print("len(Field) != %d" % (NumRow))
+   #  Exit = True
+   if ( len(XAxisLabel) != NumRow ):
+     print("len(XAxisLabel) != %d" % (NumRow))
      Exit = True
    if ( len(YAxisLabel) != NumRow ):
      print("len(YAxisLabel) != %d" % (NumRow))
@@ -182,14 +184,14 @@ def _Plot(Plot__Paramater, Input__TestProb):
    # !!! The second added derived field will overwrite the first one !!
    # add derived field
    for i in range(NumRow):
-       FieldFunction, Units = unit.ChooseUnit(Field[i])
        Line.append([])
        for j in range(NumCol):
            Line[i].append([])
            for k in range(len(DataName)):
-              if ( n.Model == 'SRHD' ):
-                if (Field[i] not in ('momentum_x', 'momentum_y', 'momentum_z', 'total_energy_per_volume')):
-                DataSet[k].add_field(("gamer", Field[i]), function=FieldFunction, sampling_type="cell", units=Units, force_override=True)
+              FieldFunction, Units = unit.ChooseUnit(Field[k])
+              if ( Model[k] == 'SRHD' ):
+                if (Field[k] not in ('momentum_x', 'momentum_y', 'momentum_z', 'total_energy_per_volume')):
+                   DataSet[k].add_field(("gamer", Field[k]), function=FieldFunction, sampling_type="cell", units=Units, force_override=True)
               Line[i][j].append ([])
               Line[i][j][k] = yt.LineBuffer( DataSet[k], Head[j], Tail[j], int(NumPts[j]) )
 
@@ -239,6 +241,8 @@ def _Plot(Plot__Paramater, Input__TestProb):
            ax.set_yscale('log')
          if j==0:
            ax.set_ylabel(YAxisLabel[i], fontsize=20, fontweight='bold')
+         if i==0:
+           ax.set_xlabel(XAxisLabel[i], fontsize=20, fontweight='bold')
 
          # Removing tick labels must be after setting log scale;
          # otherwise tick labels emerge again
@@ -258,7 +262,7 @@ def _Plot(Plot__Paramater, Input__TestProb):
    # if all elements in Label are None then do not add legends
    if not all(label is None for label in Label):
      if ( i == 0 and j == 0 ):
-          ax.legend(loc='upper center', fontsize=16)
+          ax.legend(loc='lower left', fontsize=12)
 
    plt.savefig( n.FileName+'.'+n.FileFormat, bbox_inches='tight', pad_inches=0.05, format=n.FileFormat, dpi=800 )
 
