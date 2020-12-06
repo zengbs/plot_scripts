@@ -40,7 +40,7 @@ def _specific_enthalpy_sr(field, data):
     eta = data["Temp"]
     if data.ds["EoS"] == 2:
         h_c2 = 1.0 + data.ds["Gamma"] * eta / (data.ds["Gamma"] - 1.0)
-    elif data.ds["EoS"] == 4:
+    elif data.ds["EoS"] == 1:
         h_c2 = 2.5*eta+np.sqrt(2.25*eta**2+1.0)
     else:
         print("Your EoS doesn't support yet!")

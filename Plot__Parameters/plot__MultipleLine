@@ -4,9 +4,6 @@ NumCol                              2
 FileName                      Profile
 FileFormat                        png
 
-NormalizedConst_Pres             auto
-NormalizedConst_Dens             auto
-
 FigSizeX                            5   
 FigSizeY                            6
 
@@ -93,11 +90,13 @@ OriginX_01
 #
 # norm: 0: linear scale, 1: log scale
 YAxisLabel_00                $\gamma$
+XAxisLabel_00                     $x$
 normX_00                            1
 normY_00                            1
 
 # norm: 0: linear scale, 1: log scale
 YAxisLabel_01         $k_{B}T/mc^{2}$ 
+XAxisLabel_01                     $x$
 normX_01                            1
 normY_00                            1
 

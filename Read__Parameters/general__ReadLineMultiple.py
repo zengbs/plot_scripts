@@ -34,6 +34,7 @@ for line in FilePtr2:
     line, _, comment = line.partition('#')
     if line.strip():  # non-blank line
         key, value = line.split()
+        print(key, value)
         try:
             Plot__Paramater[key] = float(value)
         except ValueError:
@@ -70,7 +71,7 @@ if (Plot__Paramater['NormalizedConst_Pres'] == 'auto'):
 else:
     NormalizedConst_Pres = Plot__Paramater['NormalizedConst_Pres']
 
-if "cylindrical_radial_4velocity" in Plot__Paramater.values():
+if "cylindrical_radial_4velocity" in Plot__Paramater.values() or "cylindrical_radial_Mach_number" in Plot__Paramater.values():
     cylindrical_axis = Plot__Paramater['cylindrical_axis']
 
 if __name__ == '__main__':

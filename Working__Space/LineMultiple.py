@@ -221,7 +221,7 @@ def _Plot(Plot__Paramater, Input__TestProb):
               ax = axs[i*NumCol+j]
 
          Ray = np.sqrt( (Line[i][j][k]["x"]-Head[j][0])**2 + (Line[i][j][k]["y"]-Head[j][1])**2 + (Line[i][j][k]["z"]-Head[j][2])**2 )
-         ax.plot( Ray-OriginX[j], Line[i][j][k][Field[i]], Mark[k], label=Label[k], markersize=MarkSize[k] )
+         ax.plot( Ray-OriginX[j], Line[i][j][k][Field[k]], Mark[k], label=Label[k], markersize=MarkSize[k] )
          ax.tick_params( which='both', direction='in', labelsize=16, top=False )
          ax.set_xlim(min(Ray), max(Ray))
          
@@ -229,10 +229,10 @@ def _Plot(Plot__Paramater, Input__TestProb):
          if ( NumCol > 1 ):
            if ( Ymax[i] == 'auto' ):
              Ymax[i] = sys.float_info.min
-             Ymax[i]=max(np.amax(Line[i][j][k][Field[i]]), Ymax[i])
+             Ymax[i]=max(np.amax(Line[i][j][k][Field[k]]), Ymax[i])
            if ( Ymin[i] == 'auto' ):
              Ymin[i] = sys.float_info.max
-             Ymin[i]=min(np.amin(Line[i][j][k][Field[i]]), Ymin[i])
+             Ymin[i]=min(np.amin(Line[i][j][k][Field[k]]), Ymin[i])
            ax.set_ylim(Ymin[i], Ymax[i])
 
          if normX[i] == 1:
