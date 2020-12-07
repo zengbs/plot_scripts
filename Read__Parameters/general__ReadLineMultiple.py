@@ -119,5 +119,12 @@ for File in ParameterFile:
         cylindrical_axis = Plot__Paramater[File]['cylindrical_axis']
 
 
+# Check `NormalizedConst_Pres` and `NormalizedConst_Dens` are positive
+See  = NormalizedConst_Pres > 0
+See |= NormalizedConst_Dens > 0
+if ( not See ):
+   print( "NormalizedConst_Dens=%e, NormalizedConst_Pres=%e" % ( NormalizedConst_Dens, NormalizedConst_Pres ) )
+   exit(0)
+
 if __name__ == '__main__':
     _Plot(Plot__Paramater, Input__TestProb)
