@@ -1,27 +1,61 @@
+import numpy as np
+import os
 import sys
 # insert at 1, 0 is the script path (or '' in REPL)
 sys.path.insert(1, '/projectY/tseng/plot_scripts/Working__Space')
-
 import argparse
 from LineMultiple import _Plot
 
 
+# Extract options from command line
 parser = argparse.ArgumentParser(description='Process some integers.')
-parser.add_argument( '-p',  action='store', required=True,  type=str, dest='File', help='file' )
+parser.add_argument( '-d',  action='store', required=True,  type=str, dest='Directory',
+                     help='the directory adopting attribute parameters' )
 
 args = parser.parse_args()
-File = args.File
+Directory = args.Directory
+
+
+# Put the name of parameter files in `Directory` into `ParameterFile`
+ParameterFile = [f for f in os.listdir(Directory) if os.path.isfile(os.path.join(Directory, f))]
+
+# Get the total number of panels
+NumPanel = len(ParameterFile)-1
+
+# Get the number of columns in panel matrx
+for j in range(100):
+      FileName = Directory+"/"+"_".join(("panel", "00", "%02d"% j))
+      if not os.path.isfile(FileName):
+         NumCol = j
+         break
+
+# Get the number of rows in panel matrx
+if ( NumPanel%NumCol == 0):
+  NumRow = int(NumPanel/NumCol)
+else:
+  print( "NumPanel % NumCol = %d" % NumPanel%NumCol )
+  exit()
+
+
+# Check all parameter files exist
+for i in range(NumCol):
+    for j in range(NumRow):
+      FileName = Directory+"/"+"_".join(("panel", "%02d"%i, "%02d"% j))
+        if not os.path.isfile(FileName):
+           print("%s does not exist!!" % FileName)
+           exit()
+   
+
+
 
 Plot__Paramater = {}
 Input__TestProb = {}
 
+DirectoryPtr1 = open('Input__TestProb', "r")
+DirectoryPtr2 = open(Directory, "r")
 
 
-FilePtr1 = open('Input__TestProb', "r")
-FilePtr2 = open(File, "r")
-
-
-for line in FilePtr1:
+for line in DirectoryPtr1:
     line, _, comment = line.partition('#')
     if line.strip():  # non-blank line
         key, value = line.split()
@@ -30,7 +64,7 @@ for line in FilePtr1:
         except ValueError:
             Input__TestProb[key] = value
 
-for line in FilePtr2:
+for line in DirectoryPtr2:
     line, _, comment = line.partition('#')
     if line.strip():  # non-blank line
         key, value = line.split()
@@ -40,8 +74,8 @@ for line in FilePtr2:
         except ValueError:
             Plot__Paramater[key] = value
 
-FilePtr1.close()
-FilePtr2.close()
+DirectoryPtr1.close()
+DirectoryPtr2.close()
 
 NormalizedConst_Dens = 0
 NormalizedConst_Pres = 0
