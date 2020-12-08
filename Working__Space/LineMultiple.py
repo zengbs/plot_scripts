@@ -16,8 +16,8 @@ def Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
 # {'plot/panel_00_00': {'Title': 'off', 'YAxisLabel': '$\\gamma$', 'XAxisLabel': 'x', 
 #                       'normX': 0.0, 'normY': 0.0, 'Ymax': 'auto', 'Ymin': 'auto', 'NumLine': 2.0, 
 #                       'DataName_00': 'Data_000008', 'DataName_01': 'Data_000008', 'Mark_00': 'ro', 
-#                       'Mark_01': 'ro', 'MarkSize_00': 1.0, 'MarkSize_01': 1.0, 'Label_00': 'off', 
-#                       'Label_01': 'off', 'Model_00': 'SRHD', 'Model_01': 'SRHD', 'Field_00': 'Lorentz_factor', 
+#                       'Mark_01': 'ro', 'MarkSize_00': 1.0, 'MarkSize_01': 1.0, 'Legend_00': 'off', 
+#                       'Legend_01': 'off', 'Model_00': 'SRHD', 'Model_01': 'SRHD', 'Field_00': 'Lorentz_factor', 
 #                       'Field_01': 'Lorentz_factor', 'NumPts_00': 2048.0, 'NumPts_01': 2048.0, 
 #                       'HeadX_00': 50.0, 'HeadY_00': 50.0, 'HeadZ_00': 50.0, 'TailX_00': 77.5, 'TailY_00': 50.0, 
 #                       'TailZ_00': 50.0, 'HeadX_01': 50.0, 'HeadY_01': 50.0, 'HeadZ_01': 50.0, 'TailX_01': 77.5, 
@@ -25,8 +25,8 @@ def Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
 #  'plot/panel_00_00': {'Title': 'off', 'YAxisLabel': '$\\gamma$', 'XAxisLabel': 'x', 
 #                       'normX': 0.0, 'normY': 0.0, 'Ymax': 'auto', 'Ymin': 'auto', 'NumLine': 2.0, 
 #                       'DataName_00': 'Data_000008', 'DataName_01': 'Data_000008', 'Mark_00': 'ro', 
-#                       'Mark_01': 'ro', 'MarkSize_00': 1.0, 'MarkSize_01': 1.0, 'Label_00': 'off', 
-#                       'Label_01': 'off', 'Model_00': 'SRHD', 'Model_01': 'SRHD', 'Field_00': 'Lorentz_factor', 
+#                       'Mark_01': 'ro', 'MarkSize_00': 1.0, 'MarkSize_01': 1.0, 'Legend_00': 'off', 
+#                       'Legend_01': 'off', 'Model_00': 'SRHD', 'Model_01': 'SRHD', 'Field_00': 'Lorentz_factor', 
 #                       'Field_01': 'Lorentz_factor', 'NumPts_00': 2048.0, 'NumPts_01': 2048.0, 
 #                       'HeadX_00': 50.0, 'HeadY_00': 50.0, 'HeadZ_00': 50.0, 'TailX_00': 77.5, 'TailY_00': 50.0, 
 #                       'TailZ_00': 50.0, 'HeadX_01': 50.0, 'HeadY_01': 50.0, 'HeadZ_01': 50.0, 'TailX_01': 77.5, 
@@ -60,7 +60,7 @@ def Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
 # {'plot/panel_00_00': {'DataName': ['DataName_00', 'DataName_01'], 
 #                       'Mark'    : ['Mark_00'    , 'Mark_01'    ], 
 #                       'MarkSize': ['MarkSize_00', 'MarkSize_01'], 
-#                       'Label'   : ['Label_00'   , 'Label_01'   ], 
+#                       'Legend'   : ['Legend_00'   , 'Legend_01'   ], 
 #                       'Model'   : ['Model_00'   , 'Model_01'   ], 
 #                       'Field'   : ['Field_00'   , 'Field_01'   ], 
 #                       'NumPts'  : ['NumPts_00'  , 'NumPts_01'  ], 
@@ -72,7 +72,7 @@ def Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
 #                       'TailZ'   : ['TailZ_00'   , 'TailZ_01'   ], 
 #                       'OriginX' : ['OriginX_00' , 'OriginX_01' ]}}
 
-   DataKeys = ["DataName","Mark","MarkSize","Label","Model","Field","NumPts",
+   DataKeys = ["DataName","Mark","MarkSize","Legend","Model","Field","NumPts",
                "HeadX","HeadY","HeadZ","TailX","TailY","TailZ","OriginX"]
    RealDataKey = {}
    for panel in list(Plot__Paramater.keys())[:-1]: # iterate over panels in dictionary but panel_common
@@ -87,11 +87,11 @@ def Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
                       exit()
 
 
-#  Change `Label` from 'no' to 'None'
+#  Change `Legend` from 'no' to 'None'
    for panel in list(Plot__Paramater.keys())[:-1]: # iterate over panels in dictionary but panel_common
-       for label in RealDataKey[panel]['Label']: # iterate over labels in a specific panel
-           if Plot__Paramater[panel][label] == 'off':
-              Plot__Paramater[panel][label] = None 
+       for legend in RealDataKey[panel]['Legend']: # iterate over legends in a specific panel
+           if Plot__Paramater[panel][legend] == 'off':
+              Plot__Paramater[panel][legend] = None 
 
 
    font = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 20}
@@ -113,7 +113,7 @@ def Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
                      RealDataKey[panel]['TailX'],    RealDataKey[panel]['TailY'],   RealDataKey[panel]['TailZ'],
                      RealDataKey[panel]['DataName'], RealDataKey[panel]['Field'],   RealDataKey[panel]['NumPts'],
                      RealDataKey[panel]['Model'],    RealDataKey[panel]['OriginX'], RealDataKey[panel]['Mark'],
-                     RealDataKey[panel]['MarkSize'], RealDataKey[panel]['Label'] )
+                     RealDataKey[panel]['MarkSize'], RealDataKey[panel]['Legend'] )
        Line.append([])
        RayIdx=0
 
@@ -129,7 +129,8 @@ def Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
        YmaxPanel  = []
        YminPanel  = []
 
-       for headx, heady, headz, tailx, taily, tailz, dataname, field, pts, model, originx, mark, marksize, label in Zipped: # iterate over attributes in a specific panel
+       # iterate over attributes in a specific panel
+       for headx, heady, headz, tailx, taily, tailz, dataname, field, pts, model, originx, mark, marksize, legend in Zipped:
            HeadX    = Plot__Paramater[panel][headx]
            HeadY    = Plot__Paramater[panel][heady]
            HeadZ    = Plot__Paramater[panel][headz]
@@ -143,7 +144,7 @@ def Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
            OriginX  = Plot__Paramater[panel][originx]
            Mark     = Plot__Paramater[panel][mark]
            MarkSize = Plot__Paramater[panel][marksize]
-           Label    = Plot__Paramater[panel][label]
+           Legend   = Plot__Paramater[panel][legend]
 
            DataSet  = yt.load(DataName)
 
@@ -188,7 +189,7 @@ def Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
 
 
            Ray = np.sqrt( (Line[PanelIdx][RayIdx]["x"]-Head[0])**2 + (Line[PanelIdx][RayIdx]["y"]-Head[1])**2 + (Line[PanelIdx][RayIdx]["z"]-Head[2])**2 )
-           ax.plot( Ray-OriginX, Line[PanelIdx][RayIdx][Field], Mark, label=Label, markersize=MarkSize )
+           ax.plot( Ray-OriginX, Line[PanelIdx][RayIdx][Field], Mark, label=Legend, markersize=MarkSize )
            ax.tick_params( which='both', direction='in', labelsize=16, top=False )
            
            # Dtermine the extreme x-values in a specific panel
@@ -208,8 +209,8 @@ def Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
            if PanelIdx>=(NumRow-1)*NumCol:
              ax.set_xlabel(XAxisLabel, fontsize=20, fontweight='bold')
 
-           # Removing tick labels must be after setting log scale;
-           # otherwise tick labels emerge again
+           # Removing tick legends must be after setting log scale;
+           # otherwise tick legends emerge again
            if PanelIdx<(NumRow-1)*NumCol:
              ax.get_xaxis().set_ticks([])
            if PanelIdx%NumCol != 0:
@@ -222,6 +223,8 @@ def Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
              else:
                ax.set_title( Title, fontdict=font )
 
+           if Legend != 'off':
+              ax.legend(loc='lower left', fontsize=12)
 
            RayIdx=RayIdx+1
 
@@ -243,9 +246,8 @@ def Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
 
        ax.set_xlim(min(XminPanel), max(XmaxPanel))
 
-   # if all elements in Label are None then do not add legends
-   #if not all(label is None for label in Label):
-   #   ax.legend(loc='lower left', fontsize=12)
+   # if all elements in Legend are None then do not add legends
+   # if not all(legend is None for legend in Legend):
 
    plt.savefig( ns[-1].FileName+'.'+ns[-1].FileFormat, bbox_inches='tight', pad_inches=0.05, format=ns[-1].FileFormat, dpi=800 )
 

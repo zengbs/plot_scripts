@@ -14,16 +14,16 @@ args = parser.parse_args()
 Directory = args.Directory
 
 
-# Put the name of parameter files stored in `Directory` into `ParameterFile`
-ParameterFile = [f for f in os.listdir(Directory) if os.path.isfile(os.path.join(Directory, f))]
+# Put the name of parameter files stored in `Directory` into `ParameterPanel`
+ParameterPanel = [f for f in os.listdir(Directory) if os.path.isfile(os.path.join(Directory, f))]
 
 # Get the total number of panels
-NumPanel = len(ParameterFile)-1
+NumPanel = len(ParameterPanel)-1
 
 # Get the number of columns in panel array
 for j in range(100):
-      FileName = Directory+"/"+"_".join(("panel", "00", "%02d"% j))
-      if not os.path.isfile(FileName):
+      PanelName = Directory+"/"+"_".join(("panel", "00", "%02d"% j))
+      if not os.path.isfile(PanelName):
          NumCol = j
          break
 # Get the number of rows in panel array
@@ -34,40 +34,40 @@ else:
   exit()
 
 
-# Make sure the file name in `ParameterFile` is in row-major
-ParameterFile[-1] = os.path.join(Directory,'panel_common')
+# Make sure the file name in `ParameterPanel` is in row-major
+ParameterPanel[-1] = os.path.join(Directory,'panel_common')
 for i in range(NumRow):
     for j in range(NumCol):
-      FileName = Directory+"/"+"_".join(("panel", "%02d"%i, "%02d"%j))
-      ParameterFile[i*NumCol+j] = FileName
+      PanelName = Directory+"/"+"_".join(("panel", "%02d"%i, "%02d"%j))
+      ParameterPanel[i*NumCol+j] = PanelName
 
 # Check all parameter files exist
-for PathFile in ParameterFile:
-    if not os.path.isfile(PathFile):
-       print("%s does not exist!!" % FileName)
+for PathPanel in ParameterPanel:
+    if not os.path.isfile(PathPanel):
+       print("%s does not exist!!" % PanelName)
        exit()
       
 
 # The list of pointers pointing to the parameter files
-ParamaterFilePtr = []
+ParamaterPanelPtr = []
 
 # The nested dictionary storing parameter in multi-file
 Plot__Paramater = {}
 
-# Extract parameters from `ParameterFile`
-for File in ParameterFile:
-    ParamaterFilePtr.append(open(File, "r"))
-    Plot__Paramater[File] = {}                     # create nested dictionary
-    FIdx = ParameterFile.index(File)               # find the index
-    for line in ParamaterFilePtr[FIdx]:
+# Extract parameters from `ParameterPanel`
+for Panel in ParameterPanel:
+    ParamaterPanelPtr.append(open(Panel, "r"))
+    Plot__Paramater[Panel] = {}                     # create nested dictionary
+    FIdx = ParameterPanel.index(Panel)               # find the index
+    for line in ParamaterPanelPtr[FIdx]:
         line, _,comment = line.partition('#')
         if line.strip():                           # non-blank line
             key, value = line.split()
             try:
-                Plot__Paramater[File][key] = float(value)
+                Plot__Paramater[Panel][key] = float(value)
             except ValueError:
-                Plot__Paramater[File][key] = value
-    ParamaterFilePtr[FIdx].close()
+                Plot__Paramater[Panel][key] = value
+    ParamaterPanelPtr[FIdx].close()
 
 
 # Extract parameters from `Input__TestProb`
@@ -92,31 +92,31 @@ NormalizedConst_Pres = 0
 
 
 
-if (Plot__Paramater[ParameterFile[-1]]['NormalizedConst_Dens'] == 'auto'):
+if (Plot__Paramater[ParameterPanel[-1]]['NormalizedConst_Dens'] == 'auto'):
     if "Jet_SrcDens" in Input__TestProb:
       NormalizedConst_Dens = Input__TestProb['Jet_SrcDens']
     if "Blast_Dens_Src" in Input__TestProb:
       NormalizedConst_Dens = Input__TestProb['Blast_Dens_Src']
 
-    Plot__Paramater[ParameterFile[-1]]['NormalizedConst_Dens'] = 'auto (%s)' % ( str(NormalizedConst_Dens) )
+    Plot__Paramater[ParameterPanel[-1]]['NormalizedConst_Dens'] = 'auto (%s)' % ( str(NormalizedConst_Dens) )
 
 else:
-    NormalizedConst_Dens = Plot__Paramater[ParameterFile[-1]]['NormalizedConst_Dens']
+    NormalizedConst_Dens = Plot__Paramater[ParameterPanel[-1]]['NormalizedConst_Dens']
 
-if (Plot__Paramater[ParameterFile[-1]]['NormalizedConst_Pres'] == 'auto'):
+if (Plot__Paramater[ParameterPanel[-1]]['NormalizedConst_Pres'] == 'auto'):
     if "Jet_SrcTemp" in Input__TestProb:
       NormalizedConst_Pres = Input__TestProb['Jet_SrcDens'] * Input__TestProb['Jet_SrcTemp']
     if "Blast_Temp_Src" in Input__TestProb:
       NormalizedConst_Pres = Input__TestProb['Blast_Dens_Src'] * Input__TestProb['Blast_Temp_Src']
 
-    Plot__Paramater[ParameterFile[-1]]['NormalizedConst_Pres'] = 'auto (%s)' % ( str(NormalizedConst_Pres) )
+    Plot__Paramater[ParameterPanel[-1]]['NormalizedConst_Pres'] = 'auto (%s)' % ( str(NormalizedConst_Pres) )
 
 else:
-    NormalizedConst_Pres = Plot__Paramater[ParameterFile[-1]]['NormalizedConst_Pres']
+    NormalizedConst_Pres = Plot__Paramater[ParameterPanel[-1]]['NormalizedConst_Pres']
 
-for File in ParameterFile:
-    if "cylindrical_radial_4velocity" in Plot__Paramater[File].values() or "cylindrical_radial_Mach_number" in Plot__Paramater[File].values():
-        cylindrical_axis = Plot__Paramater[File]['cylindrical_axis']
+for Panel in ParameterPanel:
+    if "cylindrical_radial_4velocity" in Plot__Paramater[Panel].values() or "cylindrical_radial_Mach_number" in Plot__Paramater[Panel].values():
+        cylindrical_axis = Plot__Paramater[Panel]['cylindrical_axis']
 
 
 # Check `NormalizedConst_Pres` and `NormalizedConst_Dens` are positive
