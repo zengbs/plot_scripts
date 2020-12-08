@@ -74,18 +74,17 @@ def Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
 
    DataKeys = ["DataName","Mark","MarkSize","Label","Model","Field","NumPts",
                "HeadX","HeadY","HeadZ","TailX","TailY","TailZ","OriginX"]
-   FIdx=0
    RealDataKey = {}
    for panel in list(Plot__Paramater.keys())[:-1]: # iterate over panels in dictionary but panel_common
+       PanelIdx = list(Plot__Paramater.keys()).index(panel)
        RealDataKey[panel] = {}
        for data_key in DataKeys:
-               real_key_list = list("_".join((data_key, "%02d"% (line))) for line in range(int(ns[FIdx].NumLine)))
+               real_key_list = list("_".join((data_key, "%02d"% (line))) for line in range(int(ns[PanelIdx].NumLine)))
                RealDataKey[panel][data_key] = real_key_list
                for real_key in real_key_list:
                    if real_key not in Plot__Paramater[panel]:
                       print("The %20s is absent in %20s !!" % ( real_key, panel ))
                       exit()
-       FIdx=FIdx+1
 
 
 #  Change `Label` from 'no' to 'None'
@@ -212,10 +211,10 @@ def Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
 
            # Removing tick labels must be after setting log scale;
            # otherwise tick labels emerge again
-           #if i < NumRow:
-           #  ax.get_xaxis().set_ticks([])
-           #if j > 0:
-           #  ax.get_yaxis().set_ticks([])
+           if PanelIdx<(NumRow-1)*NumCol:
+             ax.get_xaxis().set_ticks([])
+           if PanelIdx%NumCol != 0:
+             ax.get_yaxis().set_ticks([])
 
            if ( Title != 'off' ):
              if (Title == 'auto'):
