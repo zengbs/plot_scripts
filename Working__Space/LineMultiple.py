@@ -5,178 +5,130 @@ import matplotlib
 import matplotlib.pyplot as plt
 from types import SimpleNamespace    
 import sys
-
-
+import re
 
 import derived_field as df
 import unit
 
-def _Plot(Plot__Paramater, Input__TestProb):   
+def Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
 
-   n = SimpleNamespace(**Plot__Paramater)
+# Plot__Paramater = 
+# {'plot/panel_00_00': {'Title': 'off', 'YAxisLabel': '$\\gamma$', 'XAxisLabel': 'x', 
+#                       'normX': 0.0, 'normY': 0.0, 'Ymax': 'auto', 'Ymin': 'auto', 'NumLine': 2.0, 
+#                       'DataName_00': 'Data_000008', 'DataName_01': 'Data_000008', 'Mark_00': 'ro', 
+#                       'Mark_01': 'ro', 'MarkSize_00': 1.0, 'MarkSize_01': 1.0, 'Label_00': 'off', 
+#                       'Label_01': 'off', 'Model_00': 'SRHD', 'Model_01': 'SRHD', 'Field_00': 'Lorentz_factor', 
+#                       'Field_01': 'Lorentz_factor', 'NumPts_00': 2048.0, 'NumPts_01': 2048.0, 
+#                       'HeadX_00': 50.0, 'HeadY_00': 50.0, 'HeadZ_00': 50.0, 'TailX_00': 77.5, 'TailY_00': 50.0, 
+#                       'TailZ_00': 50.0, 'HeadX_01': 50.0, 'HeadY_01': 50.0, 'HeadZ_01': 50.0, 'TailX_01': 77.5, 
+#                       'TailY_01': 50.0, 'TailZ_01': 50.0, 'OriginX_00': 0.0, 'OriginX_01': 0.0}, 
+#  'plot/panel_00_00': {'Title': 'off', 'YAxisLabel': '$\\gamma$', 'XAxisLabel': 'x', 
+#                       'normX': 0.0, 'normY': 0.0, 'Ymax': 'auto', 'Ymin': 'auto', 'NumLine': 2.0, 
+#                       'DataName_00': 'Data_000008', 'DataName_01': 'Data_000008', 'Mark_00': 'ro', 
+#                       'Mark_01': 'ro', 'MarkSize_00': 1.0, 'MarkSize_01': 1.0, 'Label_00': 'off', 
+#                       'Label_01': 'off', 'Model_00': 'SRHD', 'Model_01': 'SRHD', 'Field_00': 'Lorentz_factor', 
+#                       'Field_01': 'Lorentz_factor', 'NumPts_00': 2048.0, 'NumPts_01': 2048.0, 
+#                       'HeadX_00': 50.0, 'HeadY_00': 50.0, 'HeadZ_00': 50.0, 'TailX_00': 77.5, 'TailY_00': 50.0, 
+#                       'TailZ_00': 50.0, 'HeadX_01': 50.0, 'HeadY_01': 50.0, 'HeadZ_01': 50.0, 'TailX_01': 77.5, 
+#                       'TailY_01': 50.0, 'TailZ_01': 50.0, 'OriginX_00': 0.0, 'OriginX_01': 0.0} }
 
-   # Below lists have the same size as number of row:
-   YAxisLabel  = []
-   XAxisLabel  = []
-   normX       = []
-   normY       = []
-   Ymax        = []
-   Ymin        = []
-                                  
-   # Below lists have the same size as number of column:
-   Title       = []
-   NumPts      = []
-   HeadX       = []
-   HeadY       = []
-   HeadZ       = []
-   TailX       = []
-   TailY       = []
-   TailZ       = []
-   OriginX     = []
-
-   # Below list have the same arbitrary size:
-   DataName    = []
-   Field       = []
-   Label       = []
-   Mark        = []
-   MarkSize    = []
-   Model       = []
+#  Create a list of namespace
+   ns = []
+   for key in Plot__Paramater.keys():
+       ns.append( SimpleNamespace(**Plot__Paramater[key]) )
 
 
-   List     = [  DataName,  Label,   Field,   NumPts,   normX,   normY,   HeadX,   HeadY,   HeadZ,   TailX,   TailY,   TailZ,   Title ,  YAxisLabel ,  XAxisLabel ,  Ymax,   Ymin  ,  Mark,   MarkSize ,  OriginX  ,  Model  ]
-   ListName = [ "DataName","Label", "Field", "NumPts", "normX", "normY", "HeadX", "HeadY", "HeadZ", "TailX", "TailY", "TailZ", "Title", "YAxisLabel", "XAxisLabel", "Ymax", "Ymin" , "Mark", "MarkSize", "OriginX" , "Model" ]
+# check common keys in Plot__Paramater['panel_common']
+   Keys = ["FileName","FileFormat","FigSizeX","FigSizeY","wspace","hspace",
+           "NormalizedConst_Pres","NormalizedConst_Dens"]
+   panel = list(Plot__Paramater.keys())[-1]
+   for key in Plot__Paramater[panel]:
+      if key not in Keys:
+         print("The %20s is absent in %20s !!" % ( key, panel ))
+         exit()
+
+# check shared keys in Plot__Paramater['panel_??_??']
+   Keys = ["XAxisLabel","YAxisLabel","Title","normX","normY","Ymax","Ymin","NumLine"]
+   for panel in list(Plot__Paramater.keys())[:-1]: # iterate over panels in dictionary but panel_common
+       for key in Keys:
+          if key not in Plot__Paramater[panel]:
+             print("The %20s is absent in %20s !!" % ( key, panel ))
+             exit()
+
+# check data keys in Plot__Paramater['panel_??_??']
+# RealDataKey = 
+# {'plot/panel_00_00': {'DataName': ['DataName_00', 'DataName_01'], 
+#                       'Mark'    : ['Mark_00'    , 'Mark_01'    ], 
+#                       'MarkSize': ['MarkSize_00', 'MarkSize_01'], 
+#                       'Label'   : ['Label_00'   , 'Label_01'   ], 
+#                       'Model'   : ['Model_00'   , 'Model_01'   ], 
+#                       'Field'   : ['Field_00'   , 'Field_01'   ], 
+#                       'NumPts'  : ['NumPts_00'  , 'NumPts_01'  ], 
+#                       'HeadX'   : ['HeadX_00'   , 'HeadX_01'   ], 
+#                       'HeadY'   : ['HeadY_00'   , 'HeadY_01'   ], 
+#                       'HeadZ'   : ['HeadZ_00'   , 'HeadZ_01'   ], 
+#                       'TailX'   : ['TailX_00'   , 'TailX_01'   ], 
+#                       'TailY'   : ['TailY_00'   , 'TailY_01'   ], 
+#                       'TailZ'   : ['TailZ_00'   , 'TailZ_01'   ], 
+#                       'OriginX' : ['OriginX_00' , 'OriginX_01' ]}}
+
+   DataKeys = ["DataName","Mark","MarkSize","Label","Model","Field","NumPts",
+               "HeadX","HeadY","HeadZ","TailX","TailY","TailZ","OriginX"]
+   FIdx=0
+   RealDataKey = {}
+   for panel in list(Plot__Paramater.keys())[:-1]: # iterate over panels in dictionary but panel_common
+       RealDataKey[panel] = {}
+       for data_key in DataKeys:
+               real_key_list = list("_".join((data_key, "%02d"% (line))) for line in range(int(ns[FIdx].NumLine)))
+               RealDataKey[panel][data_key] = real_key_list
+               for real_key in real_key_list:
+                   if real_key not in Plot__Paramater[panel]:
+                      print("The %20s is absent in %20s !!" % ( real_key, panel ))
+                      exit()
+       FIdx=FIdx+1
 
 
-   for lstname, lst in zip(ListName, List):
-     idx=0
-     key = lstname+str("_00")
-     while ( key in Plot__Paramater ):
-       lst.append( Plot__Paramater[key] )
-       idx=idx+1
-       key = lstname+str("_%02d" % idx)
-
-###################################################################
-
-   for idx in range(len(Label)):
-     if Label[idx] == 'no':
-       Label[idx] = None
-
-###################################################################
-   NumRow = int(n.NumRow)
-   NumCol = int(n.NumCol)
-
-# check 
-   Exit = False
-
-   #if ( len(Field) != NumRow ):
-   #  print("len(Field) != %d" % (NumRow))
-   #  Exit = True
-   if ( len(XAxisLabel) != NumRow ):
-     print("len(XAxisLabel) != %d" % (NumRow))
-     Exit = True
-   if ( len(YAxisLabel) != NumRow ):
-     print("len(YAxisLabel) != %d" % (NumRow))
-     Exit = True
-   if ( len(normX) != NumRow ):
-     print("len(normX) != %d" % (NumRow))
-     Exit = True
-   if ( len(normY) != NumRow ):
-     print("len(normY) != %d" % (NumRow))
-     Exit = True
-   if ( len(Ymax) != NumRow ):
-     print("len(Ymax) != %d" % (NumRow))
-     Exit = True
-   if ( len(Ymin) != NumRow ):
-     print("len(Ymin) != %d" % (NumRow))
-     Exit = True
-
-   if ( len(Title) != NumCol ):
-     print("len(Title) != %d" % (NumCol))
-     Exit = True
-   if ( len(NumPts) != NumCol ):
-     print("len(NumPts) != %d" % (NumCol))
-     Exit = True
-   if ( len(HeadX) != NumCol ):
-     print("len(HeadX) != %d" % (NumCol))
-     Exit = True
-   if ( len(HeadY) != NumCol ):
-     print("len(HeadY) != %d" % (NumCol))
-     Exit = True
-   if ( len(HeadZ) != NumCol ):
-     print("len(HeadZ) != %d" % (NumCol))
-     Exit = True
-   if ( len(TailX) != NumCol ):
-     print("len(TailX) != %d" % (NumCol))
-     Exit = True
-   if ( len(TailY) != NumCol ):
-     print("len(TailY) != %d" % (NumCol))
-     Exit = True
-   if ( len(TailZ) != NumCol ):
-     print("len(TailZ) != %d" % (NumCol))
-     Exit = True
-  
-   if ( len(Label) != len(DataName) ):
-     print("len(Label) != %d" % (len(DataName)))
-     Exit = True
-   if ( len(Mark) != len(DataName) ):
-     print("len(Mark) != %d" % (len(DataName)))
-     Exit = True
-   if ( len(MarkSize) != len(DataName) ):
-     print("len(MarkSize) != %d" % (len(DataName)))
-     Exit = True
- 
-   if ( Exit ):
-     exit(0)
-###################################################################
-
-#  Head = [ [ HeadX_01, HeadY_01, HeadZ_01 ],
-#           [ HeadX_02, HeadY_02, HeadZ_02 ],
-#           [ HeadX_03, HeadY_03, HeadZ_03 ],
-#           [ HeadX_04, HeadY_04, HeadZ_04 ] ]
-#
-#  Tail = [ [ TailX_01, TailY_01, TailZ_01 ],
-#           [ TailX_02, TailY_02, TailZ_02 ],
-#           [ TailX_03, TailY_03, TailZ_03 ],
-#           [ TailX_04, TailY_04, TailZ_04 ] ]
-
-   NumRay = len(HeadX)
-   Head = []
-   Tail = []
-   for idx in range(NumCol):
-     Head.append([])
-     Tail.append([])
-     Head[idx].append( HeadX[idx] )
-     Head[idx].append( HeadY[idx] )
-     Head[idx].append( HeadZ[idx] )
-     Tail[idx].append( TailX[idx] )
-     Tail[idx].append( TailY[idx] )
-     Tail[idx].append( TailZ[idx] )
+#  Change `Label` from 'no' to 'None'
+   for panel in list(Plot__Paramater.keys())[:-1]: # iterate over panels in dictionary but panel_common
+       for label in RealDataKey[panel]['Label']:
+           if Plot__Paramater[panel][label] == 'off':
+              Plot__Paramater[panel][label] = None 
 
 
-   # DataSet[DataName]          = [....]
-   DataSet  = [yt.load(DataName[k]) for k in range(len(DataName))]
-
-   BoxSizeX = DataSet[0]["BoxSize"][0]
-   BoxSizeY = DataSet[0]["BoxSize"][1]
-   BoxSizeZ = DataSet[0]["BoxSize"][2]
-
-   # Ray can not lie on the surface of or the edge of computational domain
-   for i in range(NumCol):
-     for j in range(3):
-       if (Head[i][j] == 0 and Tail[i][j] == 0):
-          print("error: Ray can not lie on the surface or edge of computational domain")
-          exit(0)
-       elif ( j==0 and Head[i][j] == BoxSizeX and Tail[i][j] == BoxSizeX ):
-          print("error: Ray can not lie on the surface or edge of computational domain")
-          exit(0)
-       elif ( j==1 and Head[i][j] == BoxSizeY and Tail[i][j] == BoxSizeY ):
-          print("error: Ray can not lie on the surface or edge of computational domain")
-          exit(0)
-       elif ( j==2 and Head[i][j] == BoxSizeZ and Tail[i][j] == BoxSizeZ ):
-          print("error: Ray can not lie on the surface or edge of computational domain")
-          exit(0)
 
 
+#  Check rays lie inside the box
+   for panel in list(Plot__Paramater.keys())[:-1]: # iterate over panels in dictionary but panel_common
+       ZippedPoints = zip( RealDataKey[panel]['HeadX'], RealDataKey[panel]['HeadY'], RealDataKey[panel]['HeadZ'],
+                           RealDataKey[panel]['TailX'], RealDataKey[panel]['TailY'], RealDataKey[panel]['TailZ'],
+                           RealDataKey[panel]['DataName'] )
+       for headx, heady, headz, tailx, taily, tailz, DataName in ZippedPoints:
+
+           Head = [ Plot__Paramater[panel][headx], Plot__Paramater[panel][heady], Plot__Paramater[panel][headz] ]
+           Tail = [ Plot__Paramater[panel][tailx], Plot__Paramater[panel][taily], Plot__Paramater[panel][tailz] ]
+
+           DataSet  = yt.load(Plot__Paramater[panel][DataName])
+
+           BoxSizeX = DataSet["BoxSize"][0]
+           BoxSizeY = DataSet["BoxSize"][1]
+           BoxSizeZ = DataSet["BoxSize"][2]
+
+           # Ray can not lie on the surface of or the edge of computational domain
+           for j in range(3):
+             if (Head[j] == 0 and Tail[j] == 0):
+                print("error: Ray can not lie on the surface or edge of computational domain")
+                exit(0)
+             elif ( j==0 and Head[j] == BoxSizeX and Tail[j] == BoxSizeX ):
+                print("error: Ray can not lie on the surface or edge of computational domain")
+                exit(0)
+             elif ( j==1 and Head[j] == BoxSizeY and Tail[j] == BoxSizeY ):
+                print("error: Ray can not lie on the surface or edge of computational domain")
+                exit(0)
+             elif ( j==2 and Head[j] == BoxSizeZ and Tail[j] == BoxSizeZ ):
+                print("error: Ray can not lie on the surface or edge of computational domain")
+                exit(0)
+
+   exit()
    
    # Line[Field][Ray][DataName] = [....]
    Line     = []

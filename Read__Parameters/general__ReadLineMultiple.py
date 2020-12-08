@@ -4,7 +4,7 @@ import sys
 # insert at 1, 0 is the script path (or '' in REPL)
 sys.path.insert(1, '/projectY/tseng/plot_scripts/Working__Space')
 import argparse
-from LineMultiple import _Plot
+from LineMultiple import Plot
 
 
 # Extract the directory storing parameter files from command line
@@ -30,11 +30,11 @@ for j in range(100):
 if ( NumPanel%NumCol == 0):
   NumRow = int(NumPanel/NumCol)
 else:
-  print( "NumPanel % NumCol = %d" % NumPanel%NumCol )
+  print( "NumPanel % NumCol = %d" % (NumPanel%NumCol) )
   exit()
 
 
-# Make sure the file in `ParameterFile` is in row-major
+# Make sure the file name in `ParameterFile` is in row-major
 ParameterFile[-1] = os.path.join(Directory,'panel_common')
 for i in range(NumRow):
     for j in range(NumCol):
@@ -126,5 +126,6 @@ if ( not See ):
    print( "NormalizedConst_Dens=%e, NormalizedConst_Pres=%e" % ( NormalizedConst_Dens, NormalizedConst_Pres ) )
    exit(0)
 
+
 if __name__ == '__main__':
-    _Plot(Plot__Paramater, Input__TestProb)
+    Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol)
