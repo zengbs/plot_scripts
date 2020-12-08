@@ -34,7 +34,6 @@ for line in FilePtr2:
     line, _, comment = line.partition('#')
     if line.strip():  # non-blank line
         key, value = line.split()
-        print(key, value)
         try:
             Plot__Paramater[key] = float(value)
         except ValueError:
