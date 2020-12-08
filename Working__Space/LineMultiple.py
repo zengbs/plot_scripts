@@ -94,8 +94,6 @@ def Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
               Plot__Paramater[panel][label] = None 
 
 
-   # Matplolib
-   #######################################################
    font = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 20}
    
    f, axs = plt.subplots( NumRow, NumCol, sharex=False, sharey=False )
@@ -126,6 +124,10 @@ def Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
        Title      = Plot__Paramater[panel]['Title']
        XAxisLabel = Plot__Paramater[panel]['XAxisLabel']
        YAxisLabel = Plot__Paramater[panel]['YAxisLabel']
+       XmaxPanel  = []
+       XminPanel  = []
+       YmaxPanel  = []
+       YminPanel  = []
 
        for headx, heady, headz, tailx, taily, tailz, dataname, field, pts, model, originx, mark, marksize, label in Zipped: # iterate over attributes in a specific panel
            HeadX    = Plot__Paramater[panel][headx]
@@ -188,17 +190,14 @@ def Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
            Ray = np.sqrt( (Line[PanelIdx][RayIdx]["x"]-Head[0])**2 + (Line[PanelIdx][RayIdx]["y"]-Head[1])**2 + (Line[PanelIdx][RayIdx]["z"]-Head[2])**2 )
            ax.plot( Ray-OriginX, Line[PanelIdx][RayIdx][Field], Mark, label=Label, markersize=MarkSize )
            ax.tick_params( which='both', direction='in', labelsize=16, top=False )
-           ax.set_xlim(min(Ray), max(Ray))
            
-           # Dtermine the extreme y-values
-           if ( NumCol > 1 ):
-             if ( Ymax == 'auto' ):
-               Ymax = sys.float_info.min
-               Ymax = max(np.amax(Line[PanelIdx][RayIdx][Field]), Ymax)
-             if ( Ymin == 'auto' ):
-               Ymin = sys.float_info.max
-               Ymin=min(np.amin(Line[PanelIdx][RayIdx][Field]), Ymin)
-             ax.set_ylim(Ymin, Ymax)
+           # Dtermine the extreme x-values in a specific panel
+           XmaxPanel.append(max(Ray))
+           XminPanel.append(min(Ray))
+           
+           # Dtermine the extreme y-values in a specific panel
+           YmaxPanel.append(np.amax(Line[PanelIdx][RayIdx][Field]))
+           YminPanel.append(np.amin(Line[PanelIdx][RayIdx][Field]))
 
            if normX == 1:
              ax.set_xscale('log')
@@ -225,6 +224,24 @@ def Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
 
 
            RayIdx=RayIdx+1
+
+
+   for panel in list(Plot__Paramater.keys())[:-1]: # iterate over panels in dictionary but panel_common
+       if ( NumRow == 1 and NumCol == 1 ):
+            ax = axs
+       else:
+            ax = axs[PanelIdx]
+       Ymax = Plot__Paramater[panel]['Ymax']
+       Ymin = Plot__Paramater[panel]['Ymin']
+       PanelIdx = list(Plot__Paramater.keys()).index(panel)
+       if Ymin == 'auto'    and Ymax == 'DataMax':
+          ax.set_ylim(None, max(YmaxPanel))
+       if Ymin == 'DataMin' and Ymax == 'auto':
+          ax.set_ylim(min(YminPanel), None)
+       if Ymin == 'DataMin' and Ymax == 'DataMax':
+          ax.set_ylim(min(YminPanel), max(YmaxPanel))
+
+       ax.set_xlim(min(XminPanel), max(XmaxPanel))
 
    # if all elements in Label are None then do not add legends
    #if not all(label is None for label in Label):
