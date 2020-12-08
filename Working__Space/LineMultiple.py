@@ -60,7 +60,7 @@ def Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
 # {'plot/panel_00_00': {'DataName': ['DataName_00', 'DataName_01'], 
 #                       'Mark'    : ['Mark_00'    , 'Mark_01'    ], 
 #                       'MarkSize': ['MarkSize_00', 'MarkSize_01'], 
-#                       'Legend'   : ['Legend_00'   , 'Legend_01'   ], 
+#                       'Legend'  : ['Legend_00'  , 'Legend_01'   ], 
 #                       'Model'   : ['Model_00'   , 'Model_01'   ], 
 #                       'Field'   : ['Field_00'   , 'Field_01'   ], 
 #                       'NumPts'  : ['NumPts_00'  , 'NumPts_01'  ], 
@@ -86,12 +86,6 @@ def Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
                       print("The %20s is absent in %20s !!" % ( real_key, panel ))
                       exit()
 
-
-#  Change `Legend` from 'no' to 'None'
-   for panel in list(Plot__Paramater.keys())[:-1]: # iterate over panels in dictionary but panel_common
-       for legend in RealDataKey[panel]['Legend']: # iterate over legends in a specific panel
-           if Plot__Paramater[panel][legend] == 'off':
-              Plot__Paramater[panel][legend] = None 
 
 
    font = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 20}
@@ -246,8 +240,6 @@ def Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
 
        ax.set_xlim(min(XminPanel), max(XmaxPanel))
 
-   # if all elements in Legend are None then do not add legends
-   # if not all(legend is None for legend in Legend):
 
    plt.savefig( ns[-1].FileName+'.'+ns[-1].FileFormat, bbox_inches='tight', pad_inches=0.05, format=ns[-1].FileFormat, dpi=800 )
 
