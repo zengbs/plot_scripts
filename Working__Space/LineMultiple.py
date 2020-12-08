@@ -90,30 +90,73 @@ def Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
 
 #  Change `Label` from 'no' to 'None'
    for panel in list(Plot__Paramater.keys())[:-1]: # iterate over panels in dictionary but panel_common
-       for label in RealDataKey[panel]['Label']:
+       for label in RealDataKey[panel]['Label']: # iterate over labels in a specific panel
            if Plot__Paramater[panel][label] == 'off':
               Plot__Paramater[panel][label] = None 
 
 
+   # Matplolib
+   #######################################################
+   font = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 20}
+   
+   f, axs = plt.subplots( NumRow, NumCol, sharex=False, sharey=False )
+   f.subplots_adjust( hspace=ns[-1].hspace, wspace=ns[-1].wspace )
+   f.set_size_inches( ns[-1].FigSizeX, ns[-1].FigSizeY )
 
+   if ( NumRow != 1 or NumCol != 1 ):
+        axs = axs.flatten()
 
-#  Check rays lie inside the box
+ # Line[panel][RayIdx] = [....]
+   Line     = []
+
+#  Extract ray data from dataset
    for panel in list(Plot__Paramater.keys())[:-1]: # iterate over panels in dictionary but panel_common
-       ZippedPoints = zip( RealDataKey[panel]['HeadX'], RealDataKey[panel]['HeadY'], RealDataKey[panel]['HeadZ'],
-                           RealDataKey[panel]['TailX'], RealDataKey[panel]['TailY'], RealDataKey[panel]['TailZ'],
-                           RealDataKey[panel]['DataName'] )
-       for headx, heady, headz, tailx, taily, tailz, DataName in ZippedPoints:
+       PanelIdx = list(Plot__Paramater.keys()).index(panel)
+       Zipped = zip( RealDataKey[panel]['HeadX'],    RealDataKey[panel]['HeadY'],   RealDataKey[panel]['HeadZ'],
+                     RealDataKey[panel]['TailX'],    RealDataKey[panel]['TailY'],   RealDataKey[panel]['TailZ'],
+                     RealDataKey[panel]['DataName'], RealDataKey[panel]['Field'],   RealDataKey[panel]['NumPts'],
+                     RealDataKey[panel]['Model'],    RealDataKey[panel]['OriginX'], RealDataKey[panel]['Mark'],
+                     RealDataKey[panel]['MarkSize'], RealDataKey[panel]['Label'] )
+       Line.append([])
+       RayIdx=0
 
-           Head = [ Plot__Paramater[panel][headx], Plot__Paramater[panel][heady], Plot__Paramater[panel][headz] ]
-           Tail = [ Plot__Paramater[panel][tailx], Plot__Paramater[panel][taily], Plot__Paramater[panel][tailz] ]
+       Ymax       = Plot__Paramater[panel]['Ymax']
+       Ymin       = Plot__Paramater[panel]['Ymin']
+       normX      = Plot__Paramater[panel]['normX']
+       normY      = Plot__Paramater[panel]['normY']
+       Title      = Plot__Paramater[panel]['Title']
+       XAxisLabel = Plot__Paramater[panel]['XAxisLabel']
+       YAxisLabel = Plot__Paramater[panel]['YAxisLabel']
 
-           DataSet  = yt.load(Plot__Paramater[panel][DataName])
+       for headx, heady, headz, tailx, taily, tailz, dataname, field, pts, model, originx, mark, marksize, label in Zipped: # iterate over attributes in a specific panel
+           HeadX    = Plot__Paramater[panel][headx]
+           HeadY    = Plot__Paramater[panel][heady]
+           HeadZ    = Plot__Paramater[panel][headz]
+           TailX    = Plot__Paramater[panel][tailx]
+           TailY    = Plot__Paramater[panel][taily]
+           TailZ    = Plot__Paramater[panel][tailz]
+           DataName = Plot__Paramater[panel][dataname]
+           Field    = Plot__Paramater[panel][field]
+           NumPts   = Plot__Paramater[panel][pts]
+           Model    = Plot__Paramater[panel][model]
+           OriginX  = Plot__Paramater[panel][originx]
+           Mark     = Plot__Paramater[panel][mark]
+           MarkSize = Plot__Paramater[panel][marksize]
+           Label    = Plot__Paramater[panel][label]
+
+           DataSet  = yt.load(DataName)
+
+           Head     = [HeadX, HeadY, HeadZ]
+           Tail     = [TailX, TailY, TailZ]
+
+           Head    *= DataSet.length_unit
+           OriginX *= DataSet.length_unit
 
            BoxSizeX = DataSet["BoxSize"][0]
            BoxSizeY = DataSet["BoxSize"][1]
            BoxSizeZ = DataSet["BoxSize"][2]
 
-           # Ray can not lie on the surface of or the edge of computational domain
+           # Rays can not lie on the surface of or the edge of computational domain
            for j in range(3):
              if (Head[j] == 0 and Tail[j] == 0):
                 print("error: Ray can not lie on the surface or edge of computational domain")
@@ -128,94 +171,66 @@ def Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
                 print("error: Ray can not lie on the surface or edge of computational domain")
                 exit(0)
 
-   exit()
-   
-   # Line[Field][Ray][DataName] = [....]
-   Line     = []
+           Line[PanelIdx].append([])
+           FieldFunction, Units = unit.ChooseUnit(Field)
+           if Model == 'SRHD':
+              if (Field not in ('momentum_x', 'momentum_y', 'momentum_z', 'total_energy_per_volume')):
+                 DataSet.add_field(("gamer", Field), function=FieldFunction, sampling_type="cell", units=Units, force_override=True)
+           Line[PanelIdx][RayIdx] = yt.LineBuffer( DataSet, Head, Tail, int(NumPts) )
 
-   # !!! The second added derived field will overwrite the first one !!
-   # add derived field
-   for i in range(NumRow):
-       Line.append([])
-       for j in range(NumCol):
-           Line[i].append([])
-           for k in range(len(DataName)):
-              FieldFunction, Units = unit.ChooseUnit(Field[k])
-              if ( Model[k] == 'SRHD' ):
-                if (Field[k] not in ('momentum_x', 'momentum_y', 'momentum_z', 'total_energy_per_volume')):
-                   DataSet[k].add_field(("gamer", Field[k]), function=FieldFunction, sampling_type="cell", units=Units, force_override=True)
-              Line[i][j].append ([])
-              Line[i][j][k] = yt.LineBuffer( DataSet[k], Head[j], Tail[j], int(NumPts[j]) )
 
-          
-   for j in range(NumCol):
-     Head[j]    *= DataSet[j].length_unit
-     OriginX[j] *= DataSet[j].length_unit
 
-   # Matplolib
-   #######################################################
-   font = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 20}
-   
-   f, axs = plt.subplots( NumRow, NumCol, sharex=False, sharey=False )
-   f.subplots_adjust( hspace=n.hspace, wspace=n.wspace )
-   f.set_size_inches( n.FigSizeX, n.FigSizeY )
+           if ( NumRow == 1 and NumCol == 1 ):
+                ax = axs
+           else:
+                ax = axs[PanelIdx]
 
-   if ( NumRow != 1 or NumCol != 1 ):
-        axs = axs.flatten()
 
-   for i in range(NumRow):
-     for j in range(NumCol):
-       for k in range(len(DataName)):
+           Ray = np.sqrt( (Line[PanelIdx][RayIdx]["x"]-Head[0])**2 + (Line[PanelIdx][RayIdx]["y"]-Head[1])**2 + (Line[PanelIdx][RayIdx]["z"]-Head[2])**2 )
+           ax.plot( Ray-OriginX, Line[PanelIdx][RayIdx][Field], Mark, label=Label, markersize=MarkSize )
+           ax.tick_params( which='both', direction='in', labelsize=16, top=False )
+           ax.set_xlim(min(Ray), max(Ray))
+           
+           # Dtermine the extreme y-values
+           if ( NumCol > 1 ):
+             if ( Ymax == 'auto' ):
+               Ymax = sys.float_info.min
+               Ymax = max(np.amax(Line[PanelIdx][RayIdx][Field]), Ymax)
+             if ( Ymin == 'auto' ):
+               Ymin = sys.float_info.max
+               Ymin=min(np.amin(Line[PanelIdx][RayIdx][Field]), Ymin)
+             ax.set_ylim(Ymin, Ymax)
 
-         if ( NumRow == 1 and NumCol == 1 ):
-              ax = axs
-         else:
-              ax = axs[i*NumCol+j]
+           if normX == 1:
+             ax.set_xscale('log')
+           if normY == 1:
+             ax.set_yscale('log')
+           if PanelIdx%NumCol == 0:
+             ax.set_ylabel(YAxisLabel, fontsize=20, fontweight='bold')
+           if PanelIdx>=(NumRow-1)*NumCol:
+             ax.set_xlabel(XAxisLabel, fontsize=20, fontweight='bold')
 
-         Ray = np.sqrt( (Line[i][j][k]["x"]-Head[j][0])**2 + (Line[i][j][k]["y"]-Head[j][1])**2 + (Line[i][j][k]["z"]-Head[j][2])**2 )
-         ax.plot( Ray-OriginX[j], Line[i][j][k][Field[k]], Mark[k], label=Label[k], markersize=MarkSize[k] )
-         ax.tick_params( which='both', direction='in', labelsize=16, top=False )
-         ax.set_xlim(min(Ray), max(Ray))
-         
-         # Dtermine the extreme y-values
-         if ( NumCol > 1 ):
-           if ( Ymax[i] == 'auto' ):
-             Ymax[i] = sys.float_info.min
-             Ymax[i]=max(np.amax(Line[i][j][k][Field[k]]), Ymax[i])
-           if ( Ymin[i] == 'auto' ):
-             Ymin[i] = sys.float_info.max
-             Ymin[i]=min(np.amin(Line[i][j][k][Field[k]]), Ymin[i])
-           ax.set_ylim(Ymin[i], Ymax[i])
+           # Removing tick labels must be after setting log scale;
+           # otherwise tick labels emerge again
+           #if i < NumRow:
+           #  ax.get_xaxis().set_ticks([])
+           #if j > 0:
+           #  ax.get_yaxis().set_ticks([])
 
-         if normX[i] == 1:
-           ax.set_xscale('log')
-         if normY[i] == 1:
-           ax.set_yscale('log')
-         if j==0:
-           ax.set_ylabel(YAxisLabel[i], fontsize=20, fontweight='bold')
-         if i==0:
-           ax.set_xlabel(XAxisLabel[i], fontsize=20, fontweight='bold')
-
-         # Removing tick labels must be after setting log scale;
-         # otherwise tick labels emerge again
-         #if i < NumRow:
-         #  ax.get_xaxis().set_ticks([])
-         #if j > 0:
-         #  ax.get_yaxis().set_ticks([])
-
-         if i == 0:
-           if ( Title[j] != 'off' ):
-             if (Title[j] == 'auto'):
-               title = "(%2.1f,%2.1f,%2.1f)\n(%2.1f,%2.1f,%2.1f)" % (Head[j][0], Head[j][1], Head[j][2], Tail[j][0], Tail[j][1], Tail[j][2])
+           if ( Title != 'off' ):
+             if (Title == 'auto'):
+               title = "(%2.1f,%2.1f,%2.1f)\n(%2.1f,%2.1f,%2.1f)" % (Head[0], Head[1], Head[2], Tail[0], Tail[1], Tail[2])
                ax.set_title( title, fontdict=font )
              else:
-               ax.set_title( Title[j], fontdict=font )
+               ax.set_title( Title, fontdict=font )
+
+
+           RayIdx=RayIdx+1
 
    # if all elements in Label are None then do not add legends
-   if not all(label is None for label in Label):
-     if ( i == 0 and j == 0 ):
-          ax.legend(loc='lower left', fontsize=12)
+   #if not all(label is None for label in Label):
+   #   ax.legend(loc='lower left', fontsize=12)
 
-   plt.savefig( n.FileName+'.'+n.FileFormat, bbox_inches='tight', pad_inches=0.05, format=n.FileFormat, dpi=800 )
+   plt.savefig( ns[-1].FileName+'.'+ns[-1].FileFormat, bbox_inches='tight', pad_inches=0.05, format=ns[-1].FileFormat, dpi=800 )
 
    print("Done !!")
