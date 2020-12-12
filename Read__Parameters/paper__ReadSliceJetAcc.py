@@ -1,6 +1,6 @@
 import sys
 # insert at 1, 0 is the script path (or '' in REPL)
-sys.path.insert(1, '/projectY/tseng/gamer/bin/plot_scripts/Working__Space')
+sys.path.insert(1, '/projectY/tseng/plot_scripts/Working__Space')
 import numpy as np
 import argparse
 from paper__PlotSliceJetAcc import _Plot

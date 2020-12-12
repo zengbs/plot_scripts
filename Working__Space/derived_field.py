@@ -38,9 +38,9 @@ def _mass_density_sr(field, data):
 
 def _specific_enthalpy_sr(field, data):
     eta = data["Temp"]
-    if data.ds["EoS"] == 2:
+    if data.ds["EoS"] == 1:
         h_c2 = 1.0 + data.ds["Gamma"] * eta / (data.ds["Gamma"] - 1.0)
-    elif data.ds["EoS"] == 1:
+    elif data.ds["EoS"] == 4:
         h_c2 = 2.5*eta+np.sqrt(2.25*eta**2+1.0)
     else:
         print("Your EoS doesn't support yet!")
@@ -49,9 +49,9 @@ def _specific_enthalpy_sr(field, data):
 
 def _specific_enthalpy_1_sr(field, data):
     eta = data["Temp"]
-    if data.ds["EoS"] == 2:
+    if data.ds["EoS"] == 1:
         h_c2_1 = data.ds["Gamma"] * eta / (data.ds["Gamma"] - 1.0)
-    elif data.ds["EoS"] == 1:
+    elif data.ds["EoS"] == 4:
         h_c2_1 = ( 2.5*eta + 2.25*eta**2 ) / ( 1 + np.sqrt( 1 + 2.25*eta**2 ) )
     else:
         print("Your EoS doesn't support yet!")
@@ -330,9 +330,9 @@ def _sound_speed_sqr(field, data):
     eta = data["Temp"]
     ratio = eta / h_c2
 
-    if data.ds["EoS"] == 2:
+    if data.ds["EoS"] == 1:
         Cs_sq = data.ds["Gamma"] * ratio
-    elif data.ds["EoS"] == 1:
+    elif data.ds["EoS"] == 4:
         Cs_sq = (ratio / 3.0) * ((5.0 - 8.0 * ratio) / (1.0 - ratio))
     else:
         print("Your EoS doesn't support yet!")
@@ -397,9 +397,9 @@ def _kinetic_energy_density_sr(field, data):
 def _Cp_per_particle(field, data):
     print("doesn't support yet!")
     sys.exit(0)
-    if data.ds["EoS"] == 2:
+    if data.ds["EoS"] == 1:
         Cp = data.ds["Gamma"] / (data.ds["Gamma"] - 1.0)
-    elif data.ds["EoS"] == 1:
+    elif data.ds["EoS"] == 4:
         temp = data["Temp"]
         Cp = 2.50 + 2.25 * data["Temp"] / np.sqrt(2.25 * data["Temp"]**2 + 1.0)
     else:
@@ -453,10 +453,10 @@ def _Adiabatic_Index(field, data):
 def _entropy_per_particle(field, data):
     print("doesn't support yet!")
     sys.exit(0)
-    if data.ds["EoS"] == 2:
+    if data.ds["EoS"] == 1:
         print("Your EoS doesn't support yet!")
         sys.exit(0)
-    elif data.ds["EoS"] == 1:
+    elif data.ds["EoS"] == 4:
         print("Your EoS doesn't support yet!")
         sys.exit(0)
         T1 = 1.0

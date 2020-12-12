@@ -1,7 +1,7 @@
 import sys
 import os.path
 # insert at 1, 0 is the script path (or '' in REPL)
-sys.path.insert(1, '/projectY/tseng/gamer/bin/plot_scripts/Working__Space')
+sys.path.insert(1, '/projectY/tseng/plot_scripts/Working__Space')
 
 import argparse
 from paper__PlotSliceHoriDiaJet  import _Plot

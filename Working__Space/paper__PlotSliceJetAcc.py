@@ -17,7 +17,7 @@ import unit
 def _Plot(Plot__Paramater, Input__TestProb):   
 
    n = SimpleNamespace(**Plot__Paramater)
-   annotate_color = [ 'white' , 'black' , 'black' , 'black', 'white', 'white'  ]
+   annotate_color = [ 'white' , 'black' , 'black' , 'black', 'black', 'white'  ]
 
    DataName = []
    Field = []

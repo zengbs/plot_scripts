@@ -63,17 +63,17 @@ norm_04                          0
 # Xmax/Xmin/Ymax/Ymin  origin is at the center of figure if OffAxisSlice == 1
 CutAxis_00                       z
 Coord_00                        50
-Xmax_00                       77.5 
-Xmin_00                       22.5
-Ymax_00                         58
-Ymin_00                         42 
+Xmax_00                       auto 
+Xmin_00                       auto
+Ymax_00                       auto
+Ymin_00                       auto 
 
 CutAxis_01                       x
 Coord_01                        34
-Xmax_01                       51.3  
-Xmin_01                       48.7   
-Ymax_01                       51.3   
-Ymin_01                       48.7  
+Xmax_01                       auto  
+Xmin_01                       auto   
+Ymax_01                       auto   
+Ymin_01                       auto  
                      
 
 NormalizedConst_Pres          auto
