@@ -284,7 +284,7 @@ def _Plot(Plot__Paramater, Input__TestProb):
 
            frb[i][j] = np.array(frb[i][j][Field[i]])
 
-           if CutAxis[j] == 'y':
+           if CutAxis[j] == 'y' and  n.OffAxisSlice == 0:
               frb[i][j] = np.fliplr(np.rot90(frb[i][j]))
 
            ColorBarMax_Row = max( ColorBarMax_Row, np.amax(frb[i][j]) )
