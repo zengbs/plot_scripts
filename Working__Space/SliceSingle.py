@@ -15,7 +15,7 @@ import unit
 
 def _Plot(Plot__Paramater, Input__TestProb):
 
-     colormap = 'arbre'
+     colormap = 'nipy_spectral'
      dpi = 150
      
      
