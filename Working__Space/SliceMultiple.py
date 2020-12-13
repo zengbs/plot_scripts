@@ -197,15 +197,15 @@ def _Plot(Plot__Paramater, Input__TestProb):
                if ( CutAxis[j] == 'x' ):
                     Xmax[j] = DataSet[j]['BoxSize'][1]
                if ( CutAxis[j] == 'y' ):
-                    Xmax[j] = DataSet[j]['BoxSize'][2]
+                    Xmax[j] = DataSet[j]['BoxSize'][0]
                if ( CutAxis[j] == 'z' ):
                     Xmax[j] = DataSet[j]['BoxSize'][0]
           else:
                if ( CutAxis[j] == 'x' and Xmax[j] >= DataSet[j]['BoxSize'][1] ):
                     print(" Xmax[%d] >= %f" % ( j, DataSet[j]['BoxSize'][1] ) )
                     exit(0)
-               if ( CutAxis[j] == 'y' and Xmax[j] >= DataSet[j]['BoxSize'][2]):
-                    print(" Xmax[%d] >= %f" % ( j, DataSet[j]['BoxSize'][2] ) )
+               if ( CutAxis[j] == 'y' and Xmax[j] >= DataSet[j]['BoxSize'][0]):
+                    print(" Xmax[%d] >= %f" % ( j, DataSet[j]['BoxSize'][0] ) )
                     exit(0)
                if ( CutAxis[j] == 'z' and Xmax[j] >= DataSet[j]['BoxSize'][0]):
                     print(" Xmax[%d] >= %f" % ( j, DataSet[j]['BoxSize'][0] ) )
@@ -215,15 +215,15 @@ def _Plot(Plot__Paramater, Input__TestProb):
                if ( CutAxis[j] == 'x' ):
                     Ymax[j] = DataSet[j]['BoxSize'][2]
                if ( CutAxis[j] == 'y' ):
-                    Ymax[j] = DataSet[j]['BoxSize'][0]
+                    Ymax[j] = DataSet[j]['BoxSize'][2]
                if ( CutAxis[j] == 'z' ):
                     Ymax[j] = DataSet[j]['BoxSize'][1]
           else:
                if ( CutAxis[j] == 'x' and Ymax[j] >= DataSet[j]['BoxSize'][2] ):
                     print(" Ymax[%d] >= %f" % ( j, DataSet[j]['BoxSize'][2] ) )
                     exit(0)
-               if ( CutAxis[j] == 'y' and Ymax[j] >= DataSet[j]['BoxSize'][0]):
-                    print(" Ymax[%d] >= %f" % ( j, DataSet[j]['BoxSize'][0] ) )
+               if ( CutAxis[j] == 'y' and Ymax[j] >= DataSet[j]['BoxSize'][2]):
+                    print(" Ymax[%d] >= %f" % ( j, DataSet[j]['BoxSize'][2] ) )
                     exit(0)
                if ( CutAxis[j] == 'z' and Ymax[j] >= DataSet[j]['BoxSize'][1]):
                     print(" Ymax[%d] >= %f" % ( j, DataSet[j]['BoxSize'][1] ) )
@@ -283,6 +283,9 @@ def _Plot(Plot__Paramater, Input__TestProb):
            frb[i].append( yt.FixedResolutionBuffer(sl[i][j], Extent[j],  BufferSize[j] ) )
 
            frb[i][j] = np.array(frb[i][j][Field[i]])
+
+           if CutAxis[j] == 'y':
+              frb[i][j] = np.fliplr(np.rot90(frb[i][j]))
 
            ColorBarMax_Row = max( ColorBarMax_Row, np.amax(frb[i][j]) )
            ColorBarMin_Row = min( ColorBarMin_Row, np.amin(frb[i][j]) )
