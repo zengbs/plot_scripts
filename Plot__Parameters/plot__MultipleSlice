@@ -79,9 +79,12 @@ Ymin_01                       auto
 NormalizedConst_Pres          auto
 NormalizedConst_Dens          auto
 
+# Kelvin/eV/dimensionless
+Temperature_Unit
+
 Resolution                    1024
 aspect                       equal
-CMap                         arbre 
+CMap                 nipy_spectral 
                      
 FigWidth                         5
 
