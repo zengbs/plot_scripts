@@ -10,7 +10,7 @@ import re
 import derived_field as df
 import unit
 
-def Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
+def LinePlot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
 
 # Plot__Paramater = 
 # {'plot/panel_00_00': {'Title': 'off', 'YAxisLabel': '$\\gamma$', 'XAxisLabel': 'x', 

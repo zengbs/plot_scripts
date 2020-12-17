@@ -4,7 +4,8 @@ import sys
 # insert at 1, 0 is the script path (or '' in REPL)
 sys.path.insert(1, '/projectY/tseng/plot_scripts/Working__Space')
 import argparse
-from LineMultiple import Plot
+from LineMultiple  import LinePlot
+from SliceMultiple import SlicePlot
 
 
 # Extract the directory storing parameter files from command line
@@ -26,13 +27,13 @@ for j in range(100):
       if not os.path.isfile(PanelName):
          NumCol = j
          break
+
 # Get the number of rows in panel array
 if ( NumPanel%NumCol == 0):
   NumRow = int(NumPanel/NumCol)
 else:
   print( "NumPanel % NumCol = %d" % (NumPanel%NumCol) )
   exit()
-
 
 # Make sure the file name in `ParameterPanel` is in row-major
 ParameterPanel[-1] = os.path.join(Directory,'panel_common')
@@ -128,4 +129,8 @@ if ( not See ):
 
 
 if __name__ == '__main__':
-    Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol)
+   if Plot__Paramater[ParameterPanel[-1]]["PlotType"] == "line":
+      LinePlot(Plot__Paramater, Input__TestProb, NumRow, NumCol)
+   if Plot__Paramater[ParameterPanel[-1]]["PlotType"] == "slice":
+      SlicePlot(Plot__Paramater, Input__TestProb, NumRow, NumCol)
+
