@@ -4,8 +4,8 @@ import yt.visualization.eps_writer as eps
 import matplotlib
 import matplotlib.pyplot as plt
 from types import SimpleNamespace    
-import sys
-import re
+#import sys
+#import re
 
 import derived_field as df
 import unit

@@ -4,7 +4,7 @@ import yt.visualization.eps_writer as eps
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
-import matplotlib.gridspec as gridspec
+#import matplotlib.gridspec as gridspec
 from types import SimpleNamespace    
 import sys
 import os
@@ -14,7 +14,32 @@ import os
 import derived_field as df
 import unit
 
-def _Plot(Plot__Paramater, Input__TestProb):   
+def _Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):   
+
+
+#  Create a list of namespace                                                                                                            
+   ns = []
+   for key in Plot__Paramater.keys():
+       ns.append( SimpleNamespace(**Plot__Paramater[key]) )
+       
+       
+# check common keys in Plot__Paramater['panel_common']
+   Keys = ["FileName","FileFormat","FigSizeX","FigSizeY","wspace","hspace",
+           "NormalizedConst_Pres","NormalizedConst_Dens"]
+   panel = list(Plot__Paramater.keys())[-1]
+   for key in Plot__Paramater[panel]:
+      if key not in Keys:
+         print("The %20s is absent in %20s !!" % ( key, panel ))
+         exit()
+       
+# check shared keys in Plot__Paramater['panel_??_??']
+   Keys = ["XAxisLabel","YAxisLabel","Title","normX","normY","Xmax","Xmin","Ymax","Ymin","NumLine"]
+   for panel in list(Plot__Paramater.keys())[:-1]: # iterate over panels in dictionary but panel_common
+       for key in Keys:
+          if key not in Plot__Paramater[panel]:
+             print("The %20s is absent in %20s !!" % ( key, panel ))
+             exit()
+
 
    n = SimpleNamespace(**Plot__Paramater)
 
