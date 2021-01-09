@@ -5,7 +5,6 @@ import sys
 sys.path.insert(1, '/projectY/tseng/plot_scripts/Working__Space')
 import argparse
 from LineMultiple  import LinePlot
-from SliceMultiple import SlicePlot
 
 
 # Extract the directory storing parameter files from command line
@@ -132,5 +131,6 @@ if __name__ == '__main__':
    if Plot__Paramater[ParameterPanel[-1]]["PlotType"] == "line":
       LinePlot(Plot__Paramater, Input__TestProb, NumRow, NumCol)
    if Plot__Paramater[ParameterPanel[-1]]["PlotType"] == "slice":
+      from SliceMultiple import SlicePlot
       SlicePlot(Plot__Paramater, Input__TestProb, NumRow, NumCol)
 
