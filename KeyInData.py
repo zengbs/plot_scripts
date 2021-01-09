@@ -6,7 +6,6 @@ ds=yt.load("Data_000000")
 
 #for key in ds:
 # print (key, ds[key])
-#print (ds["MaxLevel"])
 #print (ds["BoxSize"])
 #print ('Step:', ds["Step"])
 #print ('Step:', ds["Step"])

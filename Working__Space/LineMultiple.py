@@ -40,7 +40,7 @@ def LinePlot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
 
 # check common keys in Plot__Paramater['panel_common']
    Keys = ["FileName","FileFormat","FigSizeX","FigSizeY","wspace","hspace",
-           "NormalizedConst_Pres","NormalizedConst_Dens"]
+           "NormalizedConst_Pres","NormalizedConst_Dens","PlotType"]
    panel = list(Plot__Paramater.keys())[-1]
    for key in Plot__Paramater[panel]:
       if key not in Keys:
