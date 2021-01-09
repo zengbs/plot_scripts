@@ -351,8 +351,6 @@ def _Mach_number_sr(field, data):
     Ux = _4_velocity_x("", data)
     Uy = _4_velocity_y("", data)
     Uz = _4_velocity_z("", data)
-    Cs = np.sqrt(Cs_sq / (1.0-Cs_sq))
-    Cs *= speed_of_light_cgs
     Cs4 = _4_sound_speed("", data)
     return np.sqrt(Ux**2 + Uy**2 + Uz**2) / Cs4
 

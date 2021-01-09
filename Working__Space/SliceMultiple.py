@@ -351,8 +351,8 @@ def _Plot(Plot__Paramater, Input__TestProb):
      cbar = fig.colorbar(im,cax=cax, use_gridspec=True)
 
      cbar.ax.tick_params(which='minor', length=0)
-     cbar.set_label(ColorBarLabel[i], size=10)
-     cbar.ax.tick_params(labelsize=10, color='k', direction='in', which='major')
+     cbar.set_label(ColorBarLabel[i], size=4)
+     cbar.ax.tick_params(labelsize=4, color='k', direction='in', which='major')
   
  
    MetaData = {} 
