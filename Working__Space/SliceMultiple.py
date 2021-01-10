@@ -1,10 +1,11 @@
 import yt
 import numpy as np
 import yt.visualization.eps_writer as eps
+from mpl_toolkits.axes_grid1.axes_divider import make_axes_locatable
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
-#import matplotlib.gridspec as gridspec
+import matplotlib.gridspec as gridspec
 from types import SimpleNamespace    
 import sys
 import os
@@ -14,32 +15,7 @@ import os
 import derived_field as df
 import unit
 
-def _Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):   
-
-
-#  Create a list of namespace                                                                                                            
-   ns = []
-   for key in Plot__Paramater.keys():
-       ns.append( SimpleNamespace(**Plot__Paramater[key]) )
-       
-       
-# check common keys in Plot__Paramater['panel_common']
-   Keys = ["FileName","FileFormat","FigSizeX","FigSizeY","wspace","hspace",
-           "NormalizedConst_Pres","NormalizedConst_Dens"]
-   panel = list(Plot__Paramater.keys())[-1]
-   for key in Plot__Paramater[panel]:
-      if key not in Keys:
-         print("The %20s is absent in %20s !!" % ( key, panel ))
-         exit()
-       
-# check shared keys in Plot__Paramater['panel_??_??']
-   Keys = ["XAxisLabel","YAxisLabel","Title","normX","normY","Xmax","Xmin","Ymax","Ymin","NumLine"]
-   for panel in list(Plot__Paramater.keys())[:-1]: # iterate over panels in dictionary but panel_common
-       for key in Keys:
-          if key not in Plot__Paramater[panel]:
-             print("The %20s is absent in %20s !!" % ( key, panel ))
-             exit()
-
+def SlicePlot(Plot__Paramater, Input__TestProb):   
 
    n = SimpleNamespace(**Plot__Paramater)
 
@@ -229,10 +205,10 @@ def _Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
                if ( CutAxis[j] == 'x' and Xmax[j] >= DataSet[j]['BoxSize'][1] ):
                     print(" Xmax[%d] >= %f" % ( j, DataSet[j]['BoxSize'][1] ) )
                     exit(0)
-               if ( CutAxis[j] == 'y' and Xmax[j] >= DataSet[j]['BoxSize'][2]):
+               if ( CutAxis[j] == 'y' and Xmax[j] >= DataSet[j]['BoxSize'][2] ):
                     print(" Xmax[%d] >= %f" % ( j, DataSet[j]['BoxSize'][2] ) )
                     exit(0)
-               if ( CutAxis[j] == 'z' and Xmax[j] >= DataSet[j]['BoxSize'][0]):
+               if ( CutAxis[j] == 'z' and Xmax[j] >= DataSet[j]['BoxSize'][0] ):
                     print(" Xmax[%d] >= %f" % ( j, DataSet[j]['BoxSize'][0] ) )
                     exit(0)
 
@@ -309,6 +285,7 @@ def _Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
 
            frb[i][j] = np.array(frb[i][j][Field[i]])
 
+
            ColorBarMax_Row = max( ColorBarMax_Row, np.amax(frb[i][j]) )
            ColorBarMin_Row = min( ColorBarMin_Row, np.amin(frb[i][j]) )
 
@@ -321,7 +298,7 @@ def _Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
    # Matplolib
    ######################################################
    
-   font = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 20}
+   font = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 4}
    
    
    # The amount of width/height reserved for space between subplots,
@@ -332,7 +309,7 @@ def _Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
      WidthRatio.append( WindowWidth[i] )
    
    # colorbar
-   WidthRatio.append( WindowWidth[0]*0.05 )
+   WidthRatio.append( WindowWidth[0]*n.CbrWidthRatio )
   
    
    HeightRatio = []
@@ -350,7 +327,7 @@ def _Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
  
    fig = plt.figure(figsize=( FigSize_X*Ratio , FigSize_Y*Ratio ), constrained_layout=False)
    
-   gs = fig.add_gridspec(NumRow,NumCol+1,wspace=n.wspace, hspace=n.hspace, width_ratios=WidthRatio)
+   gs = fig.add_gridspec(NumRow,NumCol+1, wspace=n.wspace, hspace=n.hspace, width_ratios=WidthRatio)
    
    ax = [[None]*NumCol]*(NumRow)
 
@@ -368,14 +345,25 @@ def _Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
                Title[j] = DataName[j]
            ax[i][j].set_title( Title[j], fontdict=font )
 
+       for axis in ['top','bottom','left','right']:
+           ax[i][j].spines[axis].set_linewidth(n.CbrBorderWidth)
+
      cax = fig.add_subplot(gs[i, NumCol])
+
+     CbrMajorTickLength = WindowWidth[0]*n.CbrWidthRatio*sum(WindowWidth)
+     CbrMinorTickLength = 0.5*CbrMajorTickLength
 
      cbar = fig.colorbar(im,cax=cax, use_gridspec=True)
 
-     cbar.ax.tick_params(which='minor', length=0)
-     cbar.set_label(ColorBarLabel[i], size=10)
-     cbar.ax.tick_params(labelsize=10, color='k', direction='in', which='major')
+     cbar.set_label(ColorBarLabel[i], size=n.CbrLabelSize)
+ 
+     cbar.ax.tick_params(which='minor', direction='in',width=n.CbrTickWidth, length=CbrMinorTickLength)
+     cbar.ax.tick_params(labelsize=n.TickLabelSize, color='k', direction='in', which='major',
+                         width=n.CbrTickWidth, length=CbrMajorTickLength, pad=n.CbrTickLabelPad)
   
+
+     cbar.outline.set_linewidth(n.CbrBorderWidth)
+
  
    MetaData = {} 
    #
@@ -394,7 +382,7 @@ def _Plot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
    plt.savefig( FileOut, bbox_inches='tight', pad_inches=0.05, format=n.FileFormat, dpi=800, metadata=MetaData )
 
 
-   ## recoed all parameters in eps format 
+   ## record all parameters in eps format 
    #if n.FileFormat == 'eps':
    #   with open(FileOut, "r+") as f2:
    #          for x in range(6):

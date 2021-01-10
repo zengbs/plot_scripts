@@ -2,13 +2,12 @@ import sys
 import os
 # insert at 1, 0 is the script path (or '' in REPL)
 sys.path.insert(1, '/projectY/tseng/plot_scripts/Working__Space')
-
+from SliceMultiple import SlicePlot
 import argparse
-from SliceMultiple import _Plot
 
 
 parser = argparse.ArgumentParser(description='Process some integers.')
-parser.add_argument( '-p',  action='store', required=True,  type=str, dest='File', help='file' )
+parser.add_argument( '-f',  action='store', required=True,  type=str, dest='File', help='file' )
 
 args = parser.parse_args()
 File = args.File
@@ -26,7 +25,7 @@ for line in FilePtr2:
         try:
             Plot__Paramater[key] = float(value)
         except ValueError:
-            Plot__Paramater[key] = value
+            Plot__Paramater[key] = value.replace("@"," ")
 
 DirName = os.path.dirname(Plot__Paramater['DataName_00'])
 
@@ -76,4 +75,4 @@ if "cylindrical_radial_4velocity" in Plot__Paramater.values():
     cylindrical_axis = Plot__Paramater['cylindrical_axis']
 
 if __name__ == '__main__':
-    _Plot(Plot__Paramater, Input__TestProb)
+    SlicePlot(Plot__Paramater, Input__TestProb)

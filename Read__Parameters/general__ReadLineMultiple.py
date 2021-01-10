@@ -4,7 +4,6 @@ import sys
 # insert at 1, 0 is the script path (or '' in REPL)
 sys.path.insert(1, '/projectY/tseng/plot_scripts/Working__Space')
 import argparse
-from LineMultiple  import LinePlot
 
 
 # Extract the directory storing parameter files from command line
@@ -66,7 +65,7 @@ for Panel in ParameterPanel:
             try:
                 Plot__Paramater[Panel][key] = float(value)
             except ValueError:
-                Plot__Paramater[Panel][key] = value
+                Plot__Paramater[Panel][key] = value.replace("@"," ")
     ParamaterPanelPtr[FIdx].close()
 
 
@@ -80,7 +79,7 @@ for line in Input__TestProbPtr:
         try:
             Input__TestProb[key] = float(value)
         except ValueError:
-            Input__TestProb[key] = value
+            Input__TestProb[key] = value.replace("@"," ")
 Input__TestProbPtr.close()
 
 
@@ -129,6 +128,7 @@ if ( not See ):
 
 if __name__ == '__main__':
    if Plot__Paramater[ParameterPanel[-1]]["PlotType"] == "line":
+      from LineMultiple  import LinePlot
       LinePlot(Plot__Paramater, Input__TestProb, NumRow, NumCol)
    if Plot__Paramater[ParameterPanel[-1]]["PlotType"] == "slice":
       from SliceMultiple import SlicePlot
