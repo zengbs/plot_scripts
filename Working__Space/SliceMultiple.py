@@ -379,7 +379,7 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
   
    FileOut = n.FileName+"."+n.FileFormat
  
-   plt.savefig( FileOut, bbox_inches='tight', pad_inches=0.05, format=n.FileFormat, dpi=800, metadata=MetaData )
+   plt.savefig( FileOut, bbox_inches='tight', pad_inches=2e-3*FigSize_X, format=n.FileFormat, dpi=800, metadata=MetaData )
 
 
    ## record all parameters in eps format 
