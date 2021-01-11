@@ -37,7 +37,9 @@ def LinePlot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
 
 # check common keys in Plot__Paramater['panel_common']
    Keys = ["FileName","FileFormat","FigSizeX","FigSizeY","wspace","hspace",
-           "NormalizedConst_Pres","NormalizedConst_Dens","PlotType"]
+           "NormalizedConst_Pres","NormalizedConst_Dens","PlotType","TickLabelSize","AxisLabelSize","LegendSize",
+           "BorderWidth","MajorTickLength","MinorTickLength","MajorTickWidth","MinorTickWidth","TickLabelPad",
+           "AxisLabelPad"]
    panel = list(Plot__Paramater.keys())[-1]
    for key in Plot__Paramater[panel]:
       if key not in Keys:
@@ -181,7 +183,8 @@ def LinePlot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
 
            Ray = np.sqrt( (Line[PanelIdx][RayIdx]["x"]-Head[0])**2 + (Line[PanelIdx][RayIdx]["y"]-Head[1])**2 + (Line[PanelIdx][RayIdx]["z"]-Head[2])**2 )
            ax.plot( Ray-OriginX, Line[PanelIdx][RayIdx][Field], Mark, label=Legend, markersize=MarkSize )
-           ax.tick_params( which='both', direction='in', labelsize=16, top=False )
+           ax.tick_params( which='major', direction='in', labelsize=ns[-1].TickLabelSize, top=False, length=ns[-1].MajorTickLength, width=ns[-1].MajorTickWidth, pad=ns[-1].TickLabelPad )
+           ax.tick_params( which='minor', direction='in', labelsize=ns[-1].TickLabelSize, top=False, length=ns[-1].MinorTickLength, width=ns[-1].MinorTickWidth )
            
            # Dtermine the extreme x-values in a specific panel
            XmaxPanel.append(max(Ray))
@@ -196,9 +199,9 @@ def LinePlot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
            if normY == 1:
              ax.set_yscale('log')
            if PanelIdx%NumCol == 0:
-             ax.set_ylabel(YAxisLabel, fontsize=20, fontweight='bold')
+             ax.set_ylabel(YAxisLabel, fontsize=ns[-1].AxisLabelSize, fontweight='bold', labelpad=ns[-1].AxisLabelPad)
            if PanelIdx>=(NumRow-1)*NumCol:
-             ax.set_xlabel(XAxisLabel, fontsize=20, fontweight='bold')
+             ax.set_xlabel(XAxisLabel, fontsize=ns[-1].AxisLabelSize, fontweight='bold', labelpad=ns[-1].AxisLabelPad)
 
            # Removing tick legends must be after setting log scale;
            # otherwise tick legends emerge again
@@ -215,7 +218,8 @@ def LinePlot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
                ax.set_title( Title, fontdict=font )
 
            if Legend != 'off':
-              ax.legend(loc='lower left', fontsize=12)
+              ax.legend(loc='lower left', fontsize=ns.LegendSize)
+           
 
            RayIdx=RayIdx+1
 
@@ -237,7 +241,9 @@ def LinePlot(Plot__Paramater, Input__TestProb, NumRow, NumCol):
 
        ax.set_xlim(min(XminPanel), max(XmaxPanel))
 
+       for side in ['top','bottom','left','right']:
+           ax.spines[side].set_linewidth(ns[-1].BorderWidth)
 
-   plt.savefig( ns[-1].FileName+'.'+ns[-1].FileFormat, bbox_inches='tight', pad_inches=0.05, format=ns[-1].FileFormat, dpi=800 )
+   plt.savefig( ns[-1].FileName+'.'+ns[-1].FileFormat, bbox_inches='tight', pad_inches=0.01, format=ns[-1].FileFormat, dpi=800 )
 
    print("Done !!")
