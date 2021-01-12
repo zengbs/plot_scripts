@@ -22,6 +22,7 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
    DataName      = []
    Field         = []
    ColorBarLabel = []
+   Unit          = []
    ColorBarMax   = []
    ColorBarMin   = []
    norm          = []
@@ -30,6 +31,7 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
    Xmax          = []
    Ymin          = []
    Ymax          = []
+   CbrTick       = []
 
 #  axis slice
    CutAxis       = []   # The axis along which to slice
@@ -51,13 +53,13 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
 
 #  A plane normal to one of the axes and intersecting a particular coordinate
    if n.OffAxisSlice == 0:
-     List     = [  DataName,   Field,   ColorBarLabel,   ColorBarMax,   ColorBarMin,   norm,   CutAxis,   Coord,   Xmin,   Xmax,   Ymin,   Ymax,   Title ]
-     ListName = [ "DataName", "Field", "ColorBarLabel", "ColorBarMax", "ColorBarMin", "norm", "CutAxis", "Coord", "Xmin", "Xmax", "Ymin", "Ymax", "Title" ]
+     List     = [  DataName,   Field,   ColorBarLabel,   ColorBarMax,   ColorBarMin,   norm,   CutAxis,   Coord,   Xmin,   Xmax,   Ymin,   Ymax,   Title,   CbrTick,   Unit ]
+     ListName = [ "DataName", "Field", "ColorBarLabel", "ColorBarMax", "ColorBarMin", "norm", "CutAxis", "Coord", "Xmin", "Xmax", "Ymin", "Ymax", "Title", "CbrTick", "Unit"]
 
 #  A plane normal to a specified vector and intersecting a particular coordinate.
    else:
-     List     = [  DataName,   Field,   ColorBarLabel,   ColorBarMax,   ColorBarMin,   norm,   NormalVectorX,  NormalVectorY,  NormalVectorZ,   CenterX,   CenterY,   CenterZ,  NorthVectorX,  NorthVectorY,  NorthVectorZ,   Xmin,   Xmax,   Ymin,   Ymax,   Title ]
-     ListName = [ "DataName", "Field", "ColorBarLabel", "ColorBarMax", "ColorBarMin", "norm", "NormalVectorX","NormalVectorY","NormalVectorZ", "CenterX", "CenterY", "CenterZ","NorthVectorX","NorthVectorY","NorthVectorZ", "Xmin", "Xmax", "Ymin", "Ymax", "Title" ]
+     List     = [  DataName,   Field,   ColorBarLabel,   ColorBarMax,   ColorBarMin,   norm,   NormalVectorX,  NormalVectorY,  NormalVectorZ,   CenterX,   CenterY,   CenterZ,  NorthVectorX,  NorthVectorY,  NorthVectorZ,   Xmin,   Xmax,   Ymin,   Ymax,   Title,   CbrTick ,  Unit ]
+     ListName = [ "DataName", "Field", "ColorBarLabel", "ColorBarMax", "ColorBarMin", "norm", "NormalVectorX","NormalVectorY","NormalVectorZ", "CenterX", "CenterY", "CenterZ","NorthVectorX","NorthVectorY","NorthVectorZ", "Xmin", "Xmax", "Ymin", "Ymax", "Title", "CbrTick", "Unit"]
 
    NumData = 0
    for lstname, lst in zip(ListName, List):
@@ -84,11 +86,17 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
    if ( len(ColorBarLabel) != NumRow ):
      print("len(ColorBarLabel) != %d" % (NumRow))
      Exit = True
+   if ( len(Unit) != NumRow ):
+     print("len(Unit) != %d" % (NumRow))
+     Exit = True
    if ( len(ColorBarMax) != NumRow ):
      print("len(ColorBarMax) != %d" % (NumRow))
      Exit = True
    if ( len(ColorBarMin) != NumRow ):
      print("len(ColorBarMin) != %d" % (NumRow))
+     Exit = True
+   if ( len(CbrTick) != NumRow ):
+     print("len(CbrTick) != %d" % (NumRow))
      Exit = True
 
    if ( len(DataName) != NumCol ):
@@ -259,7 +267,7 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
  
    #   add derived field
    for i in range(NumRow):
-       function, units = unit.ChooseUnit(Field[i])
+       function, units = unit.ChooseUnit(Field[i], Unit[i])
        ColorBarMax_Row = sys.float_info.min
        ColorBarMin_Row = sys.float_info.max
 
@@ -294,6 +302,7 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
        if ( ColorBarMin[i] == 'auto' ):
          ColorBarMin[i] = ColorBarMin_Row
 
+       print("ColorBarMax[%d]=%e, ColorBarMin[%d]=%e" % (i, ColorBarMax[i], i, ColorBarMin[i]) )
 
    # Matplolib
    ######################################################
@@ -331,14 +340,36 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
    
    ax = [[None]*NumCol]*(NumRow)
 
+   # Create a big subplot
+   BigAx = fig.add_subplot(111, frameon=False)
+   # hide tick and tick label of the big axes
+   plt.tick_params(labelcolor='none', top='off', bottom='off', left='off', right='off', length=0)
+  
+   font = {'family': 'serif','color':  'k','weight': 'normal','size': n.AxisLabelSize}
+ 
+   BigAx.set_xlabel(n.XAxisLabel, fontdict=font, labelpad=n.XAxisLabelPad) # Use argument `labelpad` to move label downwards.
+   BigAx.set_ylabel(n.YAxisLabel, fontdict=font, labelpad=n.YAxisLabelPad)
+
 
    for i in range(NumRow):
      for j in range(NumCol):
        ax[i][j] = fig.add_subplot(gs[i,j])
        im = ax[i][j].imshow(frb[i][j], cmap=n.CMap, norm=norm[i], aspect=n.aspect,  extent=Extent[j], vmax=ColorBarMax[i], vmin=ColorBarMin[i] )
-       ax[i][j].get_xaxis().set_ticks([])
-       ax[i][j].get_yaxis().set_ticks([])
 
+
+       if n.AxisTick == 'on':
+          ax[i][j].tick_params(labelsize=n.AxisTickLabelSize, color='k', direction='in', which='major',
+                               width=n.AxisTickWidth, length=n.AxisMajorTickLength, pad=n.AxisTickLabelPad)
+          ax[i][j].get_xaxis().set_ticks([float(i) for i in n.XAxisTick.split(",")])
+          ax[i][j].get_yaxis().set_ticks([float(i) for i in n.YAxisTick.split(",")])
+          if j > 0:
+             ax[i][j].get_yaxis().set_ticks([])
+          if i < NumRow-1:
+             ax[i][j].get_xaxis().set_ticks([])
+       elif n.AxisTick == 'off':
+            ax[i][j].get_yaxis().set_ticks([])
+            ax[i][j].get_xaxis().set_ticks([])
+  
        if i == 0:
          if ( Title[j] != 'off' ):
            if (Title[j] == 'auto'):
@@ -348,51 +379,26 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
        for axis in ['top','bottom','left','right']:
            ax[i][j].spines[axis].set_linewidth(n.CbrBorderWidth)
 
-     cax = fig.add_subplot(gs[i, NumCol])
 
-     CbrMajorTickLength = WindowWidth[0]*n.CbrWidthRatio*sum(WindowWidth)
-     CbrMinorTickLength = 0.5*CbrMajorTickLength
+       cbar = fig.colorbar(im,cax=fig.add_subplot(gs[i, NumCol]), use_gridspec=True)
 
-     cbar = fig.colorbar(im,cax=cax, use_gridspec=True)
+       if Unit[i] == 'off':
+          cbar.set_label(ColorBarLabel[i], size=n.CbrLabelSize)
+       else:
+          cbar.set_label(ColorBarLabel[i]+" "+"("+Unit[i]+")", size=n.CbrLabelSize)
 
-     cbar.set_label(ColorBarLabel[i], size=n.CbrLabelSize)
+       cbar.ax.tick_params(labelsize=n.CbrTickLabelSize, color='k', direction='in', which='major',
+                           width=n.CbrTickWidth, length=n.CbrMajorTickLength, pad=n.CbrTickLabelPad)
+       cbar.ax.tick_params(                              color='k', direction='in', which='minor',
+                           width=n.CbrTickWidth, length=n.CbrMinorTickLength, pad=n.CbrTickLabelPad)
  
-     cbar.ax.tick_params(which='minor', direction='in',width=n.CbrTickWidth, length=CbrMinorTickLength)
-     cbar.ax.tick_params(labelsize=n.TickLabelSize, color='k', direction='in', which='major',
-                         width=n.CbrTickWidth, length=CbrMajorTickLength, pad=n.CbrTickLabelPad)
-  
+       if CbrTick[i] != 'off':
+          cbar.ax.get_yaxis().set_ticks([float(k) for k in CbrTick[i].split(",")])
 
-     cbar.outline.set_linewidth(n.CbrBorderWidth)
+       cbar.outline.set_linewidth(n.CbrBorderWidth)
 
- 
-   MetaData = {} 
-   #
-   #for key in DataSet[0]:
-   #  MetaData.update( {key: str( DataSet[0][key] ).replace("\n","")} )
-   #for key in Input__TestProb:
-   #  MetaData.update( {key: str( Input__TestProb[key] ).replace("\n","")} )
-   #for key in Plot__Paramater:
-   #  MetaData.update( {key: str( Plot__Paramater[key] ).replace("\n","")} )
-   #
-   #
-   #MetaData.update( {"Pwd":os.getcwd()} )
-  
    FileOut = n.FileName+"."+n.FileFormat
  
-   plt.savefig( FileOut, bbox_inches='tight', pad_inches=2e-3*FigSize_X, format=n.FileFormat, dpi=800, metadata=MetaData )
-
-
-   ## record all parameters in eps format 
-   #if n.FileFormat == 'eps':
-   #   with open(FileOut, "r+") as f2:
-   #          for x in range(6):
-   #             f2.readline()            # skip past early lines
-   #          pos = f2.tell()             # remember insertion position
-   #          f2_remainder = f2.read()    # cache the rest of f2
-   #          f2.seek(pos)
-   #          for key in MetaData:
-   #            string = '%%{:<12}  {:12}\n'.format(key, MetaData[key])
-   #            f2.write(string)
-   #          f2.write(f2_remainder)
+   plt.savefig( FileOut, bbox_inches='tight', pad_inches=0, format=n.FileFormat, dpi=800 )
 
    print ("Done !!")

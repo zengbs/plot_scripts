@@ -63,6 +63,13 @@ def _temperature_sr(field, data):
     Temp = data["Temp"]
     return Temp
 
+def _temperature_sr_Kelvin(field, data):
+    from __main__ import AtomicMassUnitSrc, AtomicMassUnitAmbient
+    if AtomicMassUnitSrc != AtomicMassUnitAmbient:
+       print("AtomicMassUnitSrc != AtomicMassUnitAmbient")
+       exit(0)
+    Temp = data["Temp"]*AtomicMassUnitAmbient*speed_of_light_cgs**2/boltzmann_constant_cgs
+    return Temp
 
 def _gravitational_potential(field, data):
     return data["Pote"]

@@ -48,6 +48,8 @@ FilePtr2.close()
 NormalizedConst_Dens = 0
 NormalizedConst_Pres = 0
 
+AtomicMassUnitSrc     = Input__TestProb['AtomicMassUnitSrc']
+AtomicMassUnitAmbient = Input__TestProb['AtomicMassUnitAmbient']
 
 if (Plot__Paramater['NormalizedConst_Dens'] == 'auto'):
     if "Jet_SrcDens" in Input__TestProb:
