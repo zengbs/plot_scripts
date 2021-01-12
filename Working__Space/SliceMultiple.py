@@ -9,8 +9,15 @@ import matplotlib.gridspec as gridspec
 from types import SimpleNamespace    
 import sys
 import os
+from yt.units import gravitational_constant_cgs,\
+    speed_of_light_cgs,        \
+    charge_proton_cgs,         \
+    eV,                        \
+    boltzmann_constant_cgs,    \
+    mass_hydrogen_cgs,         \
+    planck_constant_cgs
 
-
+from yt.utilities.physical_ratios import sec_per_Myr
 
 import derived_field as df
 import unit
@@ -184,6 +191,7 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
    dY           = [None]*NumCol
    MaxFig       = [None]*NumCol
    DataSet      = [None]*NumCol
+   TimeStamp    = [None]*NumCol
  
 
    dX_max = 0
@@ -191,7 +199,7 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
 
    for i in range(NumRow):
        for j in range(NumCol):
-           DataSet[j] = yt.load(DataName[j])
+           DataSet[j]   = yt.load(DataName[j])
 
    for j in range(NumCol):
        if ( Xmax[j] == 'auto' or Xmin[j] == 'auto' or Ymax[j] == 'auto' or Xmin[j] == 'auto' ):
@@ -276,6 +284,7 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
            frb.append([])
 
            DataSet[j] = yt.load(DataName[j])
+           TimeStamp[j] = DataSet[j]['Unit_T']*DataSet[j]['Time'][0]/sec_per_Myr
 
            if ( n.Model == 'SRHD' ):
              if (Field[i] not in ('momentum_x', 'momentum_y', 'momentum_z', 'total_energy_per_volume')):
@@ -345,10 +354,9 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
    # hide tick and tick label of the big axes
    plt.tick_params(labelcolor='none', top='off', bottom='off', left='off', right='off', length=0)
   
-   font = {'family': 'serif','color':  'k','weight': 'normal','size': n.AxisLabelSize}
  
-   BigAx.set_xlabel(n.XAxisLabel, fontdict=font, labelpad=n.XAxisLabelPad) # Use argument `labelpad` to move label downwards.
-   BigAx.set_ylabel(n.YAxisLabel, fontdict=font, labelpad=n.YAxisLabelPad)
+   BigAx.set_xlabel(n.XAxisLabel, fontdict=dict(size=n.AxisLabelSize), labelpad=n.XAxisLabelPad) # Use argument `labelpad` to move label downwards.
+   BigAx.set_ylabel(n.YAxisLabel, fontdict=dict(size=n.AxisLabelSize), labelpad=n.YAxisLabelPad)
 
 
    for i in range(NumRow):
@@ -356,6 +364,9 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
        ax[i][j] = fig.add_subplot(gs[i,j])
        im = ax[i][j].imshow(frb[i][j], cmap=n.CMap, norm=norm[i], aspect=n.aspect,  extent=Extent[j], vmax=ColorBarMax[i], vmin=ColorBarMin[i] )
 
+       ax[i][j].text(0.05, 0.95, str(TimeStamp[j])+" Myr", horizontalalignment='left', verticalalignment='top',
+                     transform=ax[i][j].transAxes, fontdict=dict(size=n.TimeStampSize),
+                     bbox=dict(facecolor='white', alpha=0.5, boxstyle="round", edgecolor='none') )
 
        if n.AxisTick == 'on':
           ax[i][j].tick_params(labelsize=n.AxisTickLabelSize, color='k', direction='in', which='major',
@@ -374,7 +385,7 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
          if ( Title[j] != 'off' ):
            if (Title[j] == 'auto'):
                Title[j] = DataName[j]
-           ax[i][j].set_title( Title[j], fontdict=font )
+           ax[i][j].set_title( Title[j], fontdict=dict(size=n.TitleSize), pad=0 )
 
        for axis in ['top','bottom','left','right']:
            ax[i][j].spines[axis].set_linewidth(n.CbrBorderWidth)

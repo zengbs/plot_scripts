@@ -1,17 +1,52 @@
-# MODEL
+# Model
 Model                         SRHD
-
-
-# MultipleSlice
 
 OffAxisSlice                     0 # [0/1]
 
 NumRow                           2
-NumCol                           1
+NumCol                           5
+
+NormalizedConst_Pres             1 
+NormalizedConst_Dens             1 
+
+Resolution                     512
+aspect                       equal
+CMap                 nipy_spectral
+                     
+FigWidth                         3
+
+CbrTickLabelSize                 3
+CbrMajorTickLength               1
+CbrMinorTickLength               1
+CbrTickWidth                   0.3
+CbrBorderWidth                 0.1
+CbrTickLabelPad                  2
+CbrLabelSize                     3 
+CbrWidthRatio                  0.1
+
+AxisTickLabelSize                3
+AxisTickWidth                  0.3
+AxisTickLabelPad                 2
+AxisMajorTickLength              1
+XAxisLabel                 x@(kpc)
+YAxisLabel                 z@(kpc)
+AxisLabelSize                    3
+XAxisLabelPad                   -7
+YAxisLabelPad                  -12
+AxisTick                        on
+XAxisTick                      1,4 
+YAxisTick                      1,4 
+
+wspace                        0.03
+hspace                        0.04
+
 
 # number should be same as NumCol
-DataName_00          ./Data_000000
-#DataName_01          ./Data_000001
+DataName_00          ../run_24_ClumpyStability/Data_000000
+DataName_01          ../run_25_ClumpyStability/Data_000000 
+DataName_02          ../run_26_ClumpyStability/Data_000000
+DataName_03          ../run_27_ClumpyStability/Data_000000 
+DataName_04          ../run_28_ClumpyStability/Data_000000
 
 
 FileName                     slice
@@ -19,6 +54,10 @@ FileFormat                     png
 
 # number should be same as NumCol
 Title_00                       off    # off/auto 
+Title_01                       off    # off/auto 
+Title_02                       off    # off/auto 
+Title_03                       off    # off/auto 
+Title_04                       off    # off/auto 
 
 
 # number should be same as NumRow
@@ -29,10 +68,11 @@ Title_00                       off    # off/auto
 #norm_00                          0
 #
 Field_01            temperature_sr
-ColorBarLabel_01     $k_{B}T/mc^2$ 
+ColorBarLabel_01               $T$
 ColorBarMax_01                auto
 ColorBarMin_01                auto
 norm_01                          1
+Unit_01                          K
 #
 #
 #Field_02               pressure_sr
@@ -42,10 +82,11 @@ norm_01                          1
 #norm_02                          1
 
 Field_00       proper_mass_density
-ColorBarLabel_00 $\rho$@(g/cm$^3$) 
+ColorBarLabel_00            $\rho$ 
 ColorBarMax_00                auto
 ColorBarMin_00                auto
 norm_00                          1
+Unit_00                   g/cm$^3$
 
 #Field_04              4_velocity_z
 #ColorBarLabel_04            $Uz/c$
@@ -54,6 +95,8 @@ norm_00                          1
 #norm_04                          0
                      
 
+CbrTick_00                      off 
+CbrTick_01                      off 
                      
                      
 # number should be same as NumCol
@@ -61,52 +104,36 @@ norm_00                          1
 # Xmax/Xmin/Ymax/Ymin  origin is at the corner of figure if OffAxisSlice == 0
 # Xmax/Xmin/Ymax/Ymin  origin is at the center of figure if OffAxisSlice == 1
 CutAxis_00                       x
-Coord_00                      2.5
+Coord_00                       2.5
 Xmax_00                       auto 
 Xmin_00                       auto
 Ymax_00                       auto
 Ymin_00                       auto 
 
-#CutAxis_01                       x
-#Coord_01                      2.5
-#Xmax_01                       auto 
-#Xmin_01                       auto
-#Ymax_01                       auto
-#Ymin_01                       auto 
+CutAxis_01                       x
+Coord_01                       2.5
+Xmax_01                       auto 
+Xmin_01                       auto
+Ymax_01                       auto
+Ymin_01                       auto 
 
-#CutAxis_02                       x
-#Coord_02                      2.5
-#Xmax_02                       auto 
-#Xmin_02                       auto
-#Ymax_02                       auto
-#Ymin_02                       auto 
-#
-#CutAxis_03                       x
-#Coord_03                      2.5
-#Xmax_03                       auto 
-#Xmin_03                       auto
-#Ymax_03                       auto
-#Ymin_03                       auto 
+CutAxis_02                       x
+Coord_02                       2.5
+Xmax_02                       auto 
+Xmin_02                       auto
+Ymax_02                       auto
+Ymin_02                       auto 
 
+CutAxis_03                       x
+Coord_03                       2.5
+Xmax_03                       auto 
+Xmin_03                       auto
+Ymax_03                       auto
+Ymin_03                       auto 
 
-NormalizedConst_Pres             1 
-NormalizedConst_Dens             1 
-
-
-Resolution                     256
-aspect                       equal
-CMap                        nipy_spectral
-                     
-FigWidth                         1
-
-TickLabelSize                    4
-CbrTickWidth                   0.3
-CbrBorderWidth                 0.1
-CbrTickLabelPad                  2
-CbrLabelSize                     4
-CbrWidthRatio                 0.06
-
-
-
-wspace                        0.03
-hspace                        0.04
+CutAxis_04                       x
+Coord_04                       2.5
+Xmax_04                       auto 
+Xmin_04                       auto
+Ymax_04                       auto
+Ymin_04                       auto 
