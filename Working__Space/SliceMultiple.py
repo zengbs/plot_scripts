@@ -364,7 +364,7 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
        ax[i][j] = fig.add_subplot(gs[i,j])
        im = ax[i][j].imshow(frb[i][j], cmap=n.CMap, norm=norm[i], aspect=n.aspect,  extent=Extent[j], vmax=ColorBarMax[i], vmin=ColorBarMin[i] )
 
-       ax[i][j].text(0.05, 0.95, str(TimeStamp[j])+" Myr", horizontalalignment='left', verticalalignment='top',
+       ax[i][j].text(0.03, 0.97, str(float("{:.2f}".format(TimeStamp[j])))+" Myr", horizontalalignment='left', verticalalignment='top',
                      transform=ax[i][j].transAxes, fontdict=dict(size=n.TimeStampSize),
                      bbox=dict(facecolor='white', alpha=0.5, boxstyle="round", edgecolor='none') )
 
