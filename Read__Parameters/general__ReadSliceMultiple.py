@@ -27,9 +27,7 @@ for line in FilePtr2:
         except ValueError:
             Plot__Paramater[key] = value.replace("@"," ")
 
-DirName = os.path.dirname(Plot__Paramater['DataName_00'])
-
-FilePtr1 = open(DirName+"/Input__TestProb", "r")
+FilePtr1 = open(Plot__Paramater['Path_00']+"/Input__TestProb", "r")
 
 for line in FilePtr1:
     line, _, comment = line.partition('#')
