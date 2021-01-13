@@ -197,9 +197,8 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
    dX_max = 0
    dY_max = 0
 
-   for i in range(NumRow):
-       for j in range(NumCol):
-           DataSet[j]   = yt.load(DataName[j])
+   for j in range(NumCol):
+       DataSet[j]   = yt.load(DataName[j])
 
    for j in range(NumCol):
        if ( Xmax[j] == 'auto' or Xmin[j] == 'auto' or Ymax[j] == 'auto' or Xmin[j] == 'auto' ):
@@ -283,7 +282,6 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
            sl.append([])
            frb.append([])
 
-           DataSet[j] = yt.load(DataName[j])
            TimeStamp[j] = DataSet[j]['Unit_T']*DataSet[j]['Time'][0]/sec_per_Myr
 
            if ( n.Model == 'SRHD' ):
