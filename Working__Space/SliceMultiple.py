@@ -282,7 +282,6 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
            sl.append([])
            frb.append([])
 
-           TimeStamp[j] = DataSet[j]['Unit_T']*DataSet[j]['Time'][0]/sec_per_Myr
 
            if ( n.Model == 'SRHD' ):
              if (Field[i] not in ('momentum_x', 'momentum_y', 'momentum_z', 'total_energy_per_volume')):
@@ -290,7 +289,7 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
 
            if n.OffAxisSlice == 0:
              sl[i].append(  DataSet[j].slice(CutAxis[j], Coord[j], data_source=DataSet[j].all_data()  )  )
-           else:
+           elif n.OffAxisSlice == 1:
              NormalVector = [ NormalVectorX[j], NormalVectorY[j], NormalVectorZ[j]  ]
              Center       = [       CenterX[j],       CenterY[j],       CenterZ[j]  ]
              NorthVector  = [  NorthVectorX[j],  NorthVectorY[j],  NorthVectorZ[j]  ]
@@ -313,10 +312,6 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
 
    # Matplolib
    ######################################################
-   
-   font = {'family': 'monospace','color': 'black', 'weight': 'heavy', 'size': 4}
-   
-   
    # The amount of width/height reserved for space between subplots,
    # expressed as a fraction of the average axis width/height
    
@@ -362,6 +357,7 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
        ax[i][j] = fig.add_subplot(gs[i,j])
        im = ax[i][j].imshow(frb[i][j], cmap=n.CMap, norm=norm[i], aspect=n.aspect,  extent=Extent[j], vmax=CbrMax[i], vmin=CbrMin[i] )
 
+       TimeStamp[j] = DataSet[j]['Unit_T']*DataSet[j]['Time'][0]/sec_per_Myr
        ax[i][j].text(0.03, 0.97, format(TimeStamp[j], '.2f')+" Myr", horizontalalignment='left', verticalalignment='top',
                      transform=ax[i][j].transAxes, fontdict=dict(size=n.TimeStampSize),
                      bbox=dict(facecolor='white', alpha=0.5, boxstyle="round", edgecolor='none') )
@@ -389,22 +385,22 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
            ax[i][j].spines[axis].set_linewidth(n.CbrBorderWidth)
 
 
-       cbar = fig.colorbar(im,cax=fig.add_subplot(gs[i, NumCol]), use_gridspec=True)
+     cbar = fig.colorbar(im,cax=fig.add_subplot(gs[i, NumCol]), use_gridspec=True)
 
-       if Unit[i] == 'off':
-          cbar.set_label(CbrLabel[i], size=n.CbrLabelSize)
-       else:
-          cbar.set_label(CbrLabel[i]+" "+"("+Unit[i]+")", size=n.CbrLabelSize)
+     if Unit[i] == 'off':
+        cbar.set_label(CbrLabel[i], size=n.CbrLabelSize)
+     else:
+        cbar.set_label(CbrLabel[i]+" "+"("+Unit[i]+")", size=n.CbrLabelSize)
 
-       cbar.ax.tick_params(labelsize=n.CbrTickLabelSize, color='k', direction='in', which='major',
-                           width=n.CbrTickWidth, length=n.CbrMajorTickLength, pad=n.CbrTickLabelPad)
-       cbar.ax.tick_params(                              color='k', direction='in', which='minor',
-                           width=n.CbrTickWidth, length=n.CbrMinorTickLength, pad=n.CbrTickLabelPad)
+     cbar.ax.tick_params(labelsize=n.CbrTickLabelSize, color='k', direction='in', which='major',
+                         width=n.CbrTickWidth, length=n.CbrMajorTickLength, pad=n.CbrTickLabelPad)
+     cbar.ax.tick_params(                              color='k', direction='in', which='minor',
+                         width=n.CbrTickWidth, length=n.CbrMinorTickLength, pad=n.CbrTickLabelPad)
  
-       if CbrTick[i] != 'off':
-          cbar.ax.get_yaxis().set_ticks([float(k) for k in CbrTick[i].split(",")])
+     if CbrTick[i] != 'off':
+        cbar.ax.get_yaxis().set_ticks([float(k) for k in CbrTick[i].split(",")])
 
-       cbar.outline.set_linewidth(n.CbrBorderWidth)
+     cbar.outline.set_linewidth(n.CbrBorderWidth)
 
    FileOut = n.FileName+"."+n.FileFormat
  
