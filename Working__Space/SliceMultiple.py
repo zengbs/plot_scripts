@@ -28,10 +28,10 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
 
    DataName      = []
    Field         = []
-   ColorBarLabel = []
+   CbrLabel      = []
    Unit          = []
-   ColorBarMax   = []
-   ColorBarMin   = []
+   CbrMax        = []
+   CbrMin        = []
    norm          = []
    Title         = []
    Xmin          = []
@@ -60,13 +60,13 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
 
 #  A plane normal to one of the axes and intersecting a particular coordinate
    if n.OffAxisSlice == 0:
-     List     = [  DataName,   Field,   ColorBarLabel,   ColorBarMax,   ColorBarMin,   norm,   CutAxis,   Coord,   Xmin,   Xmax,   Ymin,   Ymax,   Title,   CbrTick,   Unit ]
-     ListName = [ "DataName", "Field", "ColorBarLabel", "ColorBarMax", "ColorBarMin", "norm", "CutAxis", "Coord", "Xmin", "Xmax", "Ymin", "Ymax", "Title", "CbrTick", "Unit"]
+     List     = [  DataName,   Field,   CbrLabel,   CbrMax,   CbrMin,   norm,   CutAxis,   Coord,   Xmin,   Xmax,   Ymin,   Ymax,   Title,   CbrTick,   Unit ]
+     ListName = [ "DataName", "Field", "CbrLabel", "CbrMax", "CbrMin", "norm", "CutAxis", "Coord", "Xmin", "Xmax", "Ymin", "Ymax", "Title", "CbrTick", "Unit"]
 
 #  A plane normal to a specified vector and intersecting a particular coordinate.
    else:
-     List     = [  DataName,   Field,   ColorBarLabel,   ColorBarMax,   ColorBarMin,   norm,   NormalVectorX,  NormalVectorY,  NormalVectorZ,   CenterX,   CenterY,   CenterZ,  NorthVectorX,  NorthVectorY,  NorthVectorZ,   Xmin,   Xmax,   Ymin,   Ymax,   Title,   CbrTick ,  Unit ]
-     ListName = [ "DataName", "Field", "ColorBarLabel", "ColorBarMax", "ColorBarMin", "norm", "NormalVectorX","NormalVectorY","NormalVectorZ", "CenterX", "CenterY", "CenterZ","NorthVectorX","NorthVectorY","NorthVectorZ", "Xmin", "Xmax", "Ymin", "Ymax", "Title", "CbrTick", "Unit"]
+     List     = [  DataName,   Field,   CbrLabel,   CbrMax,   CbrMin,   norm,   NormalVectorX,  NormalVectorY,  NormalVectorZ,   CenterX,   CenterY,   CenterZ,  NorthVectorX,  NorthVectorY,  NorthVectorZ,   Xmin,   Xmax,   Ymin,   Ymax,   Title,   CbrTick ,  Unit ]
+     ListName = [ "DataName", "Field", "CbrLabel", "CbrMax", "CbrMin", "norm", "NormalVectorX","NormalVectorY","NormalVectorZ", "CenterX", "CenterY", "CenterZ","NorthVectorX","NorthVectorY","NorthVectorZ", "Xmin", "Xmax", "Ymin", "Ymax", "Title", "CbrTick", "Unit"]
 
    NumData = 0
    for lstname, lst in zip(ListName, List):
@@ -90,17 +90,17 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
    if ( len(norm) != NumRow ):
      print("len(norm) != %d" % (NumRow))
      Exit = True
-   if ( len(ColorBarLabel) != NumRow ):
-     print("len(ColorBarLabel) != %d" % (NumRow))
+   if ( len(CbrLabel) != NumRow ):
+     print("len(CbrLabel) != %d" % (NumRow))
      Exit = True
    if ( len(Unit) != NumRow ):
      print("len(Unit) != %d" % (NumRow))
      Exit = True
-   if ( len(ColorBarMax) != NumRow ):
-     print("len(ColorBarMax) != %d" % (NumRow))
+   if ( len(CbrMax) != NumRow ):
+     print("len(CbrMax) != %d" % (NumRow))
      Exit = True
-   if ( len(ColorBarMin) != NumRow ):
-     print("len(ColorBarMin) != %d" % (NumRow))
+   if ( len(CbrMin) != NumRow ):
+     print("len(CbrMin) != %d" % (NumRow))
      Exit = True
    if ( len(CbrTick) != NumRow ):
      print("len(CbrTick) != %d" % (NumRow))
@@ -276,8 +276,8 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
    #   add derived field
    for i in range(NumRow):
        function, units = unit.ChooseUnit(Field[i], Unit[i])
-       ColorBarMax_Row = sys.float_info.min
-       ColorBarMin_Row = sys.float_info.max
+       CbrMax_Row = sys.float_info.min
+       CbrMin_Row = sys.float_info.max
 
        for j in range(NumCol):
            sl.append([])
@@ -303,15 +303,15 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
            frb[i][j] = np.array(frb[i][j][Field[i]])
 
 
-           ColorBarMax_Row = max( ColorBarMax_Row, np.amax(frb[i][j]) )
-           ColorBarMin_Row = min( ColorBarMin_Row, np.amin(frb[i][j]) )
+           CbrMax_Row = max( CbrMax_Row, np.amax(frb[i][j]) )
+           CbrMin_Row = min( CbrMin_Row, np.amin(frb[i][j]) )
 
-       if ( ColorBarMax[i] == 'auto' ):
-         ColorBarMax[i] = ColorBarMax_Row
-       if ( ColorBarMin[i] == 'auto' ):
-         ColorBarMin[i] = ColorBarMin_Row
+       if ( CbrMax[i] == 'auto' ):
+         CbrMax[i] = CbrMax_Row
+       if ( CbrMin[i] == 'auto' ):
+         CbrMin[i] = CbrMin_Row
 
-       print("ColorBarMax[%d]=%e, ColorBarMin[%d]=%e" % (i, ColorBarMax[i], i, ColorBarMin[i]) )
+       print("CbrMax[%d]=%e, CbrMin[%d]=%e" % (i, CbrMax[i], i, CbrMin[i]) )
 
    # Matplolib
    ######################################################
@@ -362,9 +362,9 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
    for i in range(NumRow):
      for j in range(NumCol):
        ax[i][j] = fig.add_subplot(gs[i,j])
-       im = ax[i][j].imshow(frb[i][j], cmap=n.CMap, norm=norm[i], aspect=n.aspect,  extent=Extent[j], vmax=ColorBarMax[i], vmin=ColorBarMin[i] )
+       im = ax[i][j].imshow(frb[i][j], cmap=n.CMap, norm=norm[i], aspect=n.aspect,  extent=Extent[j], vmax=CbrMax[i], vmin=CbrMin[i] )
 
-       ax[i][j].text(0.03, 0.97, str(float("{:.2f}".format(TimeStamp[j])))+" Myr", horizontalalignment='left', verticalalignment='top',
+       ax[i][j].text(0.03, 0.97, format(TimeStamp[j], '.2f')+" Myr", horizontalalignment='left', verticalalignment='top',
                      transform=ax[i][j].transAxes, fontdict=dict(size=n.TimeStampSize),
                      bbox=dict(facecolor='white', alpha=0.5, boxstyle="round", edgecolor='none') )
 
@@ -394,9 +394,9 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
        cbar = fig.colorbar(im,cax=fig.add_subplot(gs[i, NumCol]), use_gridspec=True)
 
        if Unit[i] == 'off':
-          cbar.set_label(ColorBarLabel[i], size=n.CbrLabelSize)
+          cbar.set_label(CbrLabel[i], size=n.CbrLabelSize)
        else:
-          cbar.set_label(ColorBarLabel[i]+" "+"("+Unit[i]+")", size=n.CbrLabelSize)
+          cbar.set_label(CbrLabel[i]+" "+"("+Unit[i]+")", size=n.CbrLabelSize)
 
        cbar.ax.tick_params(labelsize=n.CbrTickLabelSize, color='k', direction='in', which='major',
                            width=n.CbrTickWidth, length=n.CbrMajorTickLength, pad=n.CbrTickLabelPad)
