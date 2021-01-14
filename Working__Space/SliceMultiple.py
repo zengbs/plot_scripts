@@ -372,15 +372,15 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
            for j in range(NumCol):
              ax[i][j] = fig.add_subplot(gs[i,j])
              im = ax[i][j].imshow(frb[t][i][j], cmap=n.CMap, norm=norm[i], aspect=n.aspect,
-                                     extent=Extent[j], vmax=CbrMax[i], vmin=CbrMin[i] )
+                                  extent=Extent[j], vmax=CbrMax[i], vmin=CbrMin[i] )
 
              ax[i][j].text(0.03, 0.97, format(TimeStamp[t], '.2f')+" Myr", horizontalalignment='left', verticalalignment='top',
-                              transform=ax[i][j].transAxes, fontdict=dict(size=n.TimeStampSize),
-                              bbox=dict(facecolor='white', alpha=0.5, boxstyle="round", edgecolor='none') )
+                           transform=ax[i][j].transAxes, fontdict=dict(size=n.TimeStampSize),
+                           bbox=dict(facecolor='white', alpha=0.5, boxstyle="round", edgecolor='none') )
 
              if n.AxisTick == 'on':
                 ax[i][j].tick_params(labelsize=n.AxisTickLabelSize, color='k', direction='in', which='major',
-                                        width=n.AxisTickWidth, length=n.AxisMajorTickLength, pad=n.AxisTickLabelPad)
+                                     width=n.AxisTickWidth, length=n.AxisMajorTickLength, pad=n.AxisTickLabelPad)
                 ax[i][j].get_xaxis().set_ticks([float(i) for i in n.XAxisTick.split(",")])
                 ax[i][j].get_yaxis().set_ticks([float(i) for i in n.YAxisTick.split(",")])
                 if j > 0:
