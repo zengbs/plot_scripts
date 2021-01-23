@@ -40,7 +40,7 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
    Xmax          = []
    Ymin          = []
    Ymax          = []
-   CbrTick       = []
+   CbrTickLabel       = []
 
 #  axis slice
    CutAxis       = []   # The axis along which to slice
@@ -62,13 +62,13 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
 
 #  A plane normal to one of the axes and intersecting a particular coordinate
    if n.OffAxisSlice == 0:
-     List     = [  DataName,   Field,   CbrLabel,   CbrMax,   CbrMin,   norm,   CutAxis,   Coord,   Xmin,   Xmax,   Ymin,   Ymax,   Title,   CbrTick,   Unit , Path , FigName ]
-     ListName = [ "DataName", "Field", "CbrLabel", "CbrMax", "CbrMin", "norm", "CutAxis", "Coord", "Xmin", "Xmax", "Ymin", "Ymax", "Title", "CbrTick", "Unit","Path","FigName"]
+     List     = [  DataName,   Field,   CbrLabel,   CbrMax,   CbrMin,   norm,   CutAxis,   Coord,   Xmin,   Xmax,   Ymin,   Ymax,   Title,   CbrTickLabel,   Unit , Path , FigName ]
+     ListName = [ "DataName", "Field", "CbrLabel", "CbrMax", "CbrMin", "norm", "CutAxis", "Coord", "Xmin", "Xmax", "Ymin", "Ymax", "Title", "CbrTickLabel", "Unit","Path","FigName"]
 
 #  A plane normal to a specified vector and intersecting a particular coordinate.
    else:
-     List     = [  DataName,   Field,   CbrLabel,   CbrMax,   CbrMin,   norm,   NormalVectorX,  NormalVectorY,  NormalVectorZ,   CenterX,   CenterY,   CenterZ,  NorthVectorX,  NorthVectorY,  NorthVectorZ,   Xmin,   Xmax,   Ymin,   Ymax,   Title,   CbrTick ,  Unit , Path , FigName ]
-     ListName = [ "DataName", "Field", "CbrLabel", "CbrMax", "CbrMin", "norm", "NormalVectorX","NormalVectorY","NormalVectorZ", "CenterX", "CenterY", "CenterZ","NorthVectorX","NorthVectorY","NorthVectorZ", "Xmin", "Xmax", "Ymin", "Ymax", "Title", "CbrTick", "Unit","Path","FigName"]
+     List     = [  DataName,   Field,   CbrLabel,   CbrMax,   CbrMin,   norm,   NormalVectorX,  NormalVectorY,  NormalVectorZ,   CenterX,   CenterY,   CenterZ,  NorthVectorX,  NorthVectorY,  NorthVectorZ,   Xmin,   Xmax,   Ymin,   Ymax,   Title,   CbrTickLabel ,  Unit , Path , FigName ]
+     ListName = [ "DataName", "Field", "CbrLabel", "CbrMax", "CbrMin", "norm", "NormalVectorX","NormalVectorY","NormalVectorZ", "CenterX", "CenterY", "CenterZ","NorthVectorX","NorthVectorY","NorthVectorZ", "Xmin", "Xmax", "Ymin", "Ymax", "Title", "CbrTickLabel", "Unit","Path","FigName"]
 
    NumData = 0
    for lstname, lst in zip(ListName, List):
@@ -108,8 +108,8 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
    if ( len(CbrMin) != NumRow ):
      print("len(CbrMin) != %d" % (NumRow))
      Exit = True
-   if ( len(CbrTick) != NumRow ):
-     print("len(CbrTick) != %d" % (NumRow))
+   if ( len(CbrTickLabel) != NumRow ):
+     print("len(CbrTickLabel) != %d" % (NumRow))
      Exit = True
 
    if ( len(DataName) != NumCol ):
@@ -410,13 +410,13 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
            else:
               cbar.set_label(CbrLabel[i]+" "+"("+Unit[i]+")", size=n.CbrLabelSize)
 
-           cbar.ax.tick_params(labelsize=n.CbrTickLabelSize, color='k', direction='in', which='major',
-                               width=n.CbrTickWidth, length=n.CbrMajorTickLength, pad=n.CbrTickLabelPad)
+           cbar.ax.tick_params(labelsize=n.CbrTickLabelLabelSize, color='k', direction='in', which='major',
+                               width=n.CbrTickLabelWidth, length=n.CbrMajorTickLength, pad=n.CbrTickLabelLabelPad)
            cbar.ax.tick_params(                              color='k', direction='in', which='minor',
-                               width=n.CbrTickWidth, length=n.CbrMinorTickLength, pad=n.CbrTickLabelPad)
+                               width=n.CbrTickLabelWidth, length=n.CbrMinorTickLength, pad=n.CbrTickLabelLabelPad)
  
-           if CbrTick[i] != 'off':
-              cbar.ax.get_yaxis().set_ticks([float(k) for k in CbrTick[i].split(",")])
+           if CbrTickLabel[i] != 'off':
+              cbar.ax.get_yaxis().set_ticks([float(k) for k in CbrTickLabel[i].split(",")])
 
            cbar.outline.set_linewidth(n.CbrBorderWidth)
 
