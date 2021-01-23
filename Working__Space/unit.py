@@ -1,6 +1,6 @@
 import derived_field as df
 
-def ChooseUnit ( Field):
+def ChooseUnit ( Field, Unit):
 
   unit =  ""
   function = ""
@@ -8,9 +8,12 @@ def ChooseUnit ( Field):
   if Field == 'proper_mass_density':
       unit = 'g/cm**3'
       function = df._proper_mass_density
-  if Field == 'temperature_sr':
+  if Field == 'temperature_sr' and Unit == 'none':
       unit = ''
       function = df._temperature_sr
+  if Field == 'temperature_sr' and Unit == 'K':
+      unit = 'K*cm**2/(erg*s**2)'
+      function = df._temperature_sr_Kelvin
   if Field == 'Lorentz_factor':
       unit = ''
       function = df._lorentz_factor
@@ -18,7 +21,7 @@ def ChooseUnit ( Field):
       unit = ''
       function = df._lorentz_factor_1
   if Field == 'pressure_sr':
-      unit = 'g/cm**3'
+      unit = 'g/(cm*s**2)'
       function = df._pressure_sr
   if Field == '4_velocity_x':
       unit = ''

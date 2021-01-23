@@ -1,92 +1,158 @@
-# MODEL
-Model                         SRHD
+# Model
+Model                         SRHD # SRHD/HD
 
 
-# MultipleSlice
+FileFormat                     png
 
 OffAxisSlice                     0 # [0/1]
 
 NumRow                           4
-NumCol                           2
+NumCol                           3
+NumTime                          2
+
+FileName_00                slice_00_Jet1 
+FileName_01                slice_01_Jet1
+#FileName_02                slice_02_Jet1
+#FileName_03                slice_03
+#FileName_04                slice_04
+#FileName_05                slice_05
+#FileName_06                slice_06
+
+NormalizedConst_Pres             1 # auto
+NormalizedConst_Dens             1 # auto
+
+Resolution                     512
+aspect                       equal
+CMap                 nipy_spectral
+                     
+FigWidth                         3
+
+CbrTickLabelSize                 3
+CbrMajorTickLength             1.5
+CbrMinorTickLength             0.5
+CbrTickWidth                   0.3
+CbrBorderWidth                 0.1
+CbrTickLabelPad                  2
+CbrLabelSize                     3 
+CbrWidthRatio                  0.1
+
+AxisTickLabelSize                3
+AxisTickWidth                  0.3
+AxisTickLabelPad                 2
+AxisMajorTickLength              1
+XAxisLabel                 x@(kpc)
+YAxisLabel                 z@(kpc)
+AxisLabelSize                    3
+XAxisLabelPad                   -7
+YAxisLabelPad                  -12
+AxisTick                        on
+XAxisTick                      1,4 
+YAxisTick                      1,4 
+
+TimeStampSize                    2
+TitleSize                        5
+
+wspace                        0.03
+hspace                        0.04
+
 
 # number should be same as NumCol
-DataName_00           ./Data_000008 
-DataName_01           ./Data_000008
+DataName_00                0,1
+DataName_01                0,1
+DataName_02                0,1
+#DataName_03                0,1,2
+#DataName_04                0,1,2
 
-
-FileName                 ImageName
-FileFormat                     png
+Path_00              ../run_25_ClumpyStabilityJet1 
+Path_01              ../run_27_ClumpyStabilityJet1
+Path_02              ../run_28_ClumpyStabilityJet1
+#Path_03              ../run_28_ClumpyStabilityJet
+#Path_04              ../run_28_ClumpyStability
 
 # number should be same as NumCol
-Title_00                     Title # off/auto 
-Title_01                     Title # off/auto
+Title_00                     25      # off/auto 
+Title_01                     27      # off/auto 
+Title_02                     28      # off/auto 
+#Title_03                     28      # off/auto 
 
 
 # number should be same as NumRow
-Field_00            Lorentz_factor
-ColorBarLabel_00          $\gamma$
-ColorBarMax_00                auto
-ColorBarMin_00                auto
-norm_00                          1
-
-Field_01            temperature_sr
-ColorBarLabel_01   $k_{B}T/mc^{2}$ 
-ColorBarMax_01                auto
-ColorBarMin_01                auto
+#Field_00            Mach_number_sr
+#CbrLabel_00       Mach_number
+#CbrMax_00                auto
+#CbrMin_00                auto
+#norm_00                          0
+#
+Field_01             temperature_sr
+CbrLabel_01                     $T$
+CbrMax_01                      auto
+CbrMin_01                      auto
 norm_01                          1
-
+Unit_01                          K # K, none
 
 Field_02               pressure_sr
-ColorBarLabel_02         $P/P_{j}$
-ColorBarMax_02                auto
-ColorBarMin_02                auto
+CbrLabel_02                    $P$
+CbrMax_02                     auto
+CbrMin_02                     auto
 norm_02                          1
+Unit_02                 erg/cm$^3$
 
-Field_03       proper_mass_density
-ColorBarLabel_03   $\rho/\rho_{j}$ 
-ColorBarMax_03                auto
-ColorBarMin_03                auto
-norm_03                          1
+Field_00       proper_mass_density
+CbrLabel_00                 $\rho$ 
+CbrMax_00                     auto
+CbrMin_00                     auto
+norm_00                          1
+Unit_00                   g/cm$^3$
 
-Field_04        Bernoulli_constant 
-ColorBarLabel_04   $h\gamma/c^{2}$ 
-ColorBarMax_04                26.6
-ColorBarMin_04              26.245
-norm_04                          0
+Field_03      3_velocity_magnitude
+CbrLabel_03                  $|U|$
+CbrMax_03                     auto
+CbrMin_03                     auto
+norm_03                          0
+Unit_03                        $c$
                      
 
+CbrTick_00                      off 
+CbrTick_01                      off 
+CbrTick_02                      off 
+CbrTick_03                      off 
                      
                      
 # number should be same as NumCol
 # Coord_??             origin is at the corner of data set
 # Xmax/Xmin/Ymax/Ymin  origin is at the corner of figure if OffAxisSlice == 0
 # Xmax/Xmin/Ymax/Ymin  origin is at the center of figure if OffAxisSlice == 1
-CutAxis_00                       z
-Coord_00                        50
+CutAxis_00                       x
+Coord_00                       2.5
 Xmax_00                       auto 
 Xmin_00                       auto
 Ymax_00                       auto
 Ymin_00                       auto 
 
 CutAxis_01                       x
-Coord_01                        34
-Xmax_01                       auto  
-Xmin_01                       auto   
-Ymax_01                       auto   
-Ymin_01                       auto  
-                     
+Coord_01                       2.5
+Xmax_01                       auto 
+Xmin_01                       auto
+Ymax_01                       auto
+Ymin_01                       auto 
 
-NormalizedConst_Pres          auto
-NormalizedConst_Dens          auto
+CutAxis_02                       x
+Coord_02                       2.5
+Xmax_02                       auto 
+Xmin_02                       auto
+Ymax_02                       auto
+Ymin_02                       auto 
 
-# Kelvin/eV/dimensionless
-Temperature_Unit
-
-Resolution                    1024
-aspect                       equal
-CMap                 nipy_spectral 
-                     
-FigWidth                         5
-
-wspace                        0.03
-hspace                        0.04
+#CutAxis_03                       x
+#Coord_03                       2.5
+#Xmax_03                       auto 
+#Xmin_03                       auto
+#Ymax_03                       auto
+#Ymin_03                       auto 
+#
+#CutAxis_04                       x
+#Coord_04                       2.5
+#Xmax_04                       auto 
+#Xmin_04                       auto
+#Ymax_04                       auto
+#Ymin_04                       auto 

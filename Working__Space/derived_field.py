@@ -63,6 +63,13 @@ def _temperature_sr(field, data):
     Temp = data["Temp"]
     return Temp
 
+def _temperature_sr_Kelvin(field, data):
+    from __main__ import AtomicMassUnitSrc, AtomicMassUnitAmbient
+    if AtomicMassUnitSrc != AtomicMassUnitAmbient:
+       print("AtomicMassUnitSrc != AtomicMassUnitAmbient")
+       exit(0)
+    Temp = data["Temp"]*AtomicMassUnitAmbient*speed_of_light_cgs**2/boltzmann_constant_cgs
+    return Temp
 
 def _gravitational_potential(field, data):
     return data["Pote"]
@@ -70,24 +77,14 @@ def _gravitational_potential(field, data):
 
 def _pressure_sr(field, data):
     from __main__ import NormalizedConst_Dens, NormalizedConst_Pres
-    See  = NormalizedConst_Pres > 0
-    See |= NormalizedConst_Dens > 0
-    if ( not See ):
-       print( "NormalizedConst_Dens=%e, NormalizedConst_Pres=%e" % ( NormalizedConst_Dens, NormalizedConst_Pres ) )
-       exit(0)
     eta = data["Temp"]
     rho = _proper_mass_density("", data)*NormalizedConst_Dens
     pres = rho * eta
-    return pres/NormalizedConst_Pres
+    return pres*speed_of_light_cgs**2/NormalizedConst_Pres
 
 
 def _proper_mass_density(field, data):
     from __main__ import NormalizedConst_Dens, NormalizedConst_Pres
-    See  = NormalizedConst_Pres > 0
-    See |= NormalizedConst_Dens > 0
-    if ( not See ):
-       print( "NormalizedConst_Dens=%e, NormalizedConst_Pres=%e" % ( NormalizedConst_Dens, NormalizedConst_Pres ) )
-       exit(0)
     Lorentz_factor = _lorentz_factor("", data)
     rho = data["Dens"]/Lorentz_factor
     return rho/NormalizedConst_Dens
@@ -410,9 +407,9 @@ def _Cp_per_particle(field, data):
 def _Cv_per_particle(field, data):
     print("doesn't support yet!")
     sys.exit(0)
-    if data.ds["EoS"] == 2:
+    if data.ds["EoS"] == 1:
         Cv = 1.0 / (data.ds["Gamma"] - 1.0)
-    elif data.ds["EoS"] == 1:
+    elif data.ds["EoS"] == 4:
         temp = data["Temp"]
         Cv = 1.50 + 2.25 * data["Temp"] / np.sqrt(2.25 * data["Temp"]**2 + 1.0)
     else:

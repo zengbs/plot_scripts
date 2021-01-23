@@ -1,0 +1,67 @@
+######################################################################
+# Shared keys
+######################################################################
+# Title
+# off:  no title
+# auto: the coordinate of endpoints
+Title                                off
+
+# norm:
+# 0: linear scale
+# 1: log scale
+YAxisLabel                      $\gamma$
+XAxisLabel                             x
+normX                                  0
+normY                                  0
+
+# auto: default value in matplotlib
+# DataMax: the maximum data in this panel
+# DataMin: the minimum data in this panel
+Ymax                                auto
+
+# auto: default value in matplotlib
+# DataMax: the maximum data in this panel
+# DataMin: the minimum data in this panel
+Ymin                                auto
+
+# number of lines in this panel
+NumLine                                1
+
+
+######################################################################
+# Data keys
+######################################################################
+
+# Path of dataset
+DataName_00                  Data_000008
+
+# Mark:
+Mark_00                               ro
+
+# Mark size:
+MarkSize_00                            1
+
+# Legend:
+# off: no legend
+Legend_00                            off 
+
+# Model: (SRHD/HD)
+Model_00                            SRHD
+
+# Field:
+Field_00                  Lorentz_factor
+
+# Number of points:
+NumPts_00                           2048
+
+# Origin is at the corner of computation domain
+HeadX_00                            50.0 
+HeadY_00                            50.0
+HeadZ_00                            50.0
+TailX_00                            77.5
+TailY_00                            50.0
+TailZ_00                            50.0
+
+
+# The coordinate of figure's origin
+OriginX_00                           0.0 
