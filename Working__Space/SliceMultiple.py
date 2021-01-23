@@ -410,10 +410,10 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
            else:
               cbar.set_label(CbrLabel[i]+" "+"("+Unit[i]+")", size=n.CbrLabelSize)
 
-           cbar.ax.tick_params(labelsize=n.CbrTickLabelLabelSize, color='k', direction='in', which='major',
-                               width=n.CbrTickLabelWidth, length=n.CbrMajorTickLength, pad=n.CbrTickLabelLabelPad)
+           cbar.ax.tick_params(labelsize=n.CbrTickLabelSize, color='k', direction='in', which='major',
+                               width=n.CbrTickLabelWidth, length=n.CbrMajorTickLength, pad=n.CbrTickLabelPad)
            cbar.ax.tick_params(                              color='k', direction='in', which='minor',
-                               width=n.CbrTickLabelWidth, length=n.CbrMinorTickLength, pad=n.CbrTickLabelLabelPad)
+                               width=n.CbrTickLabelWidth, length=n.CbrMinorTickLength, pad=n.CbrTickLabelPad)
  
            if CbrTickLabel[i] != 'off':
               cbar.ax.get_yaxis().set_ticks([float(k) for k in CbrTickLabel[i].split(",")])
