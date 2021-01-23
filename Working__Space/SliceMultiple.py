@@ -82,7 +82,7 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
 ###################################################################
    NumRow  = int(n.NumRow)
    NumCol  = int(n.NumCol)
-   NumTime = int(n.NumTime)
+   NumTime = len(set(DataName))
 
 # check 
    Exit = False
