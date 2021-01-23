@@ -17,7 +17,7 @@ from yt.units import gravitational_constant_cgs,\
     mass_hydrogen_cgs,         \
     planck_constant_cgs
 
-from yt.utilities.physical_ratios import sec_per_Myr
+from yt.utilities.physical_ratios import sec_per_Myr, sec_per_kyr
 
 import derived_field as df
 import unit
@@ -301,7 +301,13 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
                else:
                   DataSet[t][j]   = yt.load(Path[j]+"/Data_"+format(int(DataName[j].split(",")[t]),'06d'))
 
-               TimeStamp[t] = DataSet[t][j]['Unit_T']*DataSet[t][j]['Time'][0]/sec_per_Myr
+               if n.TimeStampUnit == 'kyr':
+                  TimeStampUnit = sec_per_kyr
+
+               if n.TimeStampUnit == 'Myr':
+                  TimeStampUnit = sec_per_Myr
+  
+               TimeStamp[t] = DataSet[t][j]['Unit_T']*DataSet[t][j]['Time'][0]/TimeStampUnit
 
                if ( n.Model == 'SRHD' ):
                  if (Field[i] not in ('momentum_x', 'momentum_y', 'momentum_z', 'total_energy_per_volume')):
