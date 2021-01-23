@@ -27,7 +27,7 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
    n = SimpleNamespace(**Plot__Paramater)
 
    DataName      = []
-   FileName      = []
+   FigName      = []
    Path          = []
    Field         = []
    CbrLabel      = []
@@ -62,13 +62,13 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
 
 #  A plane normal to one of the axes and intersecting a particular coordinate
    if n.OffAxisSlice == 0:
-     List     = [  DataName,   Field,   CbrLabel,   CbrMax,   CbrMin,   norm,   CutAxis,   Coord,   Xmin,   Xmax,   Ymin,   Ymax,   Title,   CbrTick,   Unit , Path , FileName ]
-     ListName = [ "DataName", "Field", "CbrLabel", "CbrMax", "CbrMin", "norm", "CutAxis", "Coord", "Xmin", "Xmax", "Ymin", "Ymax", "Title", "CbrTick", "Unit","Path","FileName"]
+     List     = [  DataName,   Field,   CbrLabel,   CbrMax,   CbrMin,   norm,   CutAxis,   Coord,   Xmin,   Xmax,   Ymin,   Ymax,   Title,   CbrTick,   Unit , Path , FigName ]
+     ListName = [ "DataName", "Field", "CbrLabel", "CbrMax", "CbrMin", "norm", "CutAxis", "Coord", "Xmin", "Xmax", "Ymin", "Ymax", "Title", "CbrTick", "Unit","Path","FigName"]
 
 #  A plane normal to a specified vector and intersecting a particular coordinate.
    else:
-     List     = [  DataName,   Field,   CbrLabel,   CbrMax,   CbrMin,   norm,   NormalVectorX,  NormalVectorY,  NormalVectorZ,   CenterX,   CenterY,   CenterZ,  NorthVectorX,  NorthVectorY,  NorthVectorZ,   Xmin,   Xmax,   Ymin,   Ymax,   Title,   CbrTick ,  Unit , Path , FileName ]
-     ListName = [ "DataName", "Field", "CbrLabel", "CbrMax", "CbrMin", "norm", "NormalVectorX","NormalVectorY","NormalVectorZ", "CenterX", "CenterY", "CenterZ","NorthVectorX","NorthVectorY","NorthVectorZ", "Xmin", "Xmax", "Ymin", "Ymax", "Title", "CbrTick", "Unit","Path","FileName"]
+     List     = [  DataName,   Field,   CbrLabel,   CbrMax,   CbrMin,   norm,   NormalVectorX,  NormalVectorY,  NormalVectorZ,   CenterX,   CenterY,   CenterZ,  NorthVectorX,  NorthVectorY,  NorthVectorZ,   Xmin,   Xmax,   Ymin,   Ymax,   Title,   CbrTick ,  Unit , Path , FigName ]
+     ListName = [ "DataName", "Field", "CbrLabel", "CbrMax", "CbrMin", "norm", "NormalVectorX","NormalVectorY","NormalVectorZ", "CenterX", "CenterY", "CenterZ","NorthVectorX","NorthVectorY","NorthVectorZ", "Xmin", "Xmax", "Ymin", "Ymax", "Title", "CbrTick", "Unit","Path","FigName"]
 
    NumData = 0
    for lstname, lst in zip(ListName, List):
@@ -87,8 +87,8 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
 # check 
    Exit = False
 
-   if ( len(FileName) != NumTime ):
-     print("len(FileName) != %d" % (NumTime))
+   if ( len(FigName) != NumTime ):
+     print("len(FigName) != %d" % (NumTime))
      Exit = True
    if ( len(Field) != NumRow ):
      print("len(Field) != %d" % (NumRow))
@@ -420,7 +420,7 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
 
            cbar.outline.set_linewidth(n.CbrBorderWidth)
 
-       FileOut = FileName[t]+"."+n.FileFormat
+       FileOut = FigName[t]+"."+n.FileFormat
  
        plt.savefig( FileOut, bbox_inches='tight', pad_inches=0, format=n.FileFormat, dpi=800 )
 
