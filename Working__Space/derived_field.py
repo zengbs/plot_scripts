@@ -80,7 +80,7 @@ def _pressure_sr(field, data):
     eta = data["Temp"]
     rho = _proper_mass_density("", data)*NormalizedConst_Dens
     pres = rho * eta
-    return pres/NormalizedConst_Pres
+    return pres*speed_of_light_cgs**2/NormalizedConst_Pres
 
 
 def _proper_mass_density(field, data):

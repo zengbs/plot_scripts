@@ -364,9 +364,12 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
        BigAx = fig.add_subplot(111, frameon=False)
        # hide tick and tick label of the big axes
        plt.tick_params(labelcolor='none', top='off', bottom='off', left='off', right='off', length=0)
- 
-       BigAx.set_xlabel(n.XAxisLabel, fontdict=dict(size=n.AxisLabelSize), labelpad=n.XAxisLabelPad) # Use argument `labelpad` to move label downwards.
-       BigAx.set_ylabel(n.YAxisLabel, fontdict=dict(size=n.AxisLabelSize), labelpad=n.YAxisLabelPad)
+
+       if ( n.BigXAxisLabel != 'off' ):
+            BigAx.set_xlabel(n.BigXAxisLabel, fontdict=dict(size=n.AxisLabelSize), labelpad=n.XAxisLabelPad) # Use argument `labelpad` to move label downwards.
+       if ( n.BigYAxisLabel != 'off' ):
+            BigAx.set_ylabel(n.BigYAxisLabel, fontdict=dict(size=n.AxisLabelSize), labelpad=n.YAxisLabelPad)
+
        ax = [[None]*NumCol]*NumRow
        for i in range(NumRow):
            for j in range(NumCol):

@@ -1,13 +1,25 @@
 # Model
-Model                         SRHD
+Model                         SRHD # SRHD/HD
+
+
+FileFormat                     png
 
 OffAxisSlice                     0 # [0/1]
 
-NumRow                           2
-NumCol                           5
+NumRow                           4
+NumCol                           3
+NumTime                          2
 
-NormalizedConst_Pres             1 
-NormalizedConst_Dens             1 
+FileName_00                slice_00_Jet1 
+FileName_01                slice_01_Jet1
+#FileName_02                slice_02_Jet1
+#FileName_03                slice_03
+#FileName_04                slice_04
+#FileName_05                slice_05
+#FileName_06                slice_06
+
+NormalizedConst_Pres             1 # auto
+NormalizedConst_Dens             1 # auto
 
 Resolution                     512
 aspect                       equal
@@ -16,8 +28,8 @@ CMap                 nipy_spectral
 FigWidth                         3
 
 CbrTickLabelSize                 3
-CbrMajorTickLength               1
-CbrMinorTickLength               1
+CbrMajorTickLength             1.5
+CbrMinorTickLength             0.5
 CbrTickWidth                   0.3
 CbrBorderWidth                 0.1
 CbrTickLabelPad                  2
@@ -37,66 +49,73 @@ AxisTick                        on
 XAxisTick                      1,4 
 YAxisTick                      1,4 
 
+TimeStampSize                    2
+TitleSize                        5
+
 wspace                        0.03
 hspace                        0.04
 
 
 # number should be same as NumCol
-DataName_00          ../run_24_ClumpyStability/Data_000000
-DataName_01          ../run_25_ClumpyStability/Data_000000 
-DataName_02          ../run_26_ClumpyStability/Data_000000
-DataName_03          ../run_27_ClumpyStability/Data_000000 
-DataName_04          ../run_28_ClumpyStability/Data_000000
+DataName_00                0,1
+DataName_01                0,1
+DataName_02                0,1
+#DataName_03                0,1,2
+#DataName_04                0,1,2
 
-
-FileName                     slice
-FileFormat                     png
+Path_00              ../run_25_ClumpyStabilityJet1 
+Path_01              ../run_27_ClumpyStabilityJet1
+Path_02              ../run_28_ClumpyStabilityJet1
+#Path_03              ../run_28_ClumpyStabilityJet
+#Path_04              ../run_28_ClumpyStability
 
 # number should be same as NumCol
-Title_00                       off    # off/auto 
-Title_01                       off    # off/auto 
-Title_02                       off    # off/auto 
-Title_03                       off    # off/auto 
-Title_04                       off    # off/auto 
+Title_00                     25      # off/auto 
+Title_01                     27      # off/auto 
+Title_02                     28      # off/auto 
+#Title_03                     28      # off/auto 
 
 
 # number should be same as NumRow
 #Field_00            Mach_number_sr
-#ColorBarLabel_00       Mach_number
-#ColorBarMax_00                auto
-#ColorBarMin_00                auto
+#CbrLabel_00       Mach_number
+#CbrMax_00                auto
+#CbrMin_00                auto
 #norm_00                          0
 #
-Field_01            temperature_sr
-ColorBarLabel_01               $T$
-ColorBarMax_01                auto
-ColorBarMin_01                auto
+Field_01             temperature_sr
+CbrLabel_01                     $T$
+CbrMax_01                      auto
+CbrMin_01                      auto
 norm_01                          1
-Unit_01                          K
-#
-#
-#Field_02               pressure_sr
-#ColorBarLabel_02  $P$@$(erg/cm^3)$
-#ColorBarMax_02                auto
-#ColorBarMin_02                auto
-#norm_02                          1
+Unit_01                          K # K, none
+
+Field_02               pressure_sr
+CbrLabel_02                    $P$
+CbrMax_02                     auto
+CbrMin_02                     auto
+norm_02                          1
+Unit_02                 erg/cm$^3$
 
 Field_00       proper_mass_density
-ColorBarLabel_00            $\rho$ 
-ColorBarMax_00                auto
-ColorBarMin_00                auto
+CbrLabel_00                 $\rho$ 
+CbrMax_00                     auto
+CbrMin_00                     auto
 norm_00                          1
 Unit_00                   g/cm$^3$
 
-#Field_04              4_velocity_z
-#ColorBarLabel_04            $Uz/c$
-#ColorBarMax_04                auto
-#ColorBarMin_04                auto
-#norm_04                          0
+Field_03      3_velocity_magnitude
+CbrLabel_03                  $|U|$
+CbrMax_03                     auto
+CbrMin_03                     auto
+norm_03                          0
+Unit_03                        $c$
                      
 
 CbrTick_00                      off 
 CbrTick_01                      off 
+CbrTick_02                      off 
+CbrTick_03                      off 
                      
                      
 # number should be same as NumCol
@@ -124,16 +143,16 @@ Xmin_02                       auto
 Ymax_02                       auto
 Ymin_02                       auto 
 
-CutAxis_03                       x
-Coord_03                       2.5
-Xmax_03                       auto 
-Xmin_03                       auto
-Ymax_03                       auto
-Ymin_03                       auto 
-
-CutAxis_04                       x
-Coord_04                       2.5
-Xmax_04                       auto 
-Xmin_04                       auto
-Ymax_04                       auto
-Ymin_04                       auto 
+#CutAxis_03                       x
+#Coord_03                       2.5
+#Xmax_03                       auto 
+#Xmin_03                       auto
+#Ymax_03                       auto
+#Ymin_03                       auto 
+#
+#CutAxis_04                       x
+#Coord_04                       2.5
+#Xmax_04                       auto 
+#Xmin_04                       auto
+#Ymax_04                       auto
+#Ymin_04                       auto 

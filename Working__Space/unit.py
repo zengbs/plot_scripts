@@ -21,7 +21,7 @@ def ChooseUnit ( Field, Unit):
       unit = ''
       function = df._lorentz_factor_1
   if Field == 'pressure_sr':
-      unit = 'g/cm**3'
+      unit = 'g/(cm*s**2)'
       function = df._pressure_sr
   if Field == '4_velocity_x':
       unit = ''
