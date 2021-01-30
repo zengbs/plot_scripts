@@ -55,6 +55,7 @@ def _Plot(Plot__Paramater, Input__TestProb):
      Grid                 = Plot__Paramater['Grid'] 
      
      Field                = Plot__Paramater['Field'] 
+     Unit                 = Plot__Paramater['Unit']
      
      
      
@@ -98,7 +99,7 @@ def _Plot(Plot__Paramater, Input__TestProb):
      
      
          #   add derived field
-         function, units = unit.ChooseUnit(Field)
+         function, units = unit.ChooseUnit(Field, Unit)
          print(function, units)
          if Field not in ('total_energy_per_volume', 'momentum_x', 'momentum_y', 'momentum_z'):
            df.ds.add_field(("gamer", Field), function=function, sampling_type="cell", units=units)

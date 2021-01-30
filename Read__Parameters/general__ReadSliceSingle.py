@@ -45,6 +45,7 @@ FilePtr2.close()
 NormalizedConst_Dens = 0
 NormalizedConst_Pres = 0
 
+ParticleMass   = Input__TestProb['ParticleMass']
 
 if (Plot__Paramater['NormalizedConst_Dens'] == 'auto'):
     if "Jet_SrcDens" in Input__TestProb:

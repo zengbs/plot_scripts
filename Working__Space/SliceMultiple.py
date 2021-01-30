@@ -82,7 +82,7 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
 ###################################################################
    NumRow  = int(n.NumRow)
    NumCol  = int(n.NumCol)
-   NumTime = len(set(DataName))
+   NumTime = int(n.NumTime) 
 
 # check 
    Exit = False
@@ -90,6 +90,10 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
    if ( len(FigName) != NumTime ):
      print("len(FigName) != %d" % (NumTime))
      Exit = True
+   for j in range(NumCol):
+       if ( len(DataName[j].split(",")) != NumTime ):
+         print("len(DataName) != %d" % (NumTime))
+         Exit = True
    if ( len(Field) != NumRow ):
      print("len(Field) != %d" % (NumRow))
      Exit = True
@@ -426,7 +430,7 @@ def SlicePlot(Plot__Paramater, Input__TestProb):
 
            cbar.outline.set_linewidth(n.CbrBorderWidth)
 
-       FileOut = FigName[t]+"."+n.FileFormat
+       FileOut = str(FigName[t])+"."+n.FileFormat
  
        plt.savefig( FileOut, bbox_inches='tight', pad_inches=0, format=n.FileFormat, dpi=800 )
 
